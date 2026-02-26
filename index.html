@@ -6,34 +6,34 @@
     <title>伊恩浣熊 | Portfolio</title>
     <style>
         /* --- 全局設定 --- */
+        html {
+            scroll-behavior: smooth; /* 平滑捲動 */
+        }
         body {
             background-color: #000000;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            /* 強制大於螢幕 1px 以觸發 iOS 上下滑動的 Q 彈回彈效果 */
-            min-height: calc(100vh + 1px); 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden; /* 只隱藏水平捲軸，保留垂直滑動 */
+            overflow-x: hidden;
         }
 
-        /* --- 左側漢堡選單按鈕 (三條線) --- */
+        /* --- 左側漢堡選單 --- */
         .menu-btn {
-            position: absolute;
+            position: fixed; /* 改為固定，捲動時才會跟著走 */
             top: 24px;
             left: 20px;
-            z-index: 1001; /* 確保在最上層 */
+            z-index: 1001;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             gap: 6px;
             padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
         }
-        
         .menu-btn div {
             width: 24px;
             height: 2px;
@@ -41,8 +41,6 @@
             transition: all 0.3s ease;
             border-radius: 2px;
         }
-
-        /* 漢堡按鈕展開成 X 的動畫 */
         .menu-btn.active div:nth-child(1) { transform: translateY(8px) rotate(45deg); }
         .menu-btn.active div:nth-child(2) { opacity: 0; }
         .menu-btn.active div:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
@@ -51,7 +49,7 @@
         .sidebar {
             position: fixed;
             top: 0;
-            left: -260px; /* 預設隱藏在左外側 */
+            left: -260px;
             width: 260px;
             height: 100%;
             background: rgba(20, 20, 20, 0.95);
@@ -61,11 +59,9 @@
             display: flex;
             flex-direction: column;
             padding-top: 100px;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
             transition: left 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
         .sidebar.active { left: 0; }
-
         .nav-link {
             color: rgba(255, 255, 255, 0.6);
             text-decoration: none;
@@ -73,14 +69,10 @@
             font-weight: 600;
             letter-spacing: 2px;
             padding: 20px 40px;
-            transition: color 0.3s ease, background 0.3s ease;
+            transition: 0.3s;
         }
-        .nav-link:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.05);
-        }
+        .nav-link:hover { color: #ffffff; background: rgba(255, 255, 255, 0.05); }
 
-        /* 側邊欄展開時的暗色背景 */
         .sidebar-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -90,232 +82,172 @@
             pointer-events: none;
             transition: opacity 0.4s ease;
         }
-        .sidebar-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
 
-        /* --- 下拉式語言切換 (更簡潔) --- */
+        /* --- 語言切換 --- */
         .lang-container {
-            position: absolute;
+            position: fixed; /* 改為固定 */
             top: 20px;
             right: 20px;
             z-index: 101;
         }
-
         .lang-selected {
-            background: transparent;
+            background: rgba(0,0,0,0.3);
             color: rgba(255, 255, 255, 0.8);
             font-size: 13px;
             font-weight: 600;
             padding: 10px 14px;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            user-select: none;
-            letter-spacing: 1px;
-        }
-        .lang-selected:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .lang-selected::after {
-            content: '▾';
-            font-size: 10px;
-            transition: transform 0.3s ease;
-        }
-        .lang-container.active .lang-selected::after { transform: rotate(180deg); }
-
-        .lang-dropdown {
-            position: absolute;
-            top: calc(100% + 5px);
-            right: 0;
-            background: rgba(25, 25, 25, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(-10px);
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-            width: 130px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            backdrop-filter: blur(15px);
-        }
-        .lang-container.active .lang-dropdown {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-        .lang-option {
-            padding: 12px 16px;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: left;
-            user-select: none;
-            letter-spacing: 0.5px;
-        }
-        .lang-option:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
+            backdrop-filter: blur(5px);
         }
 
-        /* --- 主視覺區塊 --- */
-        .hero-container {
-            flex: 1;
+        /* --- 通用區塊樣式 --- */
+        section {
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            width: 100%;
-            padding: 20px;
+            padding: 80px 24px;
             box-sizing: border-box;
-            margin-top: 60px; /* 預留上方空間避免擋到選單 */
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .big-title {
-            font-size: clamp(48px, 12vw, 120px);
+        .section-title {
+            font-size: clamp(40px, 10vw, 80px);
             font-weight: 900;
-            line-height: 1;
             text-transform: uppercase;
-            margin: 0 0 20px 0;
-            letter-spacing: -2px;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+            opacity: 0; /* 預設隱藏，用於動畫 */
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        .subtitle {
+        /* 當進入視窗時觸發此 class */
+        .section-title.reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .content-area {
+            width: 100%;
+            max-width: 800px;
             font-size: 16px;
-            color: rgba(255, 255, 255, 0.6);
-            max-width: 600px;
-            margin-bottom: 48px;
             line-height: 1.8;
-            font-weight: 300;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            color: rgba(255,255,255,0.7);
+            min-height: 200px; /* 預留內容空間 */
         }
 
-        /* --- 按鈕 --- */
+        /* --- 首頁 Hero 獨有樣式 --- */
+        #home .big-title {
+            font-size: clamp(48px, 12vw, 120px);
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+
         .contact-btn {
-            appearance: none;
-            border: none;
-            cursor: pointer;
-            color: #ffffff;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            padding: 18px 48px;
-            border-radius: 50px;
+            appearance: none; border: none; cursor: pointer; color: #ffffff;
+            font-size: 14px; font-weight: 700; letter-spacing: 2px;
+            padding: 18px 48px; border-radius: 50px;
             background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
             box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
-            transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s ease;
-        }
-        .contact-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+            transition: 0.3s;
         }
 
-        .fade-out { opacity: 0 !important; transform: translateY(5px) !important; }
-
-        /* --- 底部版權區塊 --- */
-        .footer {
-            margin-top: auto; /* 自動推到底部 */
-            padding: 24px 20px;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.3);
-            text-align: center;
-            letter-spacing: 1px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        /* --- 彈窗樣式 --- */
+        /* --- 彈窗與頁尾 --- */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px);
             display: flex; justify-content: center; align-items: center;
-            z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+            z-index: 9999; opacity: 0; pointer-events: none; transition: 0.4s;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        
         .modal-content {
-            background: #111; 
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 28px; 
-            padding: 32px 24px; 
-            box-sizing: border-box; /* 確保 padding 算在寬度內 */
-            width: calc(100% - 48px); /* 兩側各留 24px 空隙，絕不貼邊 */
-            max-width: 340px; /* 電腦上最大寬度限制 */
-            transform: scale(0.9); 
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            background: #111; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 28px; padding: 32px 24px; width: calc(100% - 48px);
+            max-width: 340px; transform: scale(0.9); transition: 0.4s;
         }
         .modal-overlay.active .modal-content { transform: scale(1); }
-        
         .social-link {
             display: block; width: 100%; padding: 16px; margin-bottom: 12px;
-            background: rgba(255,255,255,0.05); border-radius: 16px; border: 1px solid transparent;
-            color: #fff; text-decoration: none; font-weight: 500; transition: 0.3s;
-            box-sizing: border-box; text-align: center;
-        }
-        .social-link:hover { 
-            background: rgba(255,255,255,0.1); 
-            border: 1px solid rgba(255,255,255,0.2);
-            transform: translateY(-2px);
+            background: rgba(255,255,255,0.05); border-radius: 16px;
+            color: #fff; text-decoration: none; text-align: center;
         }
     </style>
 </head>
 <body>
 
     <div class="menu-btn" id="menuBtn" onclick="toggleMenu()">
-        <div></div>
-        <div></div>
-        <div></div>
+        <div></div><div></div><div></div>
     </div>
 
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
     <div class="sidebar" id="sidebar">
-        <a href="#" class="nav-link" id="navHome">首頁</a>
-        <a href="#" class="nav-link" id="navAbout">關於我</a>
-        <a href="#" class="nav-link" id="navEvents">活動場次</a>
-        <a href="#" class="nav-link" id="navAlbum">日常相簿</a>
-        <a href="#" class="nav-link" id="navCommissions">委託作品</a>
+        <a href="#home" class="nav-link" onclick="toggleMenu()">首頁</a>
+        <a href="#about" class="nav-link" onclick="toggleMenu()" id="navAbout">關於我</a>
+        <a href="#fursona" class="nav-link" onclick="toggleMenu()" id="navFursona">獸設定介紹</a>
+        <a href="#events" class="nav-link" onclick="toggleMenu()" id="navEvents">活動場次</a>
+        <a href="#album" class="nav-link" onclick="toggleMenu()" id="navAlbum">日常相簿</a>
+        <a href="#commissions" class="nav-link" onclick="toggleMenu()" id="navCommissions">委託作品</a>
     </div>
 
     <div class="lang-container" id="langContainer">
         <div class="lang-selected" id="currentLangDisplay">TW</div>
-        <div class="lang-dropdown">
-            <div class="lang-option" onclick="changeLang('TW')">繁體中文 (TW)</div>
-            <div class="lang-option" onclick="changeLang('EN')">English (EN)</div>
-            <div class="lang-option" onclick="changeLang('JP')">日本語 (JP)</div>
-            <div class="lang-option" onclick="changeLang('KR')">한국어 (KR)</div>
+        <div class="lang-dropdown" style="display:none; position:absolute; right:0; background:#111; border-radius:8px; width:130px;">
+            <div class="lang-option" style="padding:10px; cursor:pointer;" onclick="changeLang('TW')">繁體中文 (TW)</div>
+            <div class="lang-option" style="padding:10px; cursor:pointer;" onclick="changeLang('EN')">English (EN)</div>
         </div>
     </div>
 
-    <div class="hero-container">
-        <h1 class="big-title" id="mainTitle">
-            HI, I'M<br>LacoonEN
-        </h1>
-
-        <p class="subtitle" id="subtitleText">
-            LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻
-            <br>網站施工中🚧
+    <section id="home">
+        <h1 class="big-title section-title reveal" id="mainTitle">HI, I'M<br>LacoonEN</h1>
+        <p style="color:rgba(255,255,255,0.6); max-width:600px; margin-bottom:40px;" id="subtitleText">
+            LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>網站施工中🚧
         </p>
+        <button class="contact-btn" id="ctaBtn" onclick="openModal()">與我聯繫</button>
+    </section>
 
-        <button class="contact-btn" id="ctaBtn" onclick="openModal()">
-            與我聯繫
-        </button>
-    </div>
+    <section id="about">
+        <h2 class="section-title" id="titleAbout">關於我</h2>
+        <div class="content-area">
+            <p>內容載入中...</p>
+        </div>
+    </section>
 
-    <div class="footer">
+    <section id="fursona">
+        <h2 class="section-title" id="titleFursona">獸設定介紹</h2>
+        <div class="content-area">
+            <p>設定資料整理中...</p>
+        </div>
+    </section>
+
+    <section id="events">
+        <h2 class="section-title" id="titleEvents">活動場次</h2>
+        <div class="content-area">
+            <p>近期無公開活動。</p>
+        </div>
+    </section>
+
+    <section id="album">
+        <h2 class="section-title" id="titleAlbum">日常相簿</h2>
+        <div class="content-area">
+            <p>相簿內容建設中...</p>
+        </div>
+    </section>
+
+    <section id="commissions">
+        <h2 class="section-title" id="titleCommissions">委託作品</h2>
+        <div class="content-area">
+            <p>目前暫未開放委託。</p>
+        </div>
+    </section>
+
+    <footer style="padding: 40px; text-align: center; color: rgba(255,255,255,0.3); font-size: 12px;">
         Hosting by LacoonEN | Design by LacoonEN
-    </div>
+    </footer>
 
     <div class="modal-overlay" id="socialModal">
         <div class="modal-content">
@@ -323,76 +255,69 @@
             <a href="https://www.facebook.com/share/1CG7dizyQ3/" class="social-link" target="_blank">Facebook</a>
             <a href="https://x.com/furrywolf1118" class="social-link" target="_blank">X (Twitter)</a>
             <a href="https://t.me/LacoonEN" class="social-link" target="_blank">Telegram</a>
-            <a href="https://xhslink.com/m/2QNs9Daahnb" class="social-link" id="linkXHS" target="_blank">小紅書</a>
-            <a href="https://qm.qq.com/q/qZpAr0dOPC" class="social-link" target="_blank">QQ</a>
+            <a href="https://xhslink.com/m/2QNs9Daahnb" class="social-link" target="_blank">小紅書</a>
         </div>
     </div>
 
     <script>
-        // --- 側邊選單邏輯 ---
+        // --- 選單控制 ---
         function toggleMenu() {
             document.getElementById('menuBtn').classList.toggle('active');
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('sidebarOverlay').classList.toggle('active');
         }
 
-        // --- 語言資料庫 ---
-        // 將名稱部分固定，僅替換第二行的「網站施工中🚧」多語系版本
-        const translations = {
-            TW: { label: "TW", home: "首頁", about: "關於我", events: "活動場次", album: "日常相簿", commissions: "委託作品", sub: "LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>網站施工中🚧", cta: "與我聯繫", modal: "我的社群連結", xhs: "小紅書" },
-            EN: { label: "EN", home: "HOME", about: "ABOUT", events: "EVENTS", album: "DAILY ALBUM", commissions: "COMMISSIONS", sub: "LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>Website under construction 🚧", cta: "CONNECT WITH ME", modal: "MY SOCIAL LINKS", xhs: "RED" },
-            JP: { label: "JP", home: "ホーム", about: "私について", events: "イベント", album: "日常アルバム", commissions: "依頼作品", sub: "LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>ウェブサイト構築中 🚧", cta: "コンタクト", modal: "ソーシャル連結", xhs: "小紅書 (RED)" },
-            KR: { label: "KR", home: "홈", about: "소개", events: "이벤트", album: "일상 앨범", commissions: "의뢰 작품", sub: "LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>웹사이트 공사 중입니다 🚧", cta: "연락하기", modal: "소셜 미디어", xhs: "샤오홍슈" }
+        // --- 捲動進場動畫觀察器 ---
+        const observerOptions = {
+            threshold: 0.2 // 當區塊出現 20% 時觸發
         };
 
-        // --- 下拉選單邏輯 ---
-        const langContainer = document.getElementById('langContainer');
-        langContainer.addEventListener('click', function(event) {
-            event.stopPropagation();
-            this.classList.toggle('active');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('reveal');
+                }
+            });
+        }, observerOptions);
+
+        // 綁定所有標題
+        document.querySelectorAll('.section-title').forEach(title => {
+            observer.observe(title);
         });
-        document.addEventListener('click', function() {
-            langContainer.classList.remove('active');
-        });
 
-        function changeLang(langCode) {
-            const elements = [
-                document.getElementById('navHome'),
-                document.getElementById('navAbout'),
-                document.getElementById('navEvents'),
-                document.getElementById('navAlbum'),
-                document.getElementById('navCommissions'),
-                document.getElementById('subtitleText'),
-                document.getElementById('ctaBtn')
-            ];
-
-            elements.forEach(el => el.classList.add('fade-out'));
-            
-            setTimeout(() => {
-                const t = translations[langCode];
-                document.getElementById('currentLangDisplay').innerText = t.label;
-                document.getElementById('navHome').innerText = t.home;
-                document.getElementById('navAbout').innerText = t.about;
-                document.getElementById('navEvents').innerText = t.events;
-                document.getElementById('navAlbum').innerText = t.album;
-                document.getElementById('navCommissions').innerText = t.commissions;
-                document.getElementById('subtitleText').innerHTML = t.sub;
-                document.getElementById('ctaBtn').innerText = t.cta;
-                document.getElementById('modalTitle').innerText = t.modal;
-                document.getElementById('linkXHS').innerText = t.xhs;
-
-                elements.forEach(el => el.classList.remove('fade-out'));
-            }, 300);
-        }
-
-        // --- 彈窗邏輯 ---
+        // --- 彈窗控制 ---
         const modal = document.getElementById('socialModal');
         function openModal() { modal.classList.add('active'); }
         function closeModal() { modal.classList.remove('active'); }
-        
-        modal.addEventListener('click', function(event) {
-            if (event.target === modal) closeModal();
-        });
+        modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+
+        // --- 語言與翻譯 (擴充新增的獸設定) ---
+        const translations = {
+            TW: { label: "TW", about: "關於我", fursona: "獸設定介紹", events: "活動場次", album: "日常相簿", commissions: "委託作品" },
+            EN: { label: "EN", about: "ABOUT ME", fursona: "FURSONA", events: "EVENTS", album: "ALBUM", commissions: "COMMISSIONS" }
+        };
+
+        function changeLang(langCode) {
+            const t = translations[langCode];
+            document.getElementById('currentLangDisplay').innerText = t.label;
+            document.getElementById('navAbout').innerText = t.about;
+            document.getElementById('navFursona').innerText = t.fursona;
+            document.getElementById('navEvents').innerText = t.events;
+            document.getElementById('navAlbum').innerText = t.album;
+            document.getElementById('navCommissions').innerText = t.commissions;
+            
+            document.getElementById('titleAbout').innerText = t.about;
+            document.getElementById('titleFursona').innerText = t.fursona;
+            document.getElementById('titleEvents').innerText = t.events;
+            document.getElementById('titleAlbum').innerText = t.album;
+            document.getElementById('titleCommissions').innerText = t.commissions;
+        }
+
+        // 簡易語言切換點擊 (示意)
+        document.getElementById('langContainer').onclick = function() {
+            const dropdown = this.querySelector('.lang-dropdown');
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        };
     </script>
 </body>
 </html>
