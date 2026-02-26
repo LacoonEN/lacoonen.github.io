@@ -95,7 +95,7 @@
             pointer-events: auto;
         }
 
-        /* --- 下拉式語言切換 --- */
+        /* --- 下拉式語言切換 (更簡潔) --- */
         .lang-container {
             position: absolute;
             top: 20px;
@@ -104,20 +104,23 @@
         }
 
         .lang-selected {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 10px 18px;
-            border-radius: 20px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 10px 14px;
+            border-radius: 8px;
             cursor: pointer;
-            backdrop-filter: blur(10px);
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             user-select: none;
+            letter-spacing: 1px;
+        }
+        .lang-selected:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
         }
         .lang-selected::after {
             content: '▾';
@@ -128,10 +131,10 @@
 
         .lang-dropdown {
             position: absolute;
-            top: calc(100% + 10px);
+            top: calc(100% + 5px);
             right: 0;
-            background: rgba(30, 30, 30, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(25, 25, 25, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 12px;
             overflow: hidden;
             opacity: 0;
@@ -148,16 +151,17 @@
             pointer-events: auto;
         }
         .lang-option {
-            padding: 14px 16px;
+            padding: 12px 16px;
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.6);
             cursor: pointer;
             transition: all 0.2s;
             text-align: left;
             user-select: none;
+            letter-spacing: 0.5px;
         }
         .lang-option:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.1);
             color: #ffffff;
         }
 
@@ -216,7 +220,19 @@
 
         .fade-out { opacity: 0 !important; transform: translateY(5px) !important; }
 
-        /* --- 彈窗樣式 (已修復邊距) --- */
+        /* --- 底部版權區塊 --- */
+        .footer {
+            margin-top: auto; /* 自動推到底部 */
+            padding: 24px 20px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.3);
+            text-align: center;
+            letter-spacing: 1px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* --- 彈窗樣式 --- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -265,12 +281,15 @@
 
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
     <div class="sidebar" id="sidebar">
+        <a href="#" class="nav-link" id="navHome">首頁</a>
         <a href="#" class="nav-link" id="navAbout">關於我</a>
-        <a href="#" class="nav-link" id="navProjects">相簿</a>
+        <a href="#" class="nav-link" id="navEvents">活動場次</a>
+        <a href="#" class="nav-link" id="navAlbum">日常相簿</a>
+        <a href="#" class="nav-link" id="navCommissions">委託作品</a>
     </div>
 
     <div class="lang-container" id="langContainer">
-        <div class="lang-selected" id="currentLangDisplay">🌐 TW</div>
+        <div class="lang-selected" id="currentLangDisplay">TW</div>
         <div class="lang-dropdown">
             <div class="lang-option" onclick="changeLang('TW')">繁體中文 (TW)</div>
             <div class="lang-option" onclick="changeLang('EN')">English (EN)</div>
@@ -294,6 +313,10 @@
         </button>
     </div>
 
+    <div class="footer">
+        Hosting by LacoonEN | Design by LacoonEN
+    </div>
+
     <div class="modal-overlay" id="socialModal">
         <div class="modal-content">
             <h2 style="margin-top:0; margin-bottom:24px; text-align:center; font-size:18px;" id="modalTitle">我的社群連結</h2>
@@ -315,10 +338,10 @@
 
         // --- 語言資料庫 ---
         const translations = {
-            TW: { label: "🌐 TW", about: "關於我", projects: "相簿", sub: "LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>這裡是伊恩浣熊的官方網站 會緩慢更新w", cta: "與我聯繫", modal: "我的社群連結", xhs: "小紅書" },
-            EN: { label: "🌐 EN", about: "ABOUT", projects: "GALLERY", sub: "LacoonEN | Wolf | HuanHuan<br>Welcome to my official website. Updating slowly!", cta: "CONNECT WITH ME", modal: "MY SOCIAL LINKS", xhs: "RED" },
-            JP: { label: "🌐 JP", about: "私について", projects: "アルバム", sub: "ラクーンEN | ウルフ | フアンフアン<br>公式ウェブサイトへようこそ。ゆっくり更新中です！", cta: "コンタクト", modal: "ソーシャル連結", xhs: "小紅書 (RED)" },
-            KR: { label: "🌐 KR", about: "소개", projects: "갤러리", sub: "라쿤EN | 울프 | 환환<br>공식 웹사이트에 오신 것을 환영합니다. 천천히 업데이트 중입니다!", cta: "연락하기", modal: "소셜 미디어", xhs: "샤오홍슈" }
+            TW: { label: "TW", home: "首頁", about: "關於我", events: "活動場次", album: "日常相簿", commissions: "委託作品", sub: "LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>這裡是伊恩浣熊的官方網站 會緩慢更新w", cta: "與我聯繫", modal: "我的社群連結", xhs: "小紅書" },
+            EN: { label: "EN", home: "HOME", about: "ABOUT", events: "EVENTS", album: "DAILY ALBUM", commissions: "COMMISSIONS", sub: "LacoonEN | Wolf | HuanHuan<br>Welcome to my official website. Updating slowly!", cta: "CONNECT WITH ME", modal: "MY SOCIAL LINKS", xhs: "RED" },
+            JP: { label: "JP", home: "ホーム", about: "私について", events: "イベント", album: "日常アルバム", commissions: "依頼作品", sub: "ラクーンEN | ウルフ | フアンフアン<br>公式ウェブサイトへようこそ。ゆっくり更新中です！", cta: "コンタクト", modal: "ソーシャル連結", xhs: "小紅書 (RED)" },
+            KR: { label: "KR", home: "홈", about: "소개", events: "이벤트", album: "일상 앨범", commissions: "의뢰 작품", sub: "라쿤EN | 울프 | 환환<br>공식 웹사이트에 오신 것을 환영합니다. 천천히 업데이트 중입니다!", cta: "연락하기", modal: "소셜 미디어", xhs: "샤오홍슈" }
         };
 
         // --- 下拉選單邏輯 ---
@@ -333,8 +356,11 @@
 
         function changeLang(langCode) {
             const elements = [
+                document.getElementById('navHome'),
                 document.getElementById('navAbout'),
-                document.getElementById('navProjects'),
+                document.getElementById('navEvents'),
+                document.getElementById('navAlbum'),
+                document.getElementById('navCommissions'),
                 document.getElementById('subtitleText'),
                 document.getElementById('ctaBtn')
             ];
@@ -344,8 +370,11 @@
             setTimeout(() => {
                 const t = translations[langCode];
                 document.getElementById('currentLangDisplay').innerText = t.label;
+                document.getElementById('navHome').innerText = t.home;
                 document.getElementById('navAbout').innerText = t.about;
-                document.getElementById('navProjects').innerText = t.projects;
+                document.getElementById('navEvents').innerText = t.events;
+                document.getElementById('navAlbum').innerText = t.album;
+                document.getElementById('navCommissions').innerText = t.commissions;
                 document.getElementById('subtitleText').innerHTML = t.sub;
                 document.getElementById('ctaBtn').innerText = t.cta;
                 document.getElementById('modalTitle').innerText = t.modal;
