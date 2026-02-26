@@ -3,125 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>My Portfolio</title>
+    <title>伊恩浣熊 | Portfolio</title>
     <style>
         /* --- 全局設定 --- */
         body {
-            background-color: #000000; /* 純黑背景 */
+            background-color: #000000;
             color: #ffffff;
-            /* 使用系統原生的粗體無襯線字，在 iPad 上效果最好 */
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            min-height: 100vh; /* 確保佔滿整個螢幕高度 */
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            -webkit-font-smoothing: antialiased; /* 讓字體更銳利 */
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
-        /* --- 頂部導航列 (Navbar) --- */
+        /* --- 頂部導航列 --- */
         .navbar {
             width: 100%;
             padding: 24px 0;
             display: flex;
             justify-content: center;
-            gap: 32px; /* 連結之間的間距 */
-            position: absolute; /* 絕對定位固定在上方 */
+            gap: 32px;
+            position: absolute;
             top: 0;
             z-index: 100;
         }
         .nav-link {
-            color: rgba(255, 255, 255, 0.7); /* 稍微透明一點，不要搶主角風采 */
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             font-size: 12px;
             font-weight: 600;
-            text-transform: uppercase; /* 強制全大寫 */
-            letter-spacing: 2px; /* 字元間距加大，增加呼吸感 */
+            text-transform: uppercase;
+            letter-spacing: 2px;
             transition: color 0.3s ease;
         }
         .nav-link:hover {
-            color: #ffffff; /* 滑鼠移過去變全白 */
+            color: #ffffff;
         }
 
-        /* --- 主視覺區塊 (Hero Section) --- */
+        /* --- 右上角語言切換按鈕 --- */
+        .lang-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            z-index: 101; /* 確保在最上層 */
+        }
+        .lang-switch:hover, .lang-switch:active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(0.95);
+        }
+
+        /* --- 主視覺區塊 --- */
         .hero-container {
-            flex: 1; /* 佔滿剩餘空間 */
+            flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* 垂直置中 */
-            align-items: center; /* 水平置中 */
+            justify-content: center;
+            align-items: center;
             text-align: center;
             width: 100%;
             padding: 20px;
             box-sizing: border-box;
-            margin-top: 60px; /* 避開上方導航列 */
+            margin-top: 60px;
         }
 
-        /* --- 超大標題 (HI, I'M...) --- */
         .big-title {
-            /* 使用視窗寬度單位 (vw)，讓字體隨螢幕大小自動縮放，保持震撼感 */
             font-size: 12vw; 
-            font-weight: 900; /* 極粗體 */
-            line-height: 0.9; /* 讓行距非常緊湊 */
+            font-weight: 900;
+            line-height: 0.9;
             text-transform: uppercase;
             margin: 0;
-            /* 讓標題稍微在圖片後面一點點，製造層次感 (可選) */
-            /* z-index: 1; */ 
+            letter-spacing: -2px;
         }
 
-        /* --- 你的去背 PNG 照片 --- */
         .profile-png {
-            width: 70%; /* 手機版預設寬度 */
-            max-width: 400px; /* 電腦版最大寬度 */
+            width: 70%;
+            max-width: 400px;
             height: auto;
             object-fit: contain;
-            /* 利用負邊距，讓照片稍微蓋住一點標題，製造影片中的重疊感 */
             margin-top: -20px; 
             margin-bottom: 24px;
-            z-index: 2; /* 確保照片在文字前方 */
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); /* 增加一點點立體陰影 */
+            z-index: 2;
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.8));
         }
 
-        /* --- 副標題/一句話簡介 --- */
         .subtitle {
             font-size: 16px;
             color: rgba(255, 255, 255, 0.7);
             max-width: 400px;
             margin-bottom: 40px;
-            line-height: 1.5;
+            line-height: 1.6;
             font-weight: 400;
         }
 
-        /* --- 漸層膠囊按鈕 (Contact Me) --- */
+        /* --- 漸層膠囊按鈕 --- */
         .contact-btn {
-            text-decoration: none;
+            appearance: none;
+            border: none;
+            cursor: pointer;
             color: #ffffff;
             font-size: 14px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
             padding: 16px 40px;
-            border-radius: 50px; /* 膠囊形狀 */
-            /* 仿照影片的紫粉色漸層 */
+            border-radius: 50px;
             background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
-            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.4); /* 發光效果 */
+            box-shadow: 0 4px 20px rgba(106, 17, 203, 0.4);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        
-        /* 觸控或滑鼠按下的效果 */
         .contact-btn:active {
-             transform: scale(0.96);
-             box-shadow: 0 2px 8px rgba(106, 17, 203, 0.3);
+             transform: scale(0.95);
+             box-shadow: 0 2px 10px rgba(106, 17, 203, 0.3);
         }
 
-        /* --- 針對 iPad 和電腦大螢幕的微調 --- */
+        /* --- 彈出式社群選單 (Modal) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            
+            /* 動畫預設隱藏狀態 */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        /* 當加入 .active 類別時顯示 */
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: rgba(25, 25, 25, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            padding: 32px 24px;
+            width: 85%;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            
+            /* 內容的彈出動畫 */
+            transform: translateY(30px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-btn:active, .close-btn:hover {
+            color: #fff;
+        }
+
+        /* 彈出視窗內的連結按鈕 */
+        .social-link {
+            display: block;
+            width: 100%;
+            padding: 16px 0;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        @media (hover: hover) {
+            .social-link:hover {
+                background: rgba(255, 255, 255, 0.15);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                transform: translateY(-2px);
+            }
+        }
+        .social-link:active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(0.98);
+        }
+
+        /* --- 響應式微調 --- */
         @media (min-width: 768px) {
             .navbar { gap: 48px; font-size: 13px; }
-            .big-title { font-size: 8vw; } /* 大螢幕字體比例稍微縮小一點 */
-            .profile-png { margin-top: -40px; } /* 加大重疊範圍 */
+            .big-title { font-size: 8vw; }
+            .profile-png { margin-top: -40px; }
             .subtitle { font-size: 18px; max-width: 500px; }
-            .contact-btn { padding: 18px 48px; font-size: 16px;}
+            .lang-switch { top: 24px; right: 40px; padding: 10px 16px; font-size: 12px; }
         }
     </style>
 </head>
@@ -130,8 +245,9 @@
     <nav class="navbar">
         <a href="#" class="nav-link">About</a>
         <a href="#" class="nav-link">Projects</a>
-        <a href="#" class="nav-link">Contact</a>
     </nav>
+
+    <button class="lang-switch" id="langBtn" onclick="toggleLanguage()">EN / TW</button>
 
     <div class="hero-container">
         <h1 class="big-title">
@@ -140,15 +256,66 @@
 
         <img src="profile.png" alt="My Profile Image" class="profile-png">
 
-        <p class="subtitle">
+        <p class="subtitle" id="subtitleText">
             LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻
             <br>這裡是伊恩浣熊的官方網站 會緩慢更新w
         </p>
 
-        <a href="mailto:your@email.com" class="contact-btn">
-            Contact Me
-        </a>
+        <button class="contact-btn" onclick="openModal()">
+            Connect With Me
+        </button>
     </div>
 
+    <div class="modal-overlay" id="socialModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <h2 class="modal-title">My Social Links</h2>
+            
+            <a href="https://www.facebook.com/share/1CG7dizyQ3/?mibextid=wwXIfr" class="social-link" target="_blank">Facebook</a>
+            <a href="https://x.com/furrywolf1118?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" class="social-link" target="_blank">X (Twitter)</a>
+            <a href="https://t.me/LacoonEN" class="social-link" target="_blank">Telegram</a>
+            <a href="https://xhslink.com/m/2QNs9Daahnb" class="social-link" target="_blank">小紅書</a>
+            <a href="https://qm.qq.com/q/qZpAr0dOPC" class="social-link" target="_blank">QQ</a>
+        </div>
+    </div>
+
+    <script>
+        // --- 彈出視窗控制 ---
+        const modal = document.getElementById('socialModal');
+
+        function openModal() {
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // 點擊視窗外圍也能關閉
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // --- 簡易語言切換功能 (示意) ---
+        let isEnglish = false;
+        function toggleLanguage() {
+            const btn = document.getElementById('langBtn');
+            const subtitle = document.getElementById('subtitleText');
+            
+            if (isEnglish) {
+                // 切換回中文
+                btn.innerText = 'EN / TW';
+                subtitle.innerHTML = 'LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>這裡是伊恩浣熊的官方網站 會緩慢更新w';
+                isEnglish = false;
+            } else {
+                // 切換為英文
+                btn.innerText = 'TW / EN';
+                subtitle.innerHTML = 'LacoonEN | Wolf | HuanHuan<br>Welcome to my official website. Updating slowly!';
+                isEnglish = true;
+            }
+        }
+    </script>
 </body>
 </html>
