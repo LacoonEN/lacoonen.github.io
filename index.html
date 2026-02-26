@@ -12,34 +12,88 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            min-height: 100vh;
+            /* 強制大於螢幕 1px 以觸發 iOS 上下滑動的 Q 彈回彈效果 */
+            min-height: calc(100vh + 1px); 
             display: flex;
             flex-direction: column;
             align-items: center;
             -webkit-font-smoothing: antialiased;
-            overflow: hidden;
+            overflow-x: hidden; /* 只隱藏水平捲軸，保留垂直滑動 */
         }
 
-        /* --- 導航列 --- */
-        .navbar {
-            width: 100%;
-            padding: 24px 0;
-            display: flex;
-            justify-content: center;
-            gap: 32px;
+        /* --- 左側漢堡選單按鈕 (三條線) --- */
+        .menu-btn {
             position: absolute;
-            top: 0;
-            z-index: 10;
+            top: 24px;
+            left: 20px;
+            z-index: 1001; /* 確保在最上層 */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 10px;
         }
+        
+        .menu-btn div {
+            width: 24px;
+            height: 2px;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        /* 漢堡按鈕展開成 X 的動畫 */
+        .menu-btn.active div:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .menu-btn.active div:nth-child(2) { opacity: 0; }
+        .menu-btn.active div:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+        /* --- 側邊滑出選單 --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -260px; /* 預設隱藏在左外側 */
+            width: 260px;
+            height: 100%;
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            padding-top: 100px;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+            transition: left 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .sidebar.active { left: 0; }
+
         .nav-link {
             color: rgba(255, 255, 255, 0.6);
             text-decoration: none;
-            font-size: 13px;
+            font-size: 16px;
             font-weight: 600;
-            letter-spacing: 1px;
-            transition: color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+            letter-spacing: 2px;
+            padding: 20px 40px;
+            transition: color 0.3s ease, background 0.3s ease;
         }
-        .nav-link:hover { color: #ffffff; }
+        .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* 側邊欄展開時的暗色背景 */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
         /* --- 下拉式語言切換 --- */
         .lang-container {
@@ -65,17 +119,12 @@
             gap: 8px;
             user-select: none;
         }
-
         .lang-selected::after {
             content: '▾';
             font-size: 10px;
             transition: transform 0.3s ease;
         }
-
-        /* 當選單打開時箭頭旋轉 */
-        .lang-container.active .lang-selected::after {
-            transform: rotate(180deg);
-        }
+        .lang-container.active .lang-selected::after { transform: rotate(180deg); }
 
         .lang-dropdown {
             position: absolute;
@@ -93,14 +142,11 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             backdrop-filter: blur(15px);
         }
-
-        /* 透過 JavaScript 加入 active class 來顯示選單 */
         .lang-container.active .lang-dropdown {
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
         }
-
         .lang-option {
             padding: 14px 16px;
             font-size: 12px;
@@ -110,7 +156,6 @@
             text-align: left;
             user-select: none;
         }
-
         .lang-option:hover {
             background: rgba(255, 255, 255, 0.15);
             color: #ffffff;
@@ -127,6 +172,7 @@
             width: 100%;
             padding: 20px;
             box-sizing: border-box;
+            margin-top: 60px; /* 預留上方空間避免擋到選單 */
         }
 
         .big-title {
@@ -139,7 +185,7 @@
         }
 
         .subtitle {
-            font-size: 18px;
+            font-size: 16px;
             color: rgba(255, 255, 255, 0.6);
             max-width: 600px;
             margin-bottom: 48px;
@@ -168,13 +214,9 @@
             box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
         }
 
-        /* --- 內容淡入動畫類 --- */
-        .fade-out { 
-            opacity: 0 !important; 
-            transform: translateY(5px) !important; 
-        }
+        .fade-out { opacity: 0 !important; transform: translateY(5px) !important; }
 
-        /* --- 彈窗樣式 --- */
+        /* --- 彈窗樣式 (已修復邊距) --- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -182,16 +224,24 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             display: flex; justify-content: center; align-items: center;
-            z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+            z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
         .modal-content {
-            background: #111; border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 32px; padding: 40px; width: 85%; max-width: 360px;
-            transform: scale(0.9); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: #111; 
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 28px; 
+            padding: 32px 24px; 
+            box-sizing: border-box; /* 確保 padding 算在寬度內 */
+            width: calc(100% - 48px); /* 兩側各留 24px 空隙，絕不貼邊 */
+            max-width: 340px; /* 電腦上最大寬度限制 */
+            transform: scale(0.9); 
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
         .modal-overlay.active .modal-content { transform: scale(1); }
+        
         .social-link {
             display: block; width: 100%; padding: 16px; margin-bottom: 12px;
             background: rgba(255,255,255,0.05); border-radius: 16px; border: 1px solid transparent;
@@ -207,10 +257,17 @@
 </head>
 <body>
 
-    <nav class="navbar">
+    <div class="menu-btn" id="menuBtn" onclick="toggleMenu()">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
+    <div class="sidebar" id="sidebar">
         <a href="#" class="nav-link" id="navAbout">關於我</a>
-        <a href="#" class="nav-link" id="navProjects">專案作品</a>
-    </nav>
+        <a href="#" class="nav-link" id="navProjects">相簿</a>
+    </div>
 
     <div class="lang-container" id="langContainer">
         <div class="lang-selected" id="currentLangDisplay">🌐 TW</div>
@@ -239,7 +296,7 @@
 
     <div class="modal-overlay" id="socialModal">
         <div class="modal-content">
-            <h2 style="margin-top:0; margin-bottom:24px; text-align:center;" id="modalTitle">我的社群連結</h2>
+            <h2 style="margin-top:0; margin-bottom:24px; text-align:center; font-size:18px;" id="modalTitle">我的社群連結</h2>
             <a href="https://www.facebook.com/share/1CG7dizyQ3/" class="social-link" target="_blank">Facebook</a>
             <a href="https://x.com/furrywolf1118" class="social-link" target="_blank">X (Twitter)</a>
             <a href="https://t.me/LacoonEN" class="social-link" target="_blank">Telegram</a>
@@ -249,28 +306,31 @@
     </div>
 
     <script>
+        // --- 側邊選單邏輯 ---
+        function toggleMenu() {
+            document.getElementById('menuBtn').classList.toggle('active');
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+
         // --- 語言資料庫 ---
         const translations = {
-            TW: { label: "🌐 TW", about: "關於我", projects: "專案作品", sub: "LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>這裡是伊恩浣熊的官方網站 會緩慢更新w", cta: "與我聯繫", modal: "我的社群連結", xhs: "小紅書" },
-            EN: { label: "🌐 EN", about: "ABOUT", projects: "PROJECTS", sub: "LacoonEN | Wolf | HuanHuan<br>Welcome to my official website. Updating slowly!", cta: "CONNECT WITH ME", modal: "MY SOCIAL LINKS", xhs: "RED" },
-            JP: { label: "🌐 JP", about: "私について", projects: "プロジェクト", sub: "ラクーンEN | ウルフ | フアンフアン<br>公式ウェブサイトへようこそ。ゆっくり更新中です！", cta: "コンタクト", modal: "ソーシャル連結", xhs: "小紅書 (RED)" },
-            KR: { label: "🌐 KR", about: "소개", projects: "프로젝트", sub: "라쿤EN | 울프 | 환환<br>공식 웹사이트에 오신 것을 환영합니다. 천천히 업데이트 중입니다!", cta: "연락하기", modal: "소셜 미디어", xhs: "샤오홍슈" }
+            TW: { label: "🌐 TW", about: "關於我", projects: "相簿", sub: "LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>這裡是伊恩浣熊的官方網站 會緩慢更新w", cta: "與我聯繫", modal: "我的社群連結", xhs: "小紅書" },
+            EN: { label: "🌐 EN", about: "ABOUT", projects: "GALLERY", sub: "LacoonEN | Wolf | HuanHuan<br>Welcome to my official website. Updating slowly!", cta: "CONNECT WITH ME", modal: "MY SOCIAL LINKS", xhs: "RED" },
+            JP: { label: "🌐 JP", about: "私について", projects: "アルバム", sub: "ラクーンEN | ウルフ | フアンフアン<br>公式ウェブサイトへようこそ。ゆっくり更新中です！", cta: "コンタクト", modal: "ソーシャル連結", xhs: "小紅書 (RED)" },
+            KR: { label: "🌐 KR", about: "소개", projects: "갤러리", sub: "라쿤EN | 울프 | 환환<br>공식 웹사이트에 오신 것을 환영합니다. 천천히 업데이트 중입니다!", cta: "연락하기", modal: "소셜 미디어", xhs: "샤오홍슈" }
         };
 
-        // --- 下拉選單點擊邏輯 ---
+        // --- 下拉選單邏輯 ---
         const langContainer = document.getElementById('langContainer');
-        
         langContainer.addEventListener('click', function(event) {
-            event.stopPropagation(); // 阻止事件冒泡
-            this.classList.toggle('active'); // 切換展開/收起狀態
+            event.stopPropagation();
+            this.classList.toggle('active');
         });
-
-        // 點擊網頁其他空白處，自動收起語言選單
         document.addEventListener('click', function() {
             langContainer.classList.remove('active');
         });
 
-        // --- 語言切換邏輯 ---
         function changeLang(langCode) {
             const elements = [
                 document.getElementById('navAbout'),
@@ -279,10 +339,8 @@
                 document.getElementById('ctaBtn')
             ];
 
-            // 1. 觸發淡出動畫
             elements.forEach(el => el.classList.add('fade-out'));
             
-            // 2. 等待淡出動畫結束 (300ms) 後替換文字
             setTimeout(() => {
                 const t = translations[langCode];
                 document.getElementById('currentLangDisplay').innerText = t.label;
@@ -293,27 +351,17 @@
                 document.getElementById('modalTitle').innerText = t.modal;
                 document.getElementById('linkXHS').innerText = t.xhs;
 
-                // 3. 移除淡出 class，元素自然淡入
                 elements.forEach(el => el.classList.remove('fade-out'));
             }, 300);
         }
 
         // --- 彈窗邏輯 ---
         const modal = document.getElementById('socialModal');
+        function openModal() { modal.classList.add('active'); }
+        function closeModal() { modal.classList.remove('active'); }
         
-        function openModal() { 
-            modal.classList.add('active'); 
-        }
-        
-        function closeModal() { 
-            modal.classList.remove('active'); 
-        }
-        
-        // 點擊彈窗的「暗色背景區域 (overlay)」就關閉，點擊內部選單不會關閉
         modal.addEventListener('click', function(event) {
-            if (event.target === modal) {
-                closeModal();
-            }
+            if (event.target === modal) closeModal();
         });
     </script>
 </body>
