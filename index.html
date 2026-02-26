@@ -14,12 +14,11 @@
             margin: 0; padding: 0;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
+            /* 移除全站移動端點擊灰框 */
             -webkit-tap-highlight-color: transparent;
-            /* 為了 3D 傾斜效果 */
-            perspective: 1200px;
         }
 
-        /* --- 修正截圖 1 & 3：選單按鈕與點點問題 --- */
+        /* --- 修正截圖 3：選單按鈕 (X 圖示與點點問題) --- */
         .menu-btn {
             position: fixed; top: 24px; left: 24px; z-index: 1001;
             cursor: pointer; display: flex; flex-direction: column; 
@@ -28,14 +27,37 @@
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px; backdrop-filter: blur(15px);
             transition: 0.3s cubic-bezier(0.2, 0, 0, 1);
-            outline: none; user-select: none; -webkit-user-select: none;
+            /* 徹底防止點擊時出現點點或選取框 */
+            outline: none;
+            user-select: none;
+            -webkit-user-select: none;
         }
         .menu-btn div { width: 22px; height: 2px; background-color: #ffffff; transition: 0.3s; border-radius: 2px; pointer-events: none; }
         .menu-btn.active div:nth-child(1) { transform: translateY(8px) rotate(45deg); }
         .menu-btn.active div:nth-child(2) { opacity: 0; }
         .menu-btn.active div:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-        /* --- 修正截圖 2 & 4：語言選單不自然邊緣 --- */
+        .sidebar {
+            position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
+            background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(30px);
+            z-index: 1000; display: flex; flex-direction: column; padding-top: 100px;
+            transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .sidebar.active { left: 0; }
+        .nav-link {
+            color: rgba(255, 255, 255, 0.5); text-decoration: none;
+            font-size: 15px; font-weight: 500; letter-spacing: 2px;
+            padding: 18px 40px; transition: 0.3s;
+            user-select: none;
+        }
+
+        .sidebar-overlay {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6);
+            z-index: 999; opacity: 0; pointer-events: none; transition: 0.5s;
+        }
+        .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+
+        /* --- 修正截圖 1：選單圓角與質感 --- */
         .lang-container { position: fixed; top: 24px; right: 24px; z-index: 1001; user-select: none; }
         .lang-selected {
             background: rgba(255, 255, 255, 0.05); border: none;
@@ -43,24 +65,33 @@
             backdrop-filter: blur(15px); transition: 0.3s; font-size: 13px; font-weight: 600;
         }
         .lang-dropdown {
-            position: absolute; top: 56px; right: 0;
-            background: rgba(20, 20, 20, 0.95); 
-            border: 1px solid rgba(255, 255, 255, 0.1); /* 增加細線條界定邊緣 */
-            border-radius: 16px; width: 150px; opacity: 0; transform: translateY(-10px); 
+            position: absolute; top: 54px; right: 0;
+            background: rgba(30, 30, 30, 0.95); 
+            border-radius: 16px; /* 確保四個角皆對稱 */
+            width: 150px; opacity: 0; transform: translateY(-10px); 
             pointer-events: none; transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-            overflow: hidden; padding: 4px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow: hidden; 
+            padding: 4px 0; /* 增加內距讓頂部選項不會切到圓角 */
         }
         .lang-container.active .lang-dropdown { opacity: 1; transform: translateY(0); pointer-events: auto; }
         .lang-option { padding: 14px 20px; font-size: 13px; color: rgba(255,255,255,0.6); cursor: pointer; transition: 0.3s; }
         .lang-option:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
-        /* --- 傾斜內容外框通用樣式 --- */
-        .tilt-card {
-            transition: transform 0.1s ease-out, box-shadow 0.3s;
-            transform-style: preserve-3d;
-            will-change: transform;
+        .lang-fade-out { opacity: 0.1; filter: blur(4px); transition: 0.3s ease; }
+
+        /* --- 內容區域優化 --- */
+        section {
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            padding: 80px 20px; box-sizing: border-box;
         }
+        .section-title {
+            font-size: clamp(40px, 8vw, 80px); font-weight: 900;
+            text-transform: uppercase; margin-bottom: 40px; letter-spacing: -2px;
+            opacity: 0; transform: translateY(30px); transition: 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .section-title.reveal { opacity: 1; transform: translateY(0); }
 
         .about-card {
             width: 100%; max-width: 900px;
@@ -74,20 +105,19 @@
             .about-card { flex-direction: column; text-align: center; padding: 40px 24px; width: calc(100% - 20px); }
         }
 
-        /* --- 修正與我聯繫按鈕發光 --- */
-        .contact-btn {
-            appearance: none; border: none; cursor: pointer; color: #ffffff;
-            font-size: 14px; font-weight: 700; letter-spacing: 2px;
-            padding: 18px 50px; border-radius: 50px;
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2); 
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .profile-img {
+            width: 160px; height: 160px; border-radius: 50%;
+            background: linear-gradient(45deg, #6366f1, #a855f7);
+            padding: 3px; flex-shrink: 0;
         }
-        .contact-btn:hover {
-            transform: scale(1.05);
-            /* 紫色發光特效 */
-            box-shadow: 0 0 40px 10px rgba(168, 85, 247, 0.5);
-        }
+        .profile-img .inner { width: 100%; height: 100%; border-radius: 50%; background: #111; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        
+        /* --- 修正截圖 2：檔名大小寫匹配 --- */
+        .profile-img img { width: 100%; height: 100%; object-fit: cover; }
+
+        .info-content { flex-grow: 1; width: 100%; }
+        .info-name { font-size: 32px; font-weight: 800; margin-bottom: 8px; color: #fff; }
+        .info-tagline { color: #a855f7; font-weight: 600; letter-spacing: 2px; margin-bottom: 24px; font-size: 14px; }
 
         .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; width: 100%; }
         @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
@@ -96,31 +126,60 @@
             background: rgba(255,255,255,0.04); padding: 18px; border-radius: 18px;
             min-height: 85px; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;
         }
-
-        /* 其他原有樣式... (略) */
-        section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 80px 20px; box-sizing: border-box; }
-        .section-title { font-size: clamp(40px, 8vw, 80px); font-weight: 900; text-transform: uppercase; margin-bottom: 40px; letter-spacing: -2px; opacity: 0; transform: translateY(30px); transition: 1s cubic-bezier(0.16, 1, 0.3, 1); }
-        .section-title.reveal { opacity: 1; transform: translateY(0); }
-        .profile-img { width: 160px; height: 160px; border-radius: 50%; background: linear-gradient(45deg, #6366f1, #a855f7); padding: 3px; flex-shrink: 0; }
-        .profile-img .inner { width: 100%; height: 100%; border-radius: 50%; background: #111; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .profile-img img { width: 100%; height: 100%; object-fit: cover; }
-        .info-content { flex-grow: 1; width: 100%; }
-        .info-name { font-size: 32px; font-weight: 800; margin-bottom: 8px; color: #fff; }
-        .info-tagline { color: #a855f7; font-weight: 600; letter-spacing: 2px; margin-bottom: 24px; font-size: 14px; }
         .info-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
         .info-value { font-size: 14px; color: rgba(255,255,255,0.9); font-weight: 500; line-height: 1.4; }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: 0.4s; padding: 24px; }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { background: #151515; border: 1px solid rgba(255,255,255,0.1); border-radius: 32px; padding: 40px 24px; width: 100%; max-width: 380px; box-sizing: border-box; text-align: center; }
-        .social-link { display: block; width: 100%; padding: 16px; margin-bottom: 12px; background: rgba(255,255,255,0.05); border-radius: 18px; color: #fff; text-decoration: none; transition: 0.3s; box-sizing: border-box; font-weight: 500; }
-        .back-to-top { position: fixed; bottom: 30px; right: 24px; width: 48px; height: 48px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 998; opacity: 0; visibility: hidden; transition: 0.4s; backdrop-filter: blur(10px); }
+
+        .content-area {
+            width: 100%; max-width: 900px; border-radius: 32px;
+            padding: 60px 24px; background: rgba(255, 255, 255, 0.02);
+            box-sizing: border-box;
+        }
+        @media (max-width: 768px) { .content-area { width: calc(100% - 20px); } }
+
+        .contact-btn {
+            appearance: none; border: none; cursor: pointer; color: #ffffff;
+            font-size: 14px; font-weight: 700; letter-spacing: 2px;
+            padding: 18px 50px; border-radius: 50px;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3); transition: 0.3s;
+        }
+
+        .back-to-top {
+            position: fixed; bottom: 30px; right: 24px; width: 48px; height: 48px;
+            background: rgba(255,255,255,0.15); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; z-index: 998; opacity: 0; visibility: hidden; transition: 0.4s;
+            backdrop-filter: blur(10px);
+        }
         .back-to-top.show { opacity: 1; visibility: visible; }
-        .back-to-top::after { content: ''; width: 10px; height: 10px; border-left: 2px solid #fff; border-top: 2px solid #fff; transform: rotate(45deg); margin-top: 5px; }
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(30px); z-index: 1000; display: flex; flex-direction: column; padding-top: 100px; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        .sidebar.active { left: 0; }
-        .nav-link { color: rgba(255, 255, 255, 0.5); text-decoration: none; font-size: 15px; font-weight: 500; letter-spacing: 2px; padding: 18px 40px; transition: 0.3s; }
-        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 999; opacity: 0; pointer-events: none; transition: 0.5s; }
-        .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+        .back-to-top::after {
+            content: ''; width: 10px; height: 10px;
+            border-left: 2px solid #fff; border-top: 2px solid #fff;
+            transform: rotate(45deg); margin-top: 5px;
+        }
+
+        /* --- 彈窗強迫症邊距優化 --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px);
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+            opacity: 0; pointer-events: none; transition: 0.4s;
+            padding: 24px; /* 彈窗外圍間距 */
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: #151515; border: 1px solid rgba(255,255,255,0.1); border-radius: 32px;
+            padding: 40px 24px; width: 100%; 
+            max-width: 380px;
+            box-sizing: border-box; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .social-link {
+            display: block; width: 100%; padding: 16px; margin-bottom: 12px;
+            background: rgba(255,255,255,0.05); border-radius: 18px; color: #fff; text-decoration: none;
+            transition: 0.3s; box-sizing: border-box; font-weight: 500; font-size: 14px;
+        }
+        .social-link:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
         footer { padding: 60px; text-align: center; color: rgba(255,255,255,0.2); font-size: 11px; letter-spacing: 2px; }
     </style>
 </head>
@@ -157,26 +216,34 @@
 
     <section id="about">
         <h2 class="section-title" id="titleAbout">關於我</h2>
-        <div class="about-card tilt-card">
+        <div class="about-card">
             <div class="profile-zone">
                 <div class="profile-img">
-                    <div class="inner"><img src="profile.JPG" alt="Profile"></div>
+                    <div class="inner">
+                        <img src="profile.JPG" alt="Profile">
+                    </div>
                 </div>
             </div>
             <div class="info-content">
                 <div class="info-name" id="infoName">伊恩小浣熊</div>
                 <div class="info-tagline" id="infoTagline">BIM 工程師</div>
                 <div class="info-grid">
-                    <div class="info-item tilt-card"><div class="info-label" id="labelJob">職業</div><div class="info-value" id="valJob">BIM 工程師</div></div>
-                    <div class="info-item tilt-card"><div class="info-label" id="labelEdu">學歷</div><div class="info-value" id="valEdu">國立高雄科技大學（就讀中）</div></div>
-                    <div class="info-item tilt-card"><div class="info-label" id="labelCert">專業證照</div><div class="info-value" id="valCert">二等遊艇駕駛、AIDA 2 自由潛水</div></div>
-                    <div class="info-item tilt-card"><div class="info-label" id="labelHobby">興趣愛好</div><div class="info-value" id="valHobby">攝影、單車、自由潛水、滑雪</div></div>
+                    <div class="info-item"><div class="info-label" id="labelJob">職業</div><div class="info-value" id="valJob">BIM 工程師</div></div>
+                    <div class="info-item"><div class="info-label" id="labelEdu">學歷</div><div class="info-value" id="valEdu">國立高雄科技大學（就讀中）</div></div>
+                    <div class="info-item"><div class="info-label" id="labelCert">專業證照</div><div class="info-value" id="valCert">二等遊艇駕駛、AIDA 2 自由潛水</div></div>
+                    <div class="info-item"><div class="info-label" id="labelHobby">興趣愛好</div><div class="info-value" id="valHobby">攝影、單車、自由潛水、滑雪</div></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="fursona"><h2 class="section-title" id="titleFursona">獸設定介紹</h2></section>
+    <section id="fursona"><h2 class="section-title" id="titleFursona">獸設定介紹</h2><div class="content-area"><p class="m-text">資料維護中...</p></div></section>
+    <section id="events"><h2 class="section-title" id="titleEvents">活動場次</h2><div class="content-area"><p class="m-text">資料維護中...</p></div></section>
+    <section id="album"><h2 class="section-title" id="titleAlbum">日常相簿</h2><div class="content-area"><p class="m-text">資料維護中...</p></div></section>
+    <section id="commissions"><h2 class="section-title" id="titleCommissions">委託作品</h2><div class="content-area"><p class="m-text">資料維護中...</p></div></section>
+
+    <footer>© 2026 LACOONEN PORTFOLIO</footer>
+
     <div class="modal-overlay" id="socialModal">
         <div class="modal-content">
             <h2 style="margin-top:0; margin-bottom:28px; font-size:18px;" id="modalTitle">我的社群連結</h2>
@@ -196,76 +263,56 @@
         window.onbeforeunload = function () { window.scrollTo(0, 0); };
         if (history.scrollRestoration) { history.scrollRestoration = 'manual'; }
 
-        /* --- 電腦版滑鼠傾斜 & 手機版陀螺儀傾斜 --- */
-        const cards = document.querySelectorAll('.tilt-card');
-        const isTouch = 'ontouchstart' in window;
-
-        if (!isTouch) {
-            // 電腦版：滑鼠游標追蹤
-            cards.forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    // 計算傾斜角度（限制在 10 度內）
-                    const rotateX = ((y - centerY) / centerY) * -10;
-                    const rotateY = ((x - centerX) / centerX) * 10;
-                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-                });
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-                });
-            });
-        } else {
-            // 手機版：物理傾斜感應
-            window.addEventListener('deviceorientation', (e) => {
-                const tiltX = e.beta; // 前後傾斜 (-180 ~ 180)
-                const tiltY = e.gamma; // 左右傾斜 (-90 ~ 90)
-                
-                // 將數值映射到合理的轉向區間 (約 15 度以內)
-                const rX = Math.max(Math.min(tiltX / 4, 15), -15);
-                const rY = Math.max(Math.min(tiltY / 4, 15), -15);
-
-                cards.forEach(card => {
-                    card.style.transform = `rotateX(${-rX}deg) rotateY(${rY}deg)`;
-                });
-            });
+        function toggleMenu() {
+            document.getElementById('menuBtn').classList.toggle('active');
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
         }
 
-        /* --- 原有功能函數 --- */
-        function toggleMenu() { document.getElementById('menuBtn').classList.toggle('active'); document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
-        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-        const modal = document.getElementById('socialModal');
-        function openModal() { modal.classList.add('active'); }
-        function closeModal() { modal.classList.remove('active'); }
-        const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('reveal'); }); }, { threshold: 0.1 });
-        document.querySelectorAll('.section-title').forEach(el => observer.observe(el));
-        
-        // 語言切換
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetSec = document.querySelector(link.getAttribute('href'));
+                toggleMenu();
+                setTimeout(() => targetSec.scrollIntoView({ behavior: 'smooth' }), 300);
+            });
+        });
+
         const translations = {
-            TW: { label: "TW", home: "首頁", about: "關於我", fursona: "獸設定介紹", events: "活動場次", album: "日常相簿", commissions: "委託作品", cta: "與我聯繫", modal: "我的社群連結", name: "伊恩小浣熊", tagline: "BIM 工程師", lJob: "職業", vJob: "BIM 工程師", lEdu: "學歷", vEdu: "國立高雄科技大學（就讀中）", lCert: "專業證照", vCert: "二等遊艇駕駛、AIDA 2 自由潛水", lHobby: "興趣愛好", vHobby: "攝影、單車、自由潛水、滑雪" },
-            EN: { label: "EN", home: "HOME", about: "ABOUT ME", fursona: "FURSONA", events: "EVENTS", album: "ALBUM", commissions: "COMMISSIONS", cta: "CONTACT ME", modal: "MY SOCIAL LINKS", name: "LacoonEN", tagline: "BIM Engineer", lJob: "Profession", vJob: "BIM Engineer", lEdu: "Education", vEdu: "NKUST (Studying)", lCert: "License", vCert: "Yacht License, AIDA 2 Freediving", lHobby: "Hobbies", vHobby: "Photo, Cycling, Freediving, Skiing" }
+            TW: { label: "TW", home: "首頁", about: "關於我", fursona: "獸設定介紹", events: "活動場次", album: "日常相簿", commissions: "委託作品", cta: "與我聯繫", modal: "我的社群連結", maintenance: "資料維護中...", name: "伊恩小浣熊", tagline: "BIM 工程師", lJob: "職業", vJob: "BIM 工程師", lEdu: "學歷", vEdu: "國立高雄科技大學（就讀中）", lCert: "專業證照", vCert: "二等遊艇駕駛、AIDA 2 自由潛水", lHobby: "興趣愛好", vHobby: "攝影、單車、自由潛水、滑雪" },
+            EN: { label: "EN", home: "HOME", about: "ABOUT ME", fursona: "FURSONA", events: "EVENTS", album: "ALBUM", commissions: "COMMISSIONS", cta: "CONTACT ME", modal: "MY SOCIAL LINKS", maintenance: "Under Maintenance...", name: "LacoonEN", tagline: "BIM Engineer", lJob: "Profession", vJob: "BIM Engineer", lEdu: "Education", vEdu: "NKUST (Studying)", lCert: "License", vCert: "Yacht License, AIDA 2 Freediving", lHobby: "Hobbies", vHobby: "Photo, Cycling, Freediving, Skiing" }
         };
+
         function changeLang(langCode) {
             const t = translations[langCode];
-            document.body.style.opacity = '0.5';
+            const container = document.body;
+            container.classList.add('lang-fade-out');
             setTimeout(() => {
                 document.getElementById('currentLangDisplay').innerText = t.label;
-                document.getElementById('navHome').innerText = t.home; document.getElementById('navAbout').innerText = t.about; document.getElementById('titleAbout').innerText = t.about;
-                document.getElementById('infoName').innerText = t.name; document.getElementById('infoTagline').innerText = t.tagline;
-                document.getElementById('labelJob').innerText = t.lJob; document.getElementById('valJob').innerText = t.vJob;
-                document.getElementById('labelEdu').innerText = t.lEdu; document.getElementById('valEdu').innerText = t.vEdu;
-                document.getElementById('labelCert').innerText = t.lCert; document.getElementById('valCert').innerText = t.vCert;
-                document.getElementById('labelHobby').innerText = t.lHobby; document.getElementById('valHobby').innerText = t.vHobby;
+                document.getElementById('navHome').innerText = t.home; document.getElementById('navAbout').innerText = t.about; document.getElementById('navFursona').innerText = t.fursona; document.getElementById('navEvents').innerText = t.events; document.getElementById('navAlbum').innerText = t.album; document.getElementById('navCommissions').innerText = t.commissions;
+                document.getElementById('titleAbout').innerText = t.about; document.getElementById('titleFursona').innerText = t.fursona; document.getElementById('titleEvents').innerText = t.events; document.getElementById('titleAlbum').innerText = t.album; document.getElementById('titleCommissions').innerText = t.commissions;
+                document.getElementById('infoName').innerText = t.name; document.getElementById('infoTagline').innerText = t.tagline; document.getElementById('labelJob').innerText = t.lJob; document.getElementById('valJob').innerText = t.vJob; document.getElementById('labelEdu').innerText = t.lEdu; document.getElementById('valEdu').innerText = t.vEdu; document.getElementById('labelCert').innerText = t.lCert; document.getElementById('valCert').innerText = t.vCert; document.getElementById('labelHobby').innerText = t.lHobby; document.getElementById('valHobby').innerText = t.vHobby;
                 document.getElementById('ctaBtn').innerText = t.cta; document.getElementById('modalTitle').innerText = t.modal;
-                document.body.style.opacity = '1';
+                document.querySelectorAll('.m-text').forEach(el => el.innerText = t.maintenance);
+                container.classList.remove('lang-fade-out');
             }, 300);
             document.getElementById('langContainer').classList.remove('active');
         }
-        document.getElementById('langContainer').onclick = (e) => { e.stopPropagation(); e.currentTarget.classList.toggle('active'); };
-        document.addEventListener('click', () => document.getElementById('langContainer').classList.remove('active'));
+
+        const langContainer = document.getElementById('langContainer');
+        langContainer.addEventListener('click', (e) => { e.stopPropagation(); langContainer.classList.toggle('active'); });
+        document.addEventListener('click', () => langContainer.classList.remove('active'));
+
+        const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('reveal'); }); }, { threshold: 0.1 });
+        document.querySelectorAll('.section-title').forEach(el => observer.observe(el));
+
+        window.addEventListener('scroll', () => { const btn = document.getElementById('backToTop'); if (window.pageYOffset > 400) btn.classList.add('show'); else btn.classList.remove('show'); });
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        const modal = document.getElementById('socialModal');
+        function openModal() { modal.classList.add('active'); }
+        function closeModal() { modal.classList.remove('active'); }
+        modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
     </script>
 </body>
 </html>
