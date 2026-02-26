@@ -146,6 +146,48 @@
         }
         .lang-option:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
 
+        /* --- 回到頂端按鈕 --- */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 998;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .back-to-top:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        /* 箭頭圖示 */
+        .back-to-top::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-left: 2px solid #fff;
+            border-top: 2px solid #fff;
+            transform: rotate(45deg);
+            margin-top: 4px;
+        }
+
         /* --- 區塊佈局 --- */
         section {
             min-height: 100vh;
@@ -284,6 +326,8 @@
         <a href="#commissions" class="nav-link" onclick="toggleMenu()" id="navCommissions">委託作品</a>
     </div>
 
+    <div class="back-to-top" id="backToTop" onclick="scrollToTop()"></div>
+
     <section id="home">
         <h1 class="big-title section-title reveal" id="mainTitle">HI, I'M<br>LacoonEN</h1>
         <p style="color:rgba(255,255,255,0.5); margin-bottom:48px; font-weight:300;" id="subtitleText">
@@ -373,7 +417,6 @@
             const t = translations[langCode];
             document.getElementById('currentLangDisplay').innerText = t.label;
             
-            // 更新導覽
             document.getElementById('navHome').innerText = t.home;
             document.getElementById('navAbout').innerText = t.about;
             document.getElementById('navFursona').innerText = t.fursona;
@@ -381,25 +424,38 @@
             document.getElementById('navAlbum').innerText = t.album;
             document.getElementById('navCommissions').innerText = t.commissions;
 
-            // 更新區塊標題
             document.getElementById('titleAbout').innerText = t.about;
             document.getElementById('titleFursona').innerText = t.fursona;
             document.getElementById('titleEvents').innerText = t.events;
             document.getElementById('titleAlbum').innerText = t.album;
             document.getElementById('titleCommissions').innerText = t.commissions;
             
-            // 更新狀態文字
             document.getElementById('subtitleText').innerHTML = t.sub;
             document.getElementById('ctaBtn').innerText = t.cta;
             document.getElementById('modalTitle').innerText = t.modal;
 
-            // 統一更新所有內容區塊的「維護中」文字
             document.querySelectorAll('.m-text').forEach(el => {
                 el.innerText = t.maintenance;
             });
         }
 
-        // --- 捲動進場動畫 ---
+        // --- 捲動進場動畫與回到頂端按鈕控制 ---
+        const backToTopBtn = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            // 控制回到頂端按鈕的顯示
+            if (window.pageYOffset > 400) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- 區塊標題進場動畫偵測 ---
         const observerOptions = { threshold: 0.15 };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
