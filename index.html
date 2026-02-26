@@ -3,253 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>伊恩浣熊 | LacoonEN</title>
+    <title>My Portfolio</title>
     <style>
-        /* --- 基礎與背景：液態光暈特效 --- */
+        /* --- 全局設定 --- */
         body {
-            /* 深色背景加上兩個隱約的漸層光球，用來產生玻璃折射感 */
-            background-color: #0a0a0c;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(45, 60, 100, 0.4), transparent 50%),
-                radial-gradient(circle at 85% 30%, rgba(60, 40, 80, 0.4), transparent 50%);
-            background-attachment: fixed;
+            background-color: #000000; /* 純黑背景 */
             color: #ffffff;
+            /* 使用系統原生的粗體無襯線字，在 iPad 上效果最好 */
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
             margin: 0;
-            padding: 40px 20px;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* 限制整體最大寬度，讓排版像精緻的 App 介面 */
-        .main-container {
-            width: 100%;
-            max-width: 480px;
+            padding: 0;
+            min-height: 100vh; /* 確保佔滿整個螢幕高度 */
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 24px;
+            -webkit-font-smoothing: antialiased; /* 讓字體更銳利 */
         }
 
-        /* --- 去背頭貼專屬設定 --- */
-        .profile-pic {
-            width: 160px;
-            height: auto;
-            max-height: 180px;
-            object-fit: contain;
-            /* 使用 drop-shadow 讓陰影貼合去背邊緣，而不是變成一個方形/圓形陰影 */
-            filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.8));
-            margin-bottom: -10px; /* 讓頭貼稍微往下蓋住一點點自我介紹卡片，產生層次感 */
-            z-index: 10;
-            position: relative;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        /* --- 液態玻璃共用材質 (Glassmorphism) --- */
-        .liquid-glass {
-            background: rgba(255, 255, 255, 0.03); /* 極低透明度 */
-            backdrop-filter: blur(20px) saturate(150%); /* 強烈模糊與色彩增艷，產生液態感 */
-            -webkit-backdrop-filter: blur(20px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            /* 加上微弱的內發光，讓玻璃邊緣更真實 */
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.15);
-            border-radius: 24px;
+        /* --- 頂部導航列 (Navbar) --- */
+        .navbar {
             width: 100%;
-            box-sizing: border-box;
-        }
-
-        /* --- 自我介紹區塊 --- */
-        .intro-card {
-            padding: 28px 24px;
-            text-align: center;
-        }
-        .intro-name {
-            font-size: 24px;
-            font-weight: 700;
-            margin: 0 0 8px 0;
-            letter-spacing: 2px;
-            /* 名字加上微金屬漸層反光 */
-            background: linear-gradient(135deg, #fff 0%, #a5a5a5 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .intro-subtitle {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.6);
-            margin: 0 0 16px 0;
-            letter-spacing: 1px;
-        }
-        .intro-action {
-            font-size: 15px;
-            font-weight: 500;
-            color: #e0e0e0;
-            margin-bottom: 20px;
-        }
-        
-        /* 興趣標籤 (小顆的液態玻璃藥丸) */
-        .tags-container {
+            padding: 24px 0;
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            gap: 8px;
+            gap: 32px; /* 連結之間的間距 */
+            position: absolute; /* 絕對定位固定在上方 */
+            top: 0;
+            z-index: 100;
         }
-        .tag {
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7); /* 稍微透明一點，不要搶主角風采 */
+            text-decoration: none;
             font-size: 12px;
-            padding: 6px 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        /* --- 角色設定區塊 (雙欄排列) --- */
-        .fursona-container {
-            display: flex;
-            gap: 16px;
-            width: 100%;
-        }
-        .fursona-card {
-            flex: 1;
-            padding: 20px 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .fursona-name {
-            font-size: 18px;
             font-weight: 600;
-            margin: 0 0 4px 0;
-            color: #ffffff;
+            text-transform: uppercase; /* 強制全大寫 */
+            letter-spacing: 2px; /* 字元間距加大，增加呼吸感 */
+            transition: color 0.3s ease;
         }
-        .fursona-species {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-            margin: 0 0 16px 0;
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            width: 80%;
-            text-align: center;
-        }
-        .fursona-details {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
-            text-align: left;
-            width: 100%;
-            line-height: 1.8;
-        }
-        .fursona-details span {
-            color: rgba(255, 255, 255, 0.4);
-            margin-right: 4px;
+        .nav-link:hover {
+            color: #ffffff; /* 滑鼠移過去變全白 */
         }
 
-        /* --- 社群連結按鈕區 --- */
-        .links-container {
-            width: 100%;
+        /* --- 主視覺區塊 (Hero Section) --- */
+        .hero-container {
+            flex: 1; /* 佔滿剩餘空間 */
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            margin-top: 8px;
+            justify-content: center; /* 垂直置中 */
+            align-items: center; /* 水平置中 */
+            text-align: center;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            margin-top: 60px; /* 避開上方導航列 */
         }
-        .link-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 18px 20px;
+
+        /* --- 超大標題 (HI, I'M...) --- */
+        .big-title {
+            /* 使用視窗寬度單位 (vw)，讓字體隨螢幕大小自動縮放，保持震撼感 */
+            font-size: 12vw; 
+            font-weight: 900; /* 極粗體 */
+            line-height: 0.9; /* 讓行距非常緊湊 */
+            text-transform: uppercase;
+            margin: 0;
+            /* 讓標題稍微在圖片後面一點點，製造層次感 (可選) */
+            /* z-index: 1; */ 
+        }
+
+        /* --- 你的去背 PNG 照片 --- */
+        .profile-png {
+            width: 70%; /* 手機版預設寬度 */
+            max-width: 400px; /* 電腦版最大寬度 */
+            height: auto;
+            object-fit: contain;
+            /* 利用負邊距，讓照片稍微蓋住一點標題，製造影片中的重疊感 */
+            margin-top: -20px; 
+            margin-bottom: 24px;
+            z-index: 2; /* 確保照片在文字前方 */
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); /* 增加一點點立體陰影 */
+        }
+
+        /* --- 副標題/一句話簡介 --- */
+        .subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 400px;
+            margin-bottom: 40px;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        /* --- 漸層膠囊按鈕 (Contact Me) --- */
+        .contact-btn {
             text-decoration: none;
             color: #ffffff;
-            font-size: 16px;
-            font-weight: 500;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.3s ease;
+            padding: 16px 40px;
+            border-radius: 50px; /* 膠囊形狀 */
+            /* 仿照影片的紫粉色漸層 */
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.4); /* 發光效果 */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        /* 觸控或滑鼠按下的效果 */
+        .contact-btn:active {
+             transform: scale(0.96);
+             box-shadow: 0 2px 8px rgba(106, 17, 203, 0.3);
         }
 
-        /* --- 觸控與滑鼠的智慧判斷 --- */
-        @media (hover: hover) {
-            .link-btn:hover {
-                background: rgba(255, 255, 255, 0.08);
-                border: 1px solid rgba(255, 255, 255, 0.3);
-                transform: translateY(-2px);
-                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3);
-            }
-            .profile-pic:hover {
-                transform: scale(1.08) rotate(2deg); /* 滑鼠游標移到頭貼上會有微微的俏皮放大感 */
-            }
-        }
-        .link-btn:active {
-            background: rgba(255, 255, 255, 0.15);
-            transform: scale(0.96);
-        }
-
-        /* --- 底部版權宣告 --- */
-        .footer {
-            margin-top: 32px;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.3);
-            text-align: center;
-            letter-spacing: 0.5px;
-        }
-
-        /* 針對 iPhone SE 或非常小的螢幕微調 */
-        @media (max-width: 380px) {
-            .fursona-container {
-                flex-direction: column; /* 小螢幕時角色卡片變為上下排列 */
-            }
+        /* --- 針對 iPad 和電腦大螢幕的微調 --- */
+        @media (min-width: 768px) {
+            .navbar { gap: 48px; font-size: 13px; }
+            .big-title { font-size: 8vw; } /* 大螢幕字體比例稍微縮小一點 */
+            .profile-png { margin-top: -40px; } /* 加大重疊範圍 */
+            .subtitle { font-size: 18px; max-width: 500px; }
+            .contact-btn { padding: 18px 48px; font-size: 16px;}
         }
     </style>
 </head>
 <body>
 
-    <div class="main-container">
-        
-        <img src="profile.png" alt="伊恩浣熊" class="profile-pic">
+    <nav class="navbar">
+        <a href="#" class="nav-link">About</a>
+        <a href="#" class="nav-link">Projects</a>
+        <a href="#" class="nav-link">Contact</a>
+    </nav>
 
-        <div class="intro-card liquid-glass">
-            <h1 class="intro-name">伊恩浣熊</h1>
-            <p class="intro-subtitle">高雄人 | 工作 / 讀書</p>
-            <p class="intro-action">✨ 歡迎約吃飯 / 聊天 / 毛拍 ✨</p>
-            <div class="tags-container">
-                <span class="tag">攝影</span>
-                <span class="tag">單車</span>
-                <span class="tag">自由潛水</span>
-                <span class="tag">滑雪 (學習中)</span>
-            </div>
-        </div>
+    <div class="hero-container">
+        <h1 class="big-title">
+            HI, I'M<br>YOUR NAME
+        </h1>
 
-        <div class="fursona-container">
-            <div class="fursona-card liquid-glass">
-                <h2 class="fursona-name">沃爾夫</h2>
-                <p class="fursona-species">柴柴槍手</p>
-                <div class="fursona-details">
-                    <div><span>工作室｜</span>鴻萌造物</div>
-                    <div><span>設計｜</span>冷軌</div>
-                </div>
-            </div>
-            <div class="fursona-card liquid-glass">
-                <h2 class="fursona-name">幻幻</h2>
-                <p class="fursona-species">閃電蜜蜂龍</p>
-                <div class="fursona-details">
-                    <div><span>工作室｜</span>漁屋</div>
-                    <div><span>設計｜</span>冷軌</div>
-                </div>
-            </div>
-        </div>
+        <img src="profile.png" alt="My Profile Image" class="profile-png">
 
-        <div class="links-container">
-            <a href="https://www.facebook.com/share/1CG7dizyQ3/?mibextid=wwXIfr" class="link-btn liquid-glass" target="_blank">Facebook</a>
-            <a href="https://x.com/furrywolf1118?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" class="link-btn liquid-glass" target="_blank">X (Twitter)</a>
-            <a href="https://t.me/LacoonEN" class="link-btn liquid-glass" target="_blank">Telegram</a>
-            <a href="https://xhslink.com/m/2QNs9Daahnb" class="link-btn liquid-glass" target="_blank">小紅書</a>
-            <a href="https://qm.qq.com/q/qZpAr0dOPC" class="link-btn liquid-glass" target="_blank">QQ</a>
-        </div>
+        <p class="subtitle">
+            A passionate creator crafting bold and memorable digital experiences.
+            <br>(這裡可以改成你自己的簡介)
+        </p>
 
-        <div class="footer">
-            Hosting by LacoonEN&nbsp;&nbsp;|&nbsp;&nbsp;Design by LacoonEN
-        </div>
-
+        <a href="mailto:your@email.com" class="contact-btn">
+            Contact Me
+        </a>
     </div>
 
 </body>
