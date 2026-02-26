@@ -59,8 +59,10 @@
             border-radius: 20px;
             cursor: pointer;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             transition: all 0.3s ease;
-            z-index: 101; /* 確保在最上層 */
+            z-index: 101; 
+            min-width: 60px; /* 給予按鈕固定最小寬度，切換時才不會忽大忽小 */
         }
         .lang-switch:hover, .lang-switch:active {
             background: rgba(255, 255, 255, 0.2);
@@ -145,14 +147,11 @@
             justify-content: center;
             align-items: center;
             z-index: 999;
-            
-            /* 動畫預設隱藏狀態 */
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease;
         }
 
-        /* 當加入 .active 類別時顯示 */
         .modal-overlay.active {
             opacity: 1;
             pointer-events: auto;
@@ -167,8 +166,6 @@
             max-width: 360px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            
-            /* 內容的彈出動畫 */
             transform: translateY(30px) scale(0.95);
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -200,7 +197,6 @@
             color: #fff;
         }
 
-        /* 彈出視窗內的連結按鈕 */
         .social-link {
             display: block;
             width: 100%;
@@ -243,11 +239,11 @@
 <body>
 
     <nav class="navbar">
-        <a href="#" class="nav-link">About</a>
-        <a href="#" class="nav-link">Projects</a>
+        <a href="#" class="nav-link" id="navAbout">關於我</a>
+        <a href="#" class="nav-link" id="navProjects">專案作品</a>
     </nav>
 
-    <button class="lang-switch" id="langBtn" onclick="toggleLanguage()">EN / TW</button>
+    <button class="lang-switch" id="langBtn" onclick="toggleLanguage()">🌐 TW</button>
 
     <div class="hero-container">
         <h1 class="big-title">
@@ -261,20 +257,20 @@
             <br>這裡是伊恩浣熊的官方網站 會緩慢更新w
         </p>
 
-        <button class="contact-btn" onclick="openModal()">
-            Connect With Me
+        <button class="contact-btn" id="ctaBtn" onclick="openModal()">
+            與我聯繫
         </button>
     </div>
 
     <div class="modal-overlay" id="socialModal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal()">×</button>
-            <h2 class="modal-title">My Social Links</h2>
+            <h2 class="modal-title" id="modalTitle">我的社群連結</h2>
             
             <a href="https://www.facebook.com/share/1CG7dizyQ3/?mibextid=wwXIfr" class="social-link" target="_blank">Facebook</a>
             <a href="https://x.com/furrywolf1118?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" class="social-link" target="_blank">X (Twitter)</a>
             <a href="https://t.me/LacoonEN" class="social-link" target="_blank">Telegram</a>
-            <a href="https://xhslink.com/m/2QNs9Daahnb" class="social-link" target="_blank">小紅書</a>
+            <a href="https://xhslink.com/m/2QNs9Daahnb" class="social-link" id="linkXHS" target="_blank">小紅書</a>
             <a href="https://qm.qq.com/q/qZpAr0dOPC" class="social-link" target="_blank">QQ</a>
         </div>
     </div>
@@ -282,39 +278,71 @@
     <script>
         // --- 彈出視窗控制 ---
         const modal = document.getElementById('socialModal');
-
-        function openModal() {
-            modal.classList.add('active');
-        }
-
-        function closeModal() {
-            modal.classList.remove('active');
-        }
-
-        // 點擊視窗外圍也能關閉
+        function openModal() { modal.classList.add('active'); }
+        function closeModal() { modal.classList.remove('active'); }
         modal.addEventListener('click', function(event) {
-            if (event.target === modal) {
-                closeModal();
-            }
+            if (event.target === modal) closeModal();
         });
 
-        // --- 簡易語言切換功能 (示意) ---
-        let isEnglish = false;
-        function toggleLanguage() {
-            const btn = document.getElementById('langBtn');
-            const subtitle = document.getElementById('subtitleText');
-            
-            if (isEnglish) {
-                // 切換回中文
-                btn.innerText = 'EN / TW';
-                subtitle.innerHTML = 'LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>這裡是伊恩浣熊的官方網站 會緩慢更新w';
-                isEnglish = false;
-            } else {
-                // 切換為英文
-                btn.innerText = 'TW / EN';
-                subtitle.innerHTML = 'LacoonEN | Wolf | HuanHuan<br>Welcome to my official website. Updating slowly!';
-                isEnglish = true;
+        // --- 多國語言資料庫 (Dictionary) ---
+        const translations = {
+            TW: {
+                langBtn: "🌐 TW",
+                navAbout: "關於我",
+                navProjects: "專案作品",
+                subtitle: "LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>這裡是伊恩浣熊的官方網站 會緩慢更新w",
+                ctaBtn: "與我聯繫",
+                modalTitle: "我的社群連結",
+                linkXHS: "小紅書"
+            },
+            EN: {
+                langBtn: "🌐 EN",
+                navAbout: "ABOUT",
+                navProjects: "PROJECTS",
+                subtitle: "LacoonEN | Wolf | HuanHuan<br>Welcome to my official website. Updating slowly!",
+                ctaBtn: "CONNECT WITH ME",
+                modalTitle: "MY SOCIAL LINKS",
+                linkXHS: "RED (Xiaohongshu)"
+            },
+            JP: {
+                langBtn: "🌐 JP",
+                navAbout: "私について",
+                navProjects: "プロジェクト",
+                subtitle: "ラクーンEN | ウルフ | フアンフアン<br>公式ウェブサイトへようこそ。ゆっくり更新中です！",
+                ctaBtn: "コンタクト",
+                modalTitle: "ソーシャルリンク",
+                linkXHS: "小紅書 (RED)"
+            },
+            KR: {
+                langBtn: "🌐 KR",
+                navAbout: "소개",
+                navProjects: "프로젝트",
+                subtitle: "라쿤EN | 울프 | 환환<br>공식 웹사이트에 오신 것을 환영합니다. 천천히 업데이트 중입니다!",
+                ctaBtn: "연락하기",
+                modalTitle: "소셜 미디어",
+                linkXHS: "샤오홍슈 (RED)"
             }
+        };
+
+        // 語言切換順序
+        const langOrder = ['TW', 'EN', 'JP', 'KR'];
+        let currentLangIndex = 0; // 預設 0 = TW
+
+        // 執行切換的函數
+        function toggleLanguage() {
+            // 切換到下一個語言 (如果到底了就回到第一個)
+            currentLangIndex = (currentLangIndex + 1) % langOrder.length;
+            const newLang = langOrder[currentLangIndex];
+            const t = translations[newLang];
+
+            // 更新網頁上的文字
+            document.getElementById('langBtn').innerText = t.langBtn;
+            document.getElementById('navAbout').innerText = t.navAbout;
+            document.getElementById('navProjects').innerText = t.navProjects;
+            document.getElementById('subtitleText').innerHTML = t.subtitle;
+            document.getElementById('ctaBtn').innerText = t.ctaBtn;
+            document.getElementById('modalTitle').innerText = t.modalTitle;
+            document.getElementById('linkXHS').innerText = t.linkXHS;
         }
     </script>
 </body>
