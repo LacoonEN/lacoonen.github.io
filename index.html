@@ -7,7 +7,7 @@
     <style>
         /* --- 全局設定 --- */
         html {
-            scroll-behavior: smooth; /* 平滑捲動核心 */
+            scroll-behavior: smooth;
         }
         body {
             background-color: #000000;
@@ -21,7 +21,7 @@
 
         /* --- 左側漢堡選單按鈕 --- */
         .menu-btn {
-            position: fixed; /* 固定在螢幕，捲動時不會消失 */
+            position: fixed;
             top: 24px;
             left: 24px;
             z-index: 1001;
@@ -158,12 +158,11 @@
             box-sizing: border-box;
         }
 
-        /* 標題動畫特效 */
         .section-title {
             font-size: clamp(44px, 10vw, 90px);
             font-weight: 900;
             text-transform: uppercase;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             letter-spacing: -2px;
             opacity: 0;
             transform: translateY(40px);
@@ -177,7 +176,7 @@
         .content-area {
             width: 100%;
             max-width: 900px;
-            min-height: 300px;
+            min-height: 200px;
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 32px;
@@ -187,18 +186,17 @@
             line-height: 1.8;
         }
 
-        /* 首頁 Hero 標題 */
         #home .big-title {
             font-size: clamp(50px, 14vw, 130px);
             line-height: 1.1;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
 
         /* --- 按鈕樣式 --- */
         .contact-btn {
             appearance: none; border: none; cursor: pointer; color: #ffffff;
             font-size: 14px; font-weight: 700; letter-spacing: 2px;
-            padding: 20px 52px; border-radius: 50px;
+            padding: 18px 50px; border-radius: 50px;
             background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
             box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
             transition: 0.3s;
@@ -211,7 +209,7 @@
         /* --- 校正後的彈窗 (Modal) --- */
         .modal-overlay {
             position: fixed;
-            inset: 0; /* 確保全螢幕覆蓋 */
+            inset: 0;
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
@@ -222,7 +220,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease;
-            padding: 20px;
+            padding: 24px;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
@@ -230,7 +228,7 @@
             background: rgba(25, 25, 25, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 32px;
-            padding: 32px 24px;
+            padding: 36px 28px;
             width: 100%;
             max-width: 360px;
             transform: translateY(20px) scale(0.95);
@@ -284,7 +282,7 @@
     <section id="home">
         <h1 class="big-title section-title reveal" id="mainTitle">HI, I'M<br>LacoonEN</h1>
         <p style="color:rgba(255,255,255,0.5); margin-bottom:48px; font-weight:300;" id="subtitleText">
-            LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>網站施工中🚧
+            網站施工中 🚧
         </p>
         <button class="contact-btn" id="ctaBtn" onclick="openModal()">與我聯繫</button>
     </section>
@@ -292,7 +290,7 @@
     <section id="about">
         <h2 class="section-title" id="titleAbout">關於我</h2>
         <div class="content-area">
-            <p>內容建設中，敬請期待...</p>
+            <p>內容建設中...</p>
         </div>
     </section>
 
@@ -335,7 +333,7 @@
                 <a href="https://www.facebook.com/share/1CG7dizyQ3/" class="social-link" target="_blank">Facebook</a>
                 <a href="https://x.com/furrywolf1118" class="social-link" target="_blank">X (Twitter)</a>
                 <a href="https://t.me/LacoonEN" class="social-link" target="_blank">Telegram</a>
-                <a href="https://xhslink.com/m/2QNs9Daahnb" class="social-link" id="linkXHS" target="_blank">小紅書</a>
+                <a href="https://xhslink.com/m/2QNs9Daahnb" class="social-link" target="_blank">小紅書</a>
                 <a href="https://qm.qq.com/q/qZpAr0dOPC" class="social-link" target="_blank">QQ</a>
             </div>
             <p onclick="closeModal()" style="margin-top:24px; font-size:12px; color:rgba(255,255,255,0.3); cursor:pointer; letter-spacing:2px;">CLOSE</p>
@@ -358,19 +356,18 @@
         });
         document.addEventListener('click', () => langContainer.classList.remove('active'));
 
-        // --- 語言資料庫 ---
+        // --- 語言資料庫 (同步移除副標題名稱) ---
         const translations = {
-            TW: { label: "TW", home: "首頁", about: "關於我", fursona: "獸設定介紹", events: "活動場次", album: "日常相簿", commissions: "委託作品", cta: "與我聯繫", modal: "我的社群連結", sub: "LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>網站施工中🚧" },
-            EN: { label: "EN", home: "HOME", about: "ABOUT ME", fursona: "FURSONA", events: "EVENTS", album: "ALBUM", commissions: "COMMISSIONS", cta: "CONNECT", modal: "MY SOCIAL LINKS", sub: "LacoonEN | Wolf | HuanHuan<br>Website under construction 🚧" },
-            JP: { label: "JP", home: "ホーム", about: "私について", fursona: "獣設定", events: "イベント", album: "アルバム", commissions: "依頼作品", cta: "コンタクト", modal: "ソーシャルリンク", sub: "LacoonEN 伊恩浣熊 | Wolf | HuanHuan<br>ウェブサイト構築中 🚧" },
-            KR: { label: "KR", home: "홈", about: "소개", fursona: "캐릭터 설정", events: "이벤트", album: "앨범", commissions: "의뢰 작품", cta: "연락하기", modal: "소셜 미디어", sub: "LacoonEN 伊恩浣熊 | Wolf | HuanHuan<br>웹사이트 공사 중입니다 🚧" }
+            TW: { label: "TW", home: "首頁", about: "關於我", fursona: "獸設定介紹", events: "活動場次", album: "日常相簿", commissions: "委託作品", cta: "與我聯繫", modal: "我的社群連結", sub: "網站施工中 🚧" },
+            EN: { label: "EN", home: "HOME", about: "ABOUT ME", fursona: "FURSONA", events: "EVENTS", album: "ALBUM", commissions: "COMMISSIONS", cta: "CONNECT", modal: "MY SOCIAL LINKS", sub: "Website under construction 🚧" },
+            JP: { label: "JP", home: "ホーム", about: "私について", fursona: "獣設定", events: "イベント", album: "アルバム", commissions: "依頼作品", cta: "コンタクト", modal: "ソーシャルリンク", sub: "ウェブサイト構築中 🚧" },
+            KR: { label: "KR", home: "홈", about: "소개", fursona: "캐릭터 설정", events: "이벤트", album: "앨범", commissions: "의뢰 작품", cta: "연락하기", modal: "소셜 미디어", sub: "웹사이트 공사 중입니다 🚧" }
         };
 
         function changeLang(langCode) {
             const t = translations[langCode];
             document.getElementById('currentLangDisplay').innerText = t.label;
             
-            // 更新導覽文字
             document.getElementById('navHome').innerText = t.home;
             document.getElementById('navAbout').innerText = t.about;
             document.getElementById('navFursona').innerText = t.fursona;
@@ -378,20 +375,18 @@
             document.getElementById('navAlbum').innerText = t.album;
             document.getElementById('navCommissions').innerText = t.commissions;
 
-            // 更新區塊標題
             document.getElementById('titleAbout').innerText = t.about;
             document.getElementById('titleFursona').innerText = t.fursona;
             document.getElementById('titleEvents').innerText = t.events;
             document.getElementById('titleAlbum').innerText = t.album;
             document.getElementById('titleCommissions').innerText = t.commissions;
             
-            // 更新首頁內容
             document.getElementById('subtitleText').innerHTML = t.sub;
             document.getElementById('ctaBtn').innerText = t.cta;
             document.getElementById('modalTitle').innerText = t.modal;
         }
 
-        // --- 捲動進場動畫偵測 (Intersection Observer) ---
+        // --- 捲動進場動畫偵測 ---
         const observerOptions = { threshold: 0.15 };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
