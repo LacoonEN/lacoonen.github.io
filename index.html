@@ -17,7 +17,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- 修正截圖 1 & 3：固定選單按鈕 --- */
+        /* --- 固定選單按鈕 --- */
         .menu-btn {
             position: fixed; top: 24px; left: 24px; z-index: 9999; 
             cursor: pointer; display: flex; flex-direction: column; 
@@ -30,11 +30,10 @@
         }
         .menu-btn div { width: 22px; height: 2px; background-color: #ffffff; transition: 0.3s; border-radius: 2px; pointer-events: none; }
         .menu-btn.active div:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-        /* 【修正點 1】加入 transform: scaleX(0); 徹底消除兩個小白點殘影 */
         .menu-btn.active div:nth-child(2) { opacity: 0; transform: scaleX(0); }
         .menu-btn.active div:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-        /* --- 修正截圖 2 & 4：固定語言選單 --- */
+        /* --- 固定語言選單 --- */
         .lang-container { position: fixed; top: 24px; right: 24px; z-index: 9999; user-select: none; }
         .lang-selected {
             background: rgba(255, 255, 255, 0.05); border: none;
@@ -48,7 +47,6 @@
             border-radius: 16px; width: 150px; opacity: 0; transform: translateY(-10px); 
             pointer-events: none; transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-            /* 【修正點 2】將 padding 改為 0，消除選項上下不自然的反白死角 */
             overflow: hidden; padding: 0; 
         }
         .lang-container.active .lang-dropdown { opacity: 1; transform: translateY(0); pointer-events: auto; }
@@ -98,8 +96,20 @@
         }
 
         section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 80px 20px; box-sizing: border-box; }
+        
         .section-title { font-size: clamp(40px, 8vw, 80px); font-weight: 900; text-transform: uppercase; margin-bottom: 40px; letter-spacing: -2px; opacity: 0; transform: translateY(30px); transition: 1s cubic-bezier(0.16, 1, 0.3, 1); }
         .section-title.reveal { opacity: 1; transform: translateY(0); }
+        
+        /* 首頁新增的副標題動畫與樣式 */
+        .home-subtitle {
+            font-size: clamp(14px, 4vw, 20px); font-weight: 600; 
+            color: rgba(255, 255, 255, 0.7); letter-spacing: 3px; 
+            margin-bottom: 48px; /* 取代原本的空白 div */
+            opacity: 0; transform: translateY(30px); 
+            transition: 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s; /* 稍微延遲出現，增加層次感 */
+        }
+        .home-subtitle.reveal { opacity: 1; transform: translateY(0); }
+
         .profile-img { width: 160px; height: 160px; border-radius: 50%; background: linear-gradient(45deg, #6366f1, #a855f7); padding: 3px; flex-shrink: 0; }
         .profile-img .inner { width: 100%; height: 100%; border-radius: 50%; background: #111; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .profile-img img { width: 100%; height: 100%; object-fit: cover; }
@@ -131,7 +141,6 @@
             font-weight: 500; letter-spacing: 2px; padding: 18px 40px; 
             transition: 0.3s cubic-bezier(0.2, 0, 0, 1); position: relative; display: block;
         }
-        /* 懸停動畫：文字向右滑，左側紫條出現 */
         .nav-link:hover { 
             color: #ffffff; padding-left: 55px; background: rgba(255, 255, 255, 0.05); 
         }
@@ -171,8 +180,10 @@
     <div class="back-to-top" id="backToTop" onclick="scrollToTop()"></div>
 
     <section id="home">
-        <h1 class="section-title reveal" style="font-size: clamp(50px, 12vw, 120px); line-height: 1;">HI, I'M<br>LacoonEN</h1>
-        <div style="height: 48px;"></div>
+        <h1 class="section-title reveal" style="font-size: clamp(50px, 12vw, 120px); line-height: 1; margin-bottom: 24px;">HI, I'M<br>LacoonEN</h1>
+        
+        <div class="home-subtitle" id="homeSubtitle">伊恩浣熊 X 沃爾夫 X 幻幻</div>
+        
         <button class="contact-btn" id="ctaBtn" onclick="openModal()">與我聯繫</button>
     </section>
 
@@ -240,7 +251,6 @@
 
         // 選單開關
         function toggleMenu() { 
-            // 【修正點 4】打開左側選單時，確保右側語言選單是關閉的
             document.getElementById('langContainer').classList.remove('active');
 
             document.getElementById('menuBtn').classList.toggle('active'); 
@@ -269,9 +279,9 @@
         function closeModal() { modal.classList.remove('active'); }
         modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-        // 標題出現動畫
+        // 標題出現動畫 (加入 homeSubtitle 一起偵測)
         const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('reveal'); }); }, { threshold: 0.1 });
-        document.querySelectorAll('.section-title').forEach(el => observer.observe(el));
+        document.querySelectorAll('.section-title, .home-subtitle').forEach(el => observer.observe(el));
         
         // 回到頂部按鈕顯示
         window.addEventListener('scroll', () => { 
@@ -281,22 +291,30 @@
 
         // 語言切換功能
         const translations = {
-            TW: { label: "TW", home: "首頁", about: "關於我", fursona: "獸設定介紹", events: "活動場次", album: "日常相簿", commissions: "委託作品", cta: "與我聯繫", modal: "我的社群連結", maintenance: "資料維護中...", name: "伊恩小浣熊", tagline: "BIM 工程師", lJob: "職業", vJob: "BIM 工程師", lEdu: "學歷", vEdu: "國立高雄科技大學（就讀中）", lCert: "專業證照", vCert: "二等遊艇駕駛、AIDA 2 自由潛水", lHobby: "興趣愛好", vHobby: "攝影、單車、自由潛水、滑雪" },
-            EN: { label: "EN", home: "HOME", about: "ABOUT ME", fursona: "FURSONA", events: "EVENTS", album: "ALBUM", commissions: "COMMISSIONS", cta: "CONTACT ME", modal: "MY SOCIAL LINKS", maintenance: "Under Maintenance...", name: "LacoonEN", tagline: "BIM Engineer", lJob: "Profession", vJob: "BIM Engineer", lEdu: "Education", vEdu: "NKUST (Studying)", lCert: "License", vCert: "Yacht License, AIDA 2 Freediving", lHobby: "Hobbies", vHobby: "Photo, Cycling, Freediving, Skiing" }
+            TW: { 
+                label: "TW", 
+                homeSubtitle: "伊恩浣熊 X 沃爾夫 X 幻幻", // 新增這裡
+                home: "首頁", about: "關於我", fursona: "獸設定介紹", events: "活動場次", album: "日常相簿", commissions: "委託作品", cta: "與我聯繫", modal: "我的社群連結", maintenance: "資料維護中...", name: "伊恩小浣熊", tagline: "BIM 工程師", lJob: "職業", vJob: "BIM 工程師", lEdu: "學歷", vEdu: "國立高雄科技大學（就讀中）", lCert: "專業證照", vCert: "二等遊艇駕駛、AIDA 2 自由潛水", lHobby: "興趣愛好", vHobby: "攝影、單車、自由潛水、滑雪" 
+            },
+            EN: { 
+                label: "EN", 
+                homeSubtitle: "LacoonEN X Wolf X HuanHuan", // 新增這裡
+                home: "HOME", about: "ABOUT ME", fursona: "FURSONA", events: "EVENTS", album: "ALBUM", commissions: "COMMISSIONS", cta: "CONTACT ME", modal: "MY SOCIAL LINKS", maintenance: "Under Maintenance...", name: "LacoonEN", tagline: "BIM Engineer", lJob: "Profession", vJob: "BIM Engineer", lEdu: "Education", vEdu: "NKUST (Studying)", lCert: "License", vCert: "Yacht License, AIDA 2 Freediving", lHobby: "Hobbies", vHobby: "Photo, Cycling, Freediving, Skiing" 
+            }
         };
 
-        // 【修正點 3】接收 event 並停止事件冒泡
         function changeLang(event, langCode) {
-            event.stopPropagation(); // 阻止冒泡，避免觸發父元素的展開事件
-
+            event.stopPropagation(); 
             const t = translations[langCode];
             
-            // 立即收起語言選單
             document.getElementById('langContainer').classList.remove('active');
             
             document.body.style.opacity = '0.5';
             setTimeout(() => {
                 document.getElementById('currentLangDisplay').innerText = t.label;
+                
+                // 更新首頁副標題
+                document.getElementById('homeSubtitle').innerText = t.homeSubtitle;
                 
                 // 更新選單
                 document.getElementById('navHome').innerText = t.home; document.getElementById('navAbout').innerText = t.about; document.getElementById('navFursona').innerText = t.fursona; document.getElementById('navEvents').innerText = t.events; document.getElementById('navAlbum').innerText = t.album; document.getElementById('navCommissions').innerText = t.commissions;
@@ -322,14 +340,11 @@
         // 點擊語言按鈕顯示/隱藏選單
         document.getElementById('langContainer').onclick = (e) => { 
             e.stopPropagation(); 
-
-            // 【修正點 4】如果左側選單是開著的，先把它關閉
             if (document.getElementById('sidebar').classList.contains('active')) {
                 document.getElementById('menuBtn').classList.remove('active'); 
                 document.getElementById('sidebar').classList.remove('active'); 
                 document.getElementById('sidebarOverlay').classList.remove('active'); 
             }
-
             e.currentTarget.classList.toggle('active'); 
         };
         
