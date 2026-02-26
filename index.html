@@ -17,10 +17,10 @@
             flex-direction: column;
             align-items: center;
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
-        /* --- 頂部導航列 --- */
+        /* --- 導航列 --- */
         .navbar {
             width: 100%;
             padding: 24px 0;
@@ -29,47 +29,89 @@
             gap: 32px;
             position: absolute;
             top: 0;
-            z-index: 100;
+            z-index: 10;
         }
         .nav-link {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.6);
             text-decoration: none;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             transition: color 0.3s ease;
         }
-        .nav-link:hover {
-            color: #ffffff;
-        }
+        .nav-link:hover { color: #ffffff; }
 
-        /* --- 右上角語言切換按鈕 --- */
-        .lang-switch {
+        /* --- 下拉式語言切換 --- */
+        .lang-container {
             position: absolute;
             top: 20px;
             right: 20px;
+            z-index: 101;
+        }
+
+        .lang-selected {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #ffffff;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
-            letter-spacing: 1px;
-            padding: 8px 12px;
+            padding: 10px 18px;
             border-radius: 20px;
             cursor: pointer;
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             transition: all 0.3s ease;
-            z-index: 101; 
-            min-width: 60px; /* 給予按鈕固定最小寬度，切換時才不會忽大忽小 */
-        }
-        .lang-switch:hover, .lang-switch:active {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(0.95);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* --- 主視覺區塊 --- */
+        .lang-selected::after {
+            content: '▾';
+            font-size: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .lang-container:hover .lang-selected::after {
+            transform: rotate(180deg);
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: 110%;
+            right: 0;
+            background: rgba(30, 30, 30, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            width: 120px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .lang-container:hover .lang-dropdown {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .lang-option {
+            padding: 12px 16px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .lang-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        /* --- 主視覺區塊 (移除圖片後調整) --- */
         .hero-container {
             flex: 1;
             display: flex;
@@ -80,39 +122,29 @@
             width: 100%;
             padding: 20px;
             box-sizing: border-box;
-            margin-top: 60px;
         }
 
         .big-title {
-            font-size: 12vw; 
+            font-size: clamp(48px, 12vw, 120px);
             font-weight: 900;
-            line-height: 0.9;
+            line-height: 1;
             text-transform: uppercase;
-            margin: 0;
+            margin: 0 0 20px 0;
             letter-spacing: -2px;
-        }
-
-        .profile-png {
-            width: 70%;
-            max-width: 400px;
-            height: auto;
-            object-fit: contain;
-            margin-top: -20px; 
-            margin-bottom: 24px;
-            z-index: 2;
-            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.8));
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         .subtitle {
-            font-size: 16px;
-            color: rgba(255, 255, 255, 0.7);
-            max-width: 400px;
-            margin-bottom: 40px;
-            line-height: 1.6;
-            font-weight: 400;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 600px;
+            margin-bottom: 48px;
+            line-height: 1.8;
+            font-weight: 300;
+            transition: opacity 0.4s ease;
         }
 
-        /* --- 漸層膠囊按鈕 --- */
+        /* --- 按鈕 --- */
         .contact-btn {
             appearance: none;
             border: none;
@@ -120,120 +152,45 @@
             color: #ffffff;
             font-size: 14px;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 16px 40px;
+            letter-spacing: 2px;
+            padding: 18px 48px;
             border-radius: 50px;
-            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
-            box-shadow: 0 4px 20px rgba(106, 17, 203, 0.4);
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .contact-btn:active {
-             transform: scale(0.95);
-             box-shadow: 0 2px 10px rgba(106, 17, 203, 0.3);
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
         }
 
-        /* --- 彈出式社群選單 (Modal) --- */
+        /* --- 內容淡入動畫類 --- */
+        .fade-out { opacity: 0; transform: translateY(5px); }
+
+        /* --- 彈窗樣式 (保留並微調) --- */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
         }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content {
-            background: rgba(25, 25, 25, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 28px;
-            padding: 32px 24px;
-            width: 85%;
-            max-width: 360px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            transform: translateY(30px) scale(0.95);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: #111; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 32px; padding: 40px; width: 90%; max-width: 380px;
+            transform: scale(0.9); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
-        .modal-overlay.active .modal-content {
-            transform: translateY(0) scale(1);
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-top: 0;
-            margin-bottom: 24px;
-            letter-spacing: 1px;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 24px;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .close-btn:active, .close-btn:hover {
-            color: #fff;
-        }
-
+        .modal-overlay.active .modal-content { transform: scale(1); }
         .social-link {
-            display: block;
-            width: 100%;
-            padding: 16px 0;
-            margin-bottom: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            box-sizing: border-box;
+            display: block; width: 100%; padding: 16px; margin-bottom: 12px;
+            background: rgba(255,255,255,0.05); border-radius: 16px;
+            color: #fff; text-decoration: none; font-weight: 500; transition: 0.3s;
+            box-sizing: border-box; text-align: center;
         }
-        
-        @media (hover: hover) {
-            .social-link:hover {
-                background: rgba(255, 255, 255, 0.15);
-                border: 1px solid rgba(255, 255, 255, 0.3);
-                transform: translateY(-2px);
-            }
-        }
-        .social-link:active {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(0.98);
-        }
-
-        /* --- 響應式微調 --- */
-        @media (min-width: 768px) {
-            .navbar { gap: 48px; font-size: 13px; }
-            .big-title { font-size: 8vw; }
-            .profile-png { margin-top: -40px; }
-            .subtitle { font-size: 18px; max-width: 500px; }
-            .lang-switch { top: 24px; right: 40px; padding: 10px 16px; font-size: 12px; }
-        }
+        .social-link:hover { background: rgba(255,255,255,0.12); }
     </style>
 </head>
 <body>
@@ -243,14 +200,20 @@
         <a href="#" class="nav-link" id="navProjects">專案作品</a>
     </nav>
 
-    <button class="lang-switch" id="langBtn" onclick="toggleLanguage()">🌐 TW</button>
+    <div class="lang-container">
+        <div class="lang-selected" id="currentLangDisplay">🌐 TW</div>
+        <div class="lang-dropdown">
+            <div class="lang-option" onclick="changeLang('TW')">繁體中文 (TW)</div>
+            <div class="lang-option" onclick="changeLang('EN')">English (EN)</div>
+            <div class="lang-option" onclick="changeLang('JP')">日本語 (JP)</div>
+            <div class="lang-option" onclick="changeLang('KR')">한국어 (KR)</div>
+        </div>
+    </div>
 
     <div class="hero-container">
-        <h1 class="big-title">
+        <h1 class="big-title" id="mainTitle">
             HI, I'M<br>LacoonEN
         </h1>
-
-        <img src="profile.png" alt="My Profile Image" class="profile-png">
 
         <p class="subtitle" id="subtitleText">
             LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻
@@ -264,86 +227,57 @@
 
     <div class="modal-overlay" id="socialModal">
         <div class="modal-content">
-            <button class="close-btn" onclick="closeModal()">×</button>
-            <h2 class="modal-title" id="modalTitle">我的社群連結</h2>
-            
-            <a href="https://www.facebook.com/share/1CG7dizyQ3/?mibextid=wwXIfr" class="social-link" target="_blank">Facebook</a>
-            <a href="https://x.com/furrywolf1118?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" class="social-link" target="_blank">X (Twitter)</a>
+            <h2 style="margin-top:0; margin-bottom:24px;" id="modalTitle">我的社群連結</h2>
+            <a href="https://www.facebook.com/share/1CG7dizyQ3/" class="social-link" target="_blank">Facebook</a>
+            <a href="https://x.com/furrywolf1118" class="social-link" target="_blank">X (Twitter)</a>
             <a href="https://t.me/LacoonEN" class="social-link" target="_blank">Telegram</a>
             <a href="https://xhslink.com/m/2QNs9Daahnb" class="social-link" id="linkXHS" target="_blank">小紅書</a>
             <a href="https://qm.qq.com/q/qZpAr0dOPC" class="social-link" target="_blank">QQ</a>
+            <button onclick="closeModal()" style="background:none; border:none; color:#666; cursor:pointer; margin-top:10px;">關閉</button>
         </div>
     </div>
 
     <script>
-        // --- 彈出視窗控制 ---
+        const translations = {
+            TW: { label: "🌐 TW", about: "關於我", projects: "專案作品", sub: "LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>這裡是伊恩浣熊的官方網站 會緩慢更新w", cta: "與我聯繫", modal: "我的社群連結", xhs: "小紅書" },
+            EN: { label: "🌐 EN", about: "ABOUT", projects: "PROJECTS", sub: "LacoonEN | Wolf | HuanHuan<br>Welcome to my official website. Updating slowly!", cta: "CONNECT WITH ME", modal: "MY SOCIAL LINKS", xhs: "RED (Xiaohongshu)" },
+            JP: { label: "🌐 JP", about: "私について", projects: "プロジェクト", sub: "ラクーンEN | ウルフ | フアンフアン<br>公式ウェブサイトへようこそ。ゆっくり更新中です！", cta: "コンタクト", modal: "ソーシャル連結", xhs: "小紅書 (RED)" },
+            KR: { label: "🌐 KR", about: "소개", projects: "프로젝트", sub: "라쿤EN | 울프 | 환환<br>공식 웹사이트에 오신 것을 환영합니다. 천천히 업데이트 중입니다!", cta: "연락하기", modal: "소셜 미디어", xhs: "샤오홍슈 (RED)" }
+        };
+
+        function changeLang(langCode) {
+            const elements = [
+                document.getElementById('navAbout'),
+                document.getElementById('navProjects'),
+                document.getElementById('subtitleText'),
+                document.getElementById('ctaBtn'),
+                document.getElementById('modalTitle'),
+                document.getElementById('linkXHS')
+            ];
+
+            // 加入淡出動畫
+            elements.forEach(el => el.classList.add('fade-out'));
+            
+            setTimeout(() => {
+                const t = translations[langCode];
+                document.getElementById('currentLangDisplay').innerText = t.label;
+                document.getElementById('navAbout').innerText = t.about;
+                document.getElementById('navProjects').innerText = t.projects;
+                document.getElementById('subtitleText').innerHTML = t.sub;
+                document.getElementById('ctaBtn').innerText = t.cta;
+                document.getElementById('modalTitle').innerText = t.modal;
+                document.getElementById('linkXHS').innerText = t.xhs;
+
+                // 移除淡出，觸發淡入
+                elements.forEach(el => el.classList.remove('fade-out'));
+            }, 300);
+        }
+
+        // 彈窗邏輯
         const modal = document.getElementById('socialModal');
         function openModal() { modal.classList.add('active'); }
         function closeModal() { modal.classList.remove('active'); }
-        modal.addEventListener('click', function(event) {
-            if (event.target === modal) closeModal();
-        });
-
-        // --- 多國語言資料庫 (Dictionary) ---
-        const translations = {
-            TW: {
-                langBtn: "🌐 TW",
-                navAbout: "關於我",
-                navProjects: "專案作品",
-                subtitle: "LacoonEN 伊恩浣熊 | Wolf 沃爾夫 | HuanHuan 幻幻<br>這裡是伊恩浣熊的官方網站 會緩慢更新w",
-                ctaBtn: "與我聯繫",
-                modalTitle: "我的社群連結",
-                linkXHS: "小紅書"
-            },
-            EN: {
-                langBtn: "🌐 EN",
-                navAbout: "ABOUT",
-                navProjects: "PROJECTS",
-                subtitle: "LacoonEN | Wolf | HuanHuan<br>Welcome to my official website. Updating slowly!",
-                ctaBtn: "CONNECT WITH ME",
-                modalTitle: "MY SOCIAL LINKS",
-                linkXHS: "RED (Xiaohongshu)"
-            },
-            JP: {
-                langBtn: "🌐 JP",
-                navAbout: "私について",
-                navProjects: "プロジェクト",
-                subtitle: "ラクーンEN | ウルフ | フアンフアン<br>公式ウェブサイトへようこそ。ゆっくり更新中です！",
-                ctaBtn: "コンタクト",
-                modalTitle: "ソーシャルリンク",
-                linkXHS: "小紅書 (RED)"
-            },
-            KR: {
-                langBtn: "🌐 KR",
-                navAbout: "소개",
-                navProjects: "프로젝트",
-                subtitle: "라쿤EN | 울프 | 환환<br>공식 웹사이트에 오신 것을 환영합니다. 천천히 업데이트 중입니다!",
-                ctaBtn: "연락하기",
-                modalTitle: "소셜 미디어",
-                linkXHS: "샤오홍슈 (RED)"
-            }
-        };
-
-        // 語言切換順序
-        const langOrder = ['TW', 'EN', 'JP', 'KR'];
-        let currentLangIndex = 0; // 預設 0 = TW
-
-        // 執行切換的函數
-        function toggleLanguage() {
-            // 切換到下一個語言 (如果到底了就回到第一個)
-            currentLangIndex = (currentLangIndex + 1) % langOrder.length;
-            const newLang = langOrder[currentLangIndex];
-            const t = translations[newLang];
-
-            // 更新網頁上的文字
-            document.getElementById('langBtn').innerText = t.langBtn;
-            document.getElementById('navAbout').innerText = t.navAbout;
-            document.getElementById('navProjects').innerText = t.navProjects;
-            document.getElementById('subtitleText').innerHTML = t.subtitle;
-            document.getElementById('ctaBtn').innerText = t.ctaBtn;
-            document.getElementById('modalTitle').innerText = t.modalTitle;
-            document.getElementById('linkXHS').innerText = t.linkXHS;
-        }
+        window.onclick = (e) => { if(e.target == modal) closeModal(); }
     </script>
 </body>
 </html>
