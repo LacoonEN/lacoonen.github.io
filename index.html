@@ -104,9 +104,9 @@
         .home-subtitle {
             font-size: clamp(14px, 4vw, 20px); font-weight: 600; 
             color: rgba(255, 255, 255, 0.7); letter-spacing: 3px; 
-            margin-bottom: 48px; /* 取代原本的空白 div */
+            margin-bottom: 48px;
             opacity: 0; transform: translateY(30px); 
-            transition: 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s; /* 稍微延遲出現，增加層次感 */
+            transition: 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
         }
         .home-subtitle.reveal { opacity: 1; transform: translateY(0); }
 
@@ -199,9 +199,9 @@
                 <div class="info-name" id="infoName">伊恩小浣熊</div>
                 <div class="info-tagline" id="infoTagline">BIM 工程師</div>
                 <div class="info-grid">
-                    <div class="info-item"><div class="info-label" id="labelJob">職業</div><div class="info-value" id="valJob">BIM 工程師</div></div>
+                    <div class="info-item"><div class="info-label" id="labelLocation">居住地</div><div class="info-value" id="valLocation">台灣 高雄</div></div>
                     <div class="info-item"><div class="info-label" id="labelEdu">學歷</div><div class="info-value" id="valEdu">國立高雄科技大學（就讀中）</div></div>
-                    <div class="info-item"><div class="info-label" id="labelCert">專業證照</div><div class="info-value" id="valCert">二等遊艇駕駛、AIDA 2 自由潛水</div></div>
+                    <div class="info-item"><div class="info-label" id="labelBirthday">生日</div><div class="info-value" id="valBirthday">11/18</div></div>
                     <div class="info-item"><div class="info-label" id="labelHobby">興趣愛好</div><div class="info-value" id="valHobby">攝影、單車、自由潛水、滑雪</div></div>
                 </div>
             </div>
@@ -279,7 +279,7 @@
         function closeModal() { modal.classList.remove('active'); }
         modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-        // 標題出現動畫 (加入 homeSubtitle 一起偵測)
+        // 標題出現動畫
         const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('reveal'); }); }, { threshold: 0.1 });
         document.querySelectorAll('.section-title, .home-subtitle').forEach(el => observer.observe(el));
         
@@ -289,17 +289,25 @@
             if (window.pageYOffset > 400) btn.classList.add('show'); else btn.classList.remove('show'); 
         });
 
-        // 語言切換功能
+        // 語言切換功能 (已更新 Location 和 Birthday)
         const translations = {
             TW: { 
                 label: "TW", 
-                homeSubtitle: "伊恩浣熊 X 沃爾夫 X 幻幻", // 新增這裡
-                home: "首頁", about: "關於我", fursona: "獸設定介紹", events: "活動場次", album: "日常相簿", commissions: "委託作品", cta: "與我聯繫", modal: "我的社群連結", maintenance: "資料維護中...", name: "伊恩小浣熊", tagline: "BIM 工程師", lJob: "職業", vJob: "BIM 工程師", lEdu: "學歷", vEdu: "國立高雄科技大學（就讀中）", lCert: "專業證照", vCert: "二等遊艇駕駛、AIDA 2 自由潛水", lHobby: "興趣愛好", vHobby: "攝影、單車、自由潛水、滑雪" 
+                homeSubtitle: "伊恩浣熊 X 沃爾夫 X 幻幻",
+                home: "首頁", about: "關於我", fursona: "獸設定介紹", events: "活動場次", album: "日常相簿", commissions: "委託作品", cta: "與我聯繫", modal: "我的社群連結", maintenance: "資料維護中...", name: "伊恩小浣熊", tagline: "BIM 工程師", 
+                lLocation: "居住地", vLocation: "台灣 高雄", 
+                lEdu: "學歷", vEdu: "國立高雄科技大學（就讀中）", 
+                lBirthday: "生日", vBirthday: "11/18", 
+                lHobby: "興趣愛好", vHobby: "攝影、單車、自由潛水、滑雪" 
             },
             EN: { 
                 label: "EN", 
-                homeSubtitle: "LacoonEN X Wolf X HuanHuan", // 新增這裡
-                home: "HOME", about: "ABOUT ME", fursona: "FURSONA", events: "EVENTS", album: "ALBUM", commissions: "COMMISSIONS", cta: "CONTACT ME", modal: "MY SOCIAL LINKS", maintenance: "Under Maintenance...", name: "LacoonEN", tagline: "BIM Engineer", lJob: "Profession", vJob: "BIM Engineer", lEdu: "Education", vEdu: "NKUST (Studying)", lCert: "License", vCert: "Yacht License, AIDA 2 Freediving", lHobby: "Hobbies", vHobby: "Photo, Cycling, Freediving, Skiing" 
+                homeSubtitle: "LacoonEN X Wolf X HuanHuan",
+                home: "HOME", about: "ABOUT ME", fursona: "FURSONA", events: "EVENTS", album: "ALBUM", commissions: "COMMISSIONS", cta: "CONTACT ME", modal: "MY SOCIAL LINKS", maintenance: "Under Maintenance...", name: "LacoonEN", tagline: "BIM Engineer", 
+                lLocation: "Location", vLocation: "Kaohsiung, Taiwan", 
+                lEdu: "Education", vEdu: "NKUST (Studying)", 
+                lBirthday: "Birthday", vBirthday: "11/18", 
+                lHobby: "Hobbies", vHobby: "Photo, Cycling, Freediving, Skiing" 
             }
         };
 
@@ -324,9 +332,9 @@
                 
                 // 更新卡片內容
                 document.getElementById('infoName').innerText = t.name; document.getElementById('infoTagline').innerText = t.tagline;
-                document.getElementById('labelJob').innerText = t.lJob; document.getElementById('valJob').innerText = t.vJob;
+                document.getElementById('labelLocation').innerText = t.lLocation; document.getElementById('valLocation').innerText = t.vLocation;
                 document.getElementById('labelEdu').innerText = t.lEdu; document.getElementById('valEdu').innerText = t.vEdu;
-                document.getElementById('labelCert').innerText = t.lCert; document.getElementById('valCert').innerText = t.vCert;
+                document.getElementById('labelBirthday').innerText = t.lBirthday; document.getElementById('valBirthday').innerText = t.vBirthday;
                 document.getElementById('labelHobby').innerText = t.lHobby; document.getElementById('valHobby').innerText = t.vHobby;
                 
                 // 更新按鈕與彈窗
