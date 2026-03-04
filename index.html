@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>伊恩浣熊 | Portfolio</title>
+    <title>LacoonEN | Portfolio</title>
     <style>
         /* --- 全局與強迫症優化 --- */
         html { scroll-behavior: smooth; }
@@ -15,6 +15,7 @@
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
+            transition: opacity 0.3s ease; /* 語系切換的過渡 */
         }
 
         /* --- 固定選單按鈕 --- */
@@ -25,10 +26,17 @@
             width: 48px; height: 48px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px; backdrop-filter: blur(15px);
-            transition: 0.3s cubic-bezier(0.2, 0, 0, 1);
+            transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
             outline: none; user-select: none; -webkit-user-select: none;
+            border: 1px solid rgba(255, 255, 255, 0.0);
         }
-        .menu-btn div { width: 22px; height: 2px; background-color: #ffffff; transition: 0.3s; border-radius: 2px; pointer-events: none; }
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+        .menu-btn:active { transform: scale(0.95); }
+        .menu-btn div { width: 22px; height: 2px; background-color: #ffffff; transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); border-radius: 2px; pointer-events: none; }
         .menu-btn.active div:nth-child(1) { transform: translateY(8px) rotate(45deg); }
         .menu-btn.active div:nth-child(2) { opacity: 0; transform: scaleX(0); }
         .menu-btn.active div:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
@@ -36,22 +44,27 @@
         /* --- 固定語言選單 --- */
         .lang-container { position: fixed; top: 24px; right: 24px; z-index: 9999; user-select: none; }
         .lang-selected {
-            background: rgba(255, 255, 255, 0.05); border: none;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.0);
             color: #fff; padding: 10px 20px; border-radius: 12px; cursor: pointer;
-            backdrop-filter: blur(15px); transition: 0.3s; font-size: 13px; font-weight: 600;
+            backdrop-filter: blur(15px); transition: all 0.3s ease; font-size: 13px; font-weight: 600;
+        }
+        .lang-selected:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .lang-dropdown {
             position: absolute; top: 56px; right: 0;
             background: rgba(20, 20, 20, 0.95); 
             border: 1px solid rgba(255, 255, 255, 0.1); 
-            border-radius: 16px; width: 150px; opacity: 0; transform: translateY(-10px); 
+            border-radius: 16px; width: 150px; opacity: 0; transform: translateY(-15px) scale(0.95); 
             pointer-events: none; transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             box-shadow: 0 15px 40px rgba(0,0,0,0.6);
             overflow: hidden; padding: 0; 
+            transform-origin: top right;
         }
-        .lang-container.active .lang-dropdown { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .lang-container.active .lang-dropdown { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
         .lang-option { padding: 14px 20px; font-size: 13px; color: rgba(255,255,255,0.6); cursor: pointer; transition: 0.3s; }
-        .lang-option:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .lang-option:hover { background: rgba(255,255,255,0.1); color: #fff; padding-left: 24px; }
 
         /* --- 關於我卡片 --- */
         .about-card {
@@ -61,6 +74,13 @@
             display: flex; gap: 50px; align-items: flex-start; text-align: left;
             backdrop-filter: blur(10px);
             box-sizing: border-box; margin: 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .about-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(168, 85, 247, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         @media (max-width: 768px) {
             .about-card { flex-direction: column; align-items: center; text-align: center; padding: 40px 24px; width: calc(100% - 20px); }
@@ -84,14 +104,20 @@
             flex-direction: column;
             gap: 20px;
             text-align: left;
-            transition: 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.0);
         }
         .fursona-card:last-child { margin-bottom: 0; }
-        .fursona-card:hover { background: rgba(255, 255, 255, 0.06); }
+        .fursona-card:hover { 
+            background: rgba(255, 255, 255, 0.08); 
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 15px rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
         
         .fursona-img-placeholder {
             width: 100%;
-            aspect-ratio: 3 / 2; /* 確保3:2比例 */
+            aspect-ratio: 3 / 2;
             background: rgba(0, 0, 0, 0.3);
             border: 2px dashed rgba(255, 255, 255, 0.1);
             border-radius: 16px;
@@ -103,12 +129,16 @@
             letter-spacing: 2px;
             overflow: hidden;
             position: relative;
+            transition: 0.4s ease;
         }
-        .fursona-img-placeholder img { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
+        .fursona-card:hover .fursona-img-placeholder { border-color: rgba(168, 85, 247, 0.4); }
+        .fursona-img-placeholder img { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; transition: transform 0.6s ease; }
+        .fursona-card:hover .fursona-img-placeholder img { transform: scale(1.05); }
         
         .fursona-info h3 { margin: 0 0 12px 0; color: #fff; font-size: 26px; font-weight: 800; }
         .fursona-meta { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-        .fursona-meta-tag { background: rgba(168, 85, 247, 0.2); border: 1px solid rgba(168, 85, 247, 0.4); padding: 6px 14px; border-radius: 10px; font-size: 13px; color: #e9d5ff; font-weight: 500; }
+        .fursona-meta-tag { background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); padding: 6px 14px; border-radius: 10px; font-size: 13px; color: #e9d5ff; font-weight: 500; transition: 0.3s ease; }
+        .fursona-meta-tag:hover { background: rgba(168, 85, 247, 0.3); transform: translateY(-2px); }
         
         /* 超連結樣式優化 */
         .fursona-meta-tag a { color: inherit; text-decoration: underline; text-underline-offset: 3px; transition: 0.3s; }
@@ -123,11 +153,15 @@
             padding: 18px 50px; border-radius: 50px;
             background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
             box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2); 
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .contact-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 40px 10px rgba(168, 85, 247, 0.5);
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 15px 40px rgba(168, 85, 247, 0.5);
+        }
+        .contact-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 5px 20px rgba(168, 85, 247, 0.3);
         }
 
         .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; width: 100%; }
@@ -135,23 +169,44 @@
         .info-item {
             background: rgba(255,255,255,0.04); padding: 18px; border-radius: 18px;
             min-height: 85px; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.0);
+        }
+        .info-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-3px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
         section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 80px 20px; box-sizing: border-box; }
         
-        .section-title { font-size: clamp(40px, 8vw, 80px); font-weight: 900; text-transform: uppercase; margin-bottom: 40px; letter-spacing: -2px; opacity: 0; transform: translateY(30px); transition: 1s cubic-bezier(0.16, 1, 0.3, 1); }
-        .section-title.reveal { opacity: 1; transform: translateY(0); }
+        /* --- 進場動畫優化：加入 Blur 與 Scale --- */
+        .reveal-element { 
+            opacity: 0; 
+            transform: translateY(40px) scale(0.95); 
+            filter: blur(8px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        .reveal-element.reveal { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+            filter: blur(0);
+        }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+
+        .section-title { font-size: clamp(40px, 8vw, 80px); font-weight: 900; text-transform: uppercase; margin-bottom: 40px; letter-spacing: -2px; }
         
         .home-subtitle {
             font-size: clamp(14px, 4vw, 20px); font-weight: 600; 
             color: rgba(255, 255, 255, 0.7); letter-spacing: 3px; 
             margin-bottom: 48px;
-            opacity: 0; transform: translateY(30px); 
-            transition: 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
         }
-        .home-subtitle.reveal { opacity: 1; transform: translateY(0); }
 
-        .profile-img { width: 160px; height: 160px; border-radius: 50%; background: linear-gradient(45deg, #6366f1, #a855f7); padding: 3px; flex-shrink: 0; }
+        .profile-img { width: 160px; height: 160px; border-radius: 50%; background: linear-gradient(45deg, #6366f1, #a855f7); padding: 3px; flex-shrink: 0; transition: transform 0.5s ease; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3); }
+        .about-card:hover .profile-img { transform: scale(1.05) rotate(5deg); }
         .profile-img .inner { width: 100%; height: 100%; border-radius: 50%; background: #111; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .profile-img img { width: 100%; height: 100%; object-fit: cover; }
         
@@ -164,7 +219,9 @@
             line-height: 1.8; margin-bottom: 32px; padding: 16px 20px;
             background: rgba(255, 255, 255, 0.02); border-radius: 12px;
             border-left: 4px solid #a855f7; text-align: justify;
+            transition: 0.3s ease;
         }
+        .intro-text:hover { background: rgba(255, 255, 255, 0.05); }
         @media (max-width: 768px) {
             .intro-text { text-align: left; padding: 16px; font-size: 14.5px; }
         }
@@ -172,28 +229,33 @@
         .info-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
         .info-value { font-size: 14px; color: rgba(255,255,255,0.9); font-weight: 500; line-height: 1.4; }
         
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: 0.4s; padding: 24px; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: 0.4s ease; padding: 24px; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { 
             background: #151515; border: 1px solid rgba(255,255,255,0.1); border-radius: 32px; 
             padding: 40px 24px; width: 100%; max-width: 380px; box-sizing: border-box; text-align: center;
-            max-height: 85vh; overflow-y: auto;
+            max-height: 85vh; overflow-y: auto; transform: translateY(30px) scale(0.95); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
         .modal-content::-webkit-scrollbar { width: 6px; }
         .modal-content::-webkit-scrollbar-track { background: transparent; }
         .modal-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
-        .social-link { display: block; width: 100%; padding: 16px; margin-bottom: 12px; background: rgba(255,255,255,0.05); border-radius: 18px; color: #fff; text-decoration: none; transition: 0.3s; box-sizing: border-box; font-weight: 500; }
-        .social-link:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+        .social-link { display: block; width: 100%; padding: 16px; margin-bottom: 12px; background: rgba(255,255,255,0.05); border-radius: 18px; color: #fff; text-decoration: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-sizing: border-box; font-weight: 500; border: 1px solid rgba(255, 255, 255, 0.0); }
+        .social-link:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px) scale(1.02); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .social-link:active { transform: scale(0.98); }
         
-        .back-to-top { position: fixed; bottom: 30px; right: 24px; width: 48px; height: 48px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 998; opacity: 0; visibility: hidden; transition: 0.4s; backdrop-filter: blur(10px); }
+        .back-to-top { position: fixed; bottom: 30px; right: 24px; width: 48px; height: 48px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 998; opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(10px); }
         .back-to-top.show { opacity: 1; visibility: visible; }
-        .back-to-top::after { content: ''; width: 10px; height: 10px; border-left: 2px solid #fff; border-top: 2px solid #fff; transform: rotate(45deg); margin-top: 5px; }
+        .back-to-top:hover { background: rgba(255,255,255,0.25); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .back-to-top:active { transform: translateY(0) scale(0.9); }
+        .back-to-top::after { content: ''; width: 10px; height: 10px; border-left: 2px solid #fff; border-top: 2px solid #fff; transform: rotate(45deg); margin-top: 5px; transition: 0.3s; }
+        .back-to-top:hover::after { margin-top: 0px; }
         
         /* --- 側邊選單與懸停動畫 --- */
         .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(30px); z-index: 1000; display: flex; flex-direction: column; padding-top: 100px; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto;}
-        .sidebar.active { left: 0; }
-        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 999; opacity: 0; pointer-events: none; transition: 0.5s; }
+        .sidebar.active { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 999; opacity: 0; pointer-events: none; transition: 0.5s; backdrop-filter: blur(3px); }
         .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
         
         .nav-link { 
@@ -202,11 +264,12 @@
             transition: 0.3s cubic-bezier(0.2, 0, 0, 1); position: relative; display: block;
         }
         .nav-link:hover { 
-            color: #ffffff; padding-left: 55px; background: rgba(255, 255, 255, 0.05); 
+            color: #ffffff; padding-left: 55px; background: linear-gradient(90deg, rgba(168, 85, 247, 0.15) 0%, transparent 100%); 
         }
         .nav-link::before {
             content: ''; position: absolute; left: 30px; top: 50%; width: 0; height: 2px;
-            background: #a855f7; transition: 0.3s; transform: translateY(-50%);
+            background: #a855f7; transition: 0.3s ease; transform: translateY(-50%);
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
         }
         .nav-link:hover::before { width: 15px; }
 
@@ -216,7 +279,7 @@
 <body>
 
     <div class="lang-container" id="langContainer">
-        <div class="lang-selected" id="currentLangDisplay">TW</div>
+        <div class="lang-selected" id="currentLangDisplay">EN</div>
         <div class="lang-dropdown">
             <div class="lang-option" onclick="changeLang(event, 'TW')">繁體中文 (TW)</div>
             <div class="lang-option" onclick="changeLang(event, 'EN')">English (EN)</div>
@@ -229,69 +292,69 @@
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
     
     <div class="sidebar" id="sidebar">
-        <a href="#home" class="nav-link" id="navHome">首頁</a>
-        <a href="#about" class="nav-link" id="navAbout">關於我</a>
-        <a href="#fursona" class="nav-link" id="navFursona">獸設定介紹</a>
-        <a href="#events" class="nav-link" id="navEvents">活動場次</a>
-        <a href="#album" class="nav-link" id="navAlbum">日常相簿</a>
-        <a href="#commissions" class="nav-link" id="navCommissions">委託作品</a>
-        <a href="#shop" class="nav-link" id="navShop">商城</a>
+        <a href="#home" class="nav-link" id="navHome">HOME</a>
+        <a href="#about" class="nav-link" id="navAbout">ABOUT ME</a>
+        <a href="#fursona" class="nav-link" id="navFursona">FURSONA</a>
+        <a href="#events" class="nav-link" id="navEvents">EVENTS</a>
+        <a href="#album" class="nav-link" id="navAlbum">ALBUM</a>
+        <a href="#commissions" class="nav-link" id="navCommissions">COMMISSIONS</a>
+        <a href="#shop" class="nav-link" id="navShop">SHOP</a>
     </div>
 
     <div class="back-to-top" id="backToTop" onclick="scrollToTop()"></div>
 
     <section id="home">
-        <h1 class="section-title reveal" style="font-size: clamp(50px, 12vw, 120px); line-height: 1; margin-bottom: 24px;">HI, I'M<br>LacoonEN</h1>
-        <div class="home-subtitle" id="homeSubtitle">伊恩浣熊 X 沃爾夫 X 幻幻</div>
-        <button class="contact-btn" id="ctaBtn" onclick="openModal()">與我聯繫</button>
+        <h1 class="section-title reveal-element" style="font-size: clamp(50px, 12vw, 120px); line-height: 1; margin-bottom: 24px;">HI, I'M<br>LacoonEN</h1>
+        <div class="home-subtitle reveal-element delay-1" id="homeSubtitle">LacoonEN X Wolf X HuanHuan</div>
+        <button class="contact-btn reveal-element delay-2" id="ctaBtn" onclick="openModal()">CONTACT ME</button>
     </section>
 
     <section id="about">
-        <h2 class="section-title" id="titleAbout">關於我</h2>
-        <div class="about-card">
+        <h2 class="section-title reveal-element" id="titleAbout">ABOUT ME</h2>
+        <div class="about-card reveal-element delay-1">
             <div class="profile-zone">
                 <div class="profile-img">
                     <div class="inner"><img src="profile.JPG" alt="Profile"></div>
                 </div>
             </div>
             <div class="info-content">
-                <div class="info-name" id="infoName">伊恩小浣熊</div>
-                <div class="info-tagline" id="infoTagline">BIM 工程師</div>
+                <div class="info-name" id="infoName">LacoonEN</div>
+                <div class="info-tagline" id="infoTagline">BIM Engineer</div>
                 
                 <div class="intro-text" id="infoIntro">
-                    哈囉，我是伊恩小浣熊！<br>
-                    目前居住在台灣高雄，是一名 BIM 工程師。<br>
-                    平常熱愛攝影與潛水，享受捕捉美好瞬間與探索海底世界。<br>
-                    目前擁有的獸設定有：伊恩浣熊、沃爾夫、幻幻。<br>
-                    很高興能在這裡與大家認識！期待未來有機會在各個活動場次上相遇，非常歡迎來找我認親、拍照和抱抱喔！
+                    Hi, I'm LacoonEN!<br>
+                    I'm a BIM Engineer currently based in Kaohsiung, Taiwan.<br>
+                    In my free time, I love photography and diving, enjoying capturing beautiful moments and exploring the underwater world.<br>
+                    My current fursonas are LacoonEN, Wolf, and HuanHuan.<br>
+                    It's great to meet you all! I look forward to seeing you at future events. Feel free to come say hi, take photos, and give me a hug!
                 </div>
 
                 <div class="info-grid">
-                    <div class="info-item"><div class="info-label" id="labelLocation">居住地</div><div class="info-value" id="valLocation">台灣 高雄</div></div>
-                    <div class="info-item"><div class="info-label" id="labelEdu">學歷</div><div class="info-value" id="valEdu">國立高雄科技大學（就讀中）</div></div>
-                    <div class="info-item"><div class="info-label" id="labelBirthday">生日</div><div class="info-value" id="valBirthday">11/18</div></div>
-                    <div class="info-item"><div class="info-label" id="labelHobby">興趣愛好</div><div class="info-value" id="valHobby">攝影、單車、自由潛水、滑雪</div></div>
+                    <div class="info-item"><div class="info-label" id="labelLocation">Location</div><div class="info-value" id="valLocation">Kaohsiung, Taiwan</div></div>
+                    <div class="info-item"><div class="info-label" id="labelEdu">Education</div><div class="info-value" id="valEdu">NKUST (Studying)</div></div>
+                    <div class="info-item"><div class="info-label" id="labelBirthday">Birthday</div><div class="info-value" id="valBirthday">18th November</div></div>
+                    <div class="info-item"><div class="info-label" id="labelHobby">Hobbies</div><div class="info-value" id="valHobby">Photo, Cycling, Freediving, Skiing</div></div>
                 </div>
             </div>
         </div>
     </section>
 
     <section id="fursona">
-        <h2 class="section-title" id="titleFursona">獸設定介紹</h2>
-        <div class="content-area" style="background: transparent; padding: 0;">
+        <h2 class="section-title reveal-element" id="titleFursona">FURSONA</h2>
+        <div class="content-area reveal-element delay-1" style="background: transparent; padding: 0;">
             
             <div class="fursona-card">
                 <div class="fursona-img-placeholder">
                     <img src="lacoon.jpeg" alt="LacoonEN">
                 </div>
                 <div class="fursona-info">
-                    <h3 id="fName1">伊恩浣熊 LacoonEN</h3>
+                    <h3 id="fName1">LacoonEN</h3>
                     <div class="fursona-meta">
-                        <span class="fursona-meta-tag" id="fDes1">設定設計：<a href="https://www.facebook.com/share/1DL3Mr7PSA/?mibextid=wwXIfr" target="_blank">睡覺羊毛</a></span>
-                        <span class="fursona-meta-tag" id="fMak1">毛裝工作室：無</span>
+                        <span class="fursona-meta-tag" id="fDes1">Design: <a href="https://www.facebook.com/share/1DL3Mr7PSA/?mibextid=wwXIfr" target="_blank">DormirMao</a></span>
+                        <span class="fursona-meta-tag" id="fMak1">Fursuit Maker: None</span>
                     </div>
                     <div class="fursona-story" id="fStory1">
-                        是隻浣上不睡覺的浣熊。
+                        A raccoon who doesn't sleep at night.
                     </div>
                 </div>
             </div>
@@ -301,13 +364,13 @@
                     <img src="wolf.jpeg" alt="Wolf">
                 </div>
                 <div class="fursona-info">
-                    <h3 id="fName2">沃爾夫 Wolf</h3>
+                    <h3 id="fName2">Wolf</h3>
                     <div class="fursona-meta">
-                        <span class="fursona-meta-tag" id="fDes2">設定設計：<a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">冷軌</a></span>
-                        <span class="fursona-meta-tag" id="fMak2">毛裝工作室：<a href="https://www.furmony.com" target="_blank">鴻萌造物</a></span>
+                        <span class="fursona-meta-tag" id="fDes2">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
+                        <span class="fursona-meta-tag" id="fMak2">Fursuit Maker: <a href="https://www.furmony.com" target="_blank">Furmony Studio</a></span>
                     </div>
                     <div class="fursona-story" id="fStory2">
-                        是隻柴柴槍手，熱衷於槍械。<br>有個弟弟叫沃利，共同經營了一間酒館本身也是調酒師。<br>性格沈穩，平時叫沈默寡言，做事穩重且十分可靠；弟弟則比較熱情開放，善於與人交際。<br>表面經營酒館藉此收集情報，暗地裡則會接下一些暗殺任務。
+                        A Shiba Inu gunslinger passionate about firearms.<br>He co-owns a tavern with his younger brother Wally and is also a bartender himself.<br>Calm and usually reticent, he is steady and very reliable; his brother, on the other hand, is more passionate, open, and sociable.<br>On the surface, they run a tavern to gather intelligence, while secretly taking on assassination missions.
                     </div>
                 </div>
             </div>
@@ -317,13 +380,13 @@
                     <img src="HuanHuan.jpeg" alt="HuanHuan">
                 </div>
                 <div class="fursona-info">
-                    <h3 id="fName3">幻幻 HuanHuan</h3>
+                    <h3 id="fName3">HuanHuan</h3>
                     <div class="fursona-meta">
-                        <span class="fursona-meta-tag" id="fDes3">設定設計：<a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">冷軌</a></span>
-                        <span class="fursona-meta-tag" id="fMak3">毛裝工作室：<a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">漁屋</a></span>
+                        <span class="fursona-meta-tag" id="fDes3">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
+                        <span class="fursona-meta-tag" id="fMak3">Fursuit Maker: <a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">Yuwu Fursuit</a></span>
                     </div>
                     <div class="fursona-story" id="fStory3">
-                        是隻閃電蜜蜂小龍。
+                        A lightning bee dragon.
                     </div>
                 </div>
             </div>
@@ -332,30 +395,30 @@
     </section>
 
     <section id="events">
-        <h2 class="section-title" id="titleEvents">活動場次</h2>
-        <div class="content-area"><p class="m-text">資料維護中...</p></div>
+        <h2 class="section-title reveal-element" id="titleEvents">EVENTS</h2>
+        <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
     </section>
 
     <section id="album">
-        <h2 class="section-title" id="titleAlbum">日常相簿</h2>
-        <div class="content-area"><p class="m-text">資料維護中...</p></div>
+        <h2 class="section-title reveal-element" id="titleAlbum">ALBUM</h2>
+        <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
     </section>
 
     <section id="commissions">
-        <h2 class="section-title" id="titleCommissions">委託作品</h2>
-        <div class="content-area"><p class="m-text">資料維護中...</p></div>
+        <h2 class="section-title reveal-element" id="titleCommissions">COMMISSIONS</h2>
+        <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
     </section>
 
     <section id="shop">
-        <h2 class="section-title" id="titleShop">商城</h2>
-        <div class="content-area"><p class="m-text">資料維護中...</p></div>
+        <h2 class="section-title reveal-element" id="titleShop">SHOP</h2>
+        <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
     </section>
 
     <footer>© 2026 LACOONEN PORTFOLIO | DESIGNED BY LACOONEN</footer>
 
     <div class="modal-overlay" id="socialModal">
         <div class="modal-content">
-            <h2 style="margin-top:0; margin-bottom:28px; font-size:18px;" id="modalTitle">我的社群連結</h2>
+            <h2 style="margin-top:0; margin-bottom:28px; font-size:18px;" id="modalTitle">MY SOCIAL LINKS</h2>
             <div style="display: flex; flex-direction: column; gap: 4px;">
                 <a href="https://www.facebook.com/share/1CG7dizyQ3/?mibextid=wwXIfr" class="social-link" target="_blank">Facebook</a>
                 <a href="https://x.com/furrywolf1118?s=21&t=yjv-k6ZFiu-52P0Vjic5A" class="social-link" target="_blank">X (Twitter)</a>
@@ -363,7 +426,7 @@
                 <a href="https://xhslink.com/m/2QNs9Daahnb" class="social-link" target="_blank">小紅書 (Red)</a>
                 <a href="https://qm.qq.com/q/qZpAr0dOPC" class="social-link" target="_blank">QQ</a>
             </div>
-            <p onclick="closeModal()" style="margin-top:24px; font-size:12px; color:rgba(255,255,255,0.3); cursor:pointer; letter-spacing: 2px;">CLOSE</p>
+            <p onclick="closeModal()" style="margin-top:24px; font-size:12px; color:rgba(255,255,255,0.3); cursor:pointer; letter-spacing: 2px; transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">CLOSE</p>
         </div>
     </div>
 
@@ -395,8 +458,17 @@
         function closeModal() { modal.classList.remove('active'); }
         modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-        const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('reveal'); }); }, { threshold: 0.1 });
-        document.querySelectorAll('.section-title, .home-subtitle').forEach(el => observer.observe(el));
+        /* 優化 Intersection Observer 加入延遲觸發 */
+        const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+        const observer = new IntersectionObserver((entries) => { 
+            entries.forEach(entry => { 
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('reveal'); 
+                    // observer.unobserve(entry.target); // 取消註解可以讓動畫只觸發一次
+                } 
+            }); 
+        }, observerOptions);
+        document.querySelectorAll('.reveal-element').forEach(el => observer.observe(el));
         
         window.addEventListener('scroll', () => { 
             const btn = document.getElementById('backToTop'); 
@@ -456,12 +528,14 @@
             
             document.getElementById('langContainer').classList.remove('active');
             
-            document.body.style.opacity = '0.5';
+            // 使用淡出再淡入取代整個網頁變暗
+            const contentElements = document.querySelectorAll('.section-title, .home-subtitle, .intro-text, .info-name, .info-tagline, .info-label, .info-value, .fursona-info h3, .fursona-meta-tag, .fursona-story, .m-text, .contact-btn');
+            
+            contentElements.forEach(el => el.style.opacity = '0');
+            
             setTimeout(() => {
                 document.getElementById('currentLangDisplay').innerText = t.label;
-                
                 document.getElementById('homeSubtitle').innerText = t.homeSubtitle;
-                
                 document.getElementById('navHome').innerText = t.home; 
                 document.getElementById('navAbout').innerText = t.about; 
                 document.getElementById('navFursona').innerText = t.fursona; 
@@ -485,7 +559,6 @@
                 document.getElementById('labelBirthday').innerText = t.lBirthday; document.getElementById('valBirthday').innerText = t.vBirthday;
                 document.getElementById('labelHobby').innerText = t.lHobby; document.getElementById('valHobby').innerText = t.vHobby;
                 
-                /* 更新獸設定介紹內容：改為 innerHTML 讓 a 標籤與 br 生效 */
                 document.getElementById('fName1').innerText = t.fName1; document.getElementById('fDes1').innerHTML = t.fDes1; document.getElementById('fMak1').innerHTML = t.fMak1; document.getElementById('fStory1').innerHTML = t.fStory1;
                 document.getElementById('fName2').innerText = t.fName2; document.getElementById('fDes2').innerHTML = t.fDes2; document.getElementById('fMak2').innerHTML = t.fMak2; document.getElementById('fStory2').innerHTML = t.fStory2;
                 document.getElementById('fName3').innerText = t.fName3; document.getElementById('fDes3').innerHTML = t.fDes3; document.getElementById('fMak3').innerHTML = t.fMak3; document.getElementById('fStory3').innerHTML = t.fStory3;
@@ -493,7 +566,7 @@
                 document.getElementById('ctaBtn').innerText = t.cta; document.getElementById('modalTitle').innerText = t.modal;
                 document.querySelectorAll('.m-text').forEach(el => el.innerText = t.maintenance);
                 
-                document.body.style.opacity = '1';
+                contentElements.forEach(el => el.style.opacity = '1');
             }, 300);
         }
 
