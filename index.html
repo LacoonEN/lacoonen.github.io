@@ -15,7 +15,13 @@
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s ease;
+        }
+
+        /* --- 頂級平滑曲線變數 --- */
+        :root {
+            --smooth-curve: cubic-bezier(0.25, 1, 0.5, 1);
+            --bounce-curve: cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         /* --- 固定選單按鈕 --- */
@@ -26,7 +32,7 @@
             width: 48px; height: 48px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px; backdrop-filter: blur(15px);
-            transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+            transition: all 0.5s var(--smooth-curve);
             outline: none; user-select: none; -webkit-user-select: none;
             border: 1px solid rgba(255, 255, 255, 0.0);
         }
@@ -36,7 +42,7 @@
             transform: scale(1.05);
         }
         .menu-btn:active { transform: scale(0.95); }
-        .menu-btn div { width: 22px; height: 2px; background-color: #ffffff; transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); border-radius: 2px; pointer-events: none; }
+        .menu-btn div { width: 22px; height: 2px; background-color: #ffffff; transition: 0.4s var(--smooth-curve); border-radius: 2px; pointer-events: none; }
         .menu-btn.active div:nth-child(1) { transform: translateY(8px) rotate(45deg); }
         .menu-btn.active div:nth-child(2) { opacity: 0; transform: scaleX(0); }
         .menu-btn.active div:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
@@ -46,24 +52,25 @@
         .lang-selected {
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.0);
             color: #fff; padding: 10px 20px; border-radius: 12px; cursor: pointer;
-            backdrop-filter: blur(15px); transition: all 0.3s ease; font-size: 13px; font-weight: 600;
+            backdrop-filter: blur(15px); transition: all 0.4s var(--smooth-curve); font-size: 13px; font-weight: 600;
         }
         .lang-selected:hover {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
         }
         .lang-dropdown {
             position: absolute; top: 56px; right: 0;
             background: rgba(20, 20, 20, 0.95); 
             border: 1px solid rgba(255, 255, 255, 0.1); 
             border-radius: 16px; width: 150px; opacity: 0; transform: translateY(-15px) scale(0.95); 
-            pointer-events: none; transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            pointer-events: none; transition: 0.5s var(--smooth-curve);
             box-shadow: 0 15px 40px rgba(0,0,0,0.6);
             overflow: hidden; padding: 0; 
             transform-origin: top right;
         }
         .lang-container.active .lang-dropdown { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-        .lang-option { padding: 14px 20px; font-size: 13px; color: rgba(255,255,255,0.6); cursor: pointer; transition: 0.3s; }
+        .lang-option { padding: 14px 20px; font-size: 13px; color: rgba(255,255,255,0.6); cursor: pointer; transition: 0.3s ease; }
         .lang-option:hover { background: rgba(255,255,255,0.1); color: #fff; padding-left: 24px; }
 
         /* --- 關於我卡片 --- */
@@ -75,12 +82,12 @@
             backdrop-filter: blur(10px);
             box-sizing: border-box; margin: 0 auto;
             border: 1px solid rgba(255, 255, 255, 0.02);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            transition: all 0.6s var(--smooth-curve);
         }
         .about-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(168, 85, 247, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            transform: translateY(-6px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(168, 85, 247, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
         @media (max-width: 768px) {
             .about-card { flex-direction: column; align-items: center; text-align: center; padding: 40px 24px; width: calc(100% - 20px); }
@@ -104,17 +111,18 @@
             flex-direction: column;
             gap: 20px;
             text-align: left;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.6s var(--smooth-curve);
             border: 1px solid rgba(255, 255, 255, 0.0);
         }
         .fursona-card:last-child { margin-bottom: 0; }
         .fursona-card:hover { 
             background: rgba(255, 255, 255, 0.08); 
             transform: translateY(-8px) scale(1.01);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 15px rgba(168, 85, 247, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(168, 85, 247, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
+        /* 圖片佔位符優化 */
         .fursona-img-placeholder {
             width: 100%;
             border-radius: 14px;
@@ -128,14 +136,15 @@
             height: auto; 
             display: block; 
             border-radius: 14px; 
-            transition: transform 0.6s ease; 
+            transition: transform 0.8s var(--smooth-curve); 
+            will-change: transform;
         }
-        .fursona-card:hover .fursona-img-placeholder img { transform: scale(1.03); }
+        .fursona-card:hover .fursona-img-placeholder img { transform: scale(1.04); }
         
         .fursona-info h3 { margin: 0 0 12px 0; color: #fff; font-size: 26px; font-weight: 800; }
         .fursona-meta { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-        .fursona-meta-tag { background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); padding: 6px 14px; border-radius: 10px; font-size: 13px; color: #e9d5ff; font-weight: 500; transition: 0.3s ease; }
-        .fursona-meta-tag:hover { background: rgba(168, 85, 247, 0.3); transform: translateY(-2px); }
+        .fursona-meta-tag { background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); padding: 6px 14px; border-radius: 10px; font-size: 13px; color: #e9d5ff; font-weight: 500; transition: 0.4s var(--smooth-curve); }
+        .fursona-meta-tag:hover { background: rgba(168, 85, 247, 0.3); transform: translateY(-3px); }
         .fursona-meta-tag a { color: inherit; text-decoration: underline; text-underline-offset: 3px; transition: 0.3s; }
         .fursona-meta-tag a:hover { color: #ffffff; text-decoration-color: #ffffff; }
         .fursona-story { color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.8; border-left: 3px solid #6366f1; padding-left: 16px; margin-top: 8px; text-align: justify; }
@@ -149,42 +158,36 @@
             padding-bottom: 20px;
             width: 100%;
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
         }
-        .events-carousel::-webkit-scrollbar { display: none; } /* Chrome, Safari */
+        .events-carousel::-webkit-scrollbar { display: none; }
         
         .event-card {
-            flex: 0 0 85%; /* 手機版：讓下一張卡片露出一點點，提示可滑動 */
+            flex: 0 0 85%;
             max-width: 380px;
             background: rgba(255, 255, 255, 0.04);
             border-radius: 20px;
             overflow: hidden;
             scroll-snap-align: center;
-            transition: all 0.4s ease;
+            transition: all 0.6s var(--smooth-curve);
             border: 1px solid rgba(255, 255, 255, 0.0);
             display: flex;
             flex-direction: column;
         }
         .event-card:hover {
             background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
         
         @media (min-width: 768px) {
-            /* 電腦版：將活動卡片置中對齊 */
-            .events-carousel {
-                justify-content: center;
-            }
-            .event-card {
-                flex: 0 0 calc(50% - 10px);
-                scroll-snap-align: start;
-            }
+            .events-carousel { justify-content: center; }
+            .event-card { flex: 0 0 calc(50% - 10px); scroll-snap-align: start; }
         }
         
         .event-img { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; }
-        .event-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+        .event-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s var(--smooth-curve); }
         .event-card:hover .event-img img { transform: scale(1.05); }
         
         .event-info { padding: 24px; text-align: left; }
@@ -194,26 +197,44 @@
             display: inline-block; padding: 10px 24px;
             background: rgba(168, 85, 247, 0.15); color: #e9d5ff; text-decoration: none;
             border-radius: 12px; font-size: 13px; font-weight: 600;
-            transition: 0.3s; border: 1px solid rgba(168, 85, 247, 0.3);
+            transition: all 0.4s var(--smooth-curve); border: 1px solid rgba(168, 85, 247, 0.3);
         }
-        .event-link:hover { background: rgba(168, 85, 247, 0.3); color: #fff; transform: translateY(-2px); }
+        .event-link:hover { background: rgba(168, 85, 247, 0.3); color: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2); }
 
-        /* --- 與我聯繫按鈕發光 --- */
+        /* --- 與我聯繫按鈕：呼吸漸進光暈優化 --- */
         .contact-btn {
+            position: relative; /* 確保偽元素定位正常 */
             appearance: none; border: none; cursor: pointer; color: #ffffff;
             font-size: 14px; font-weight: 700; letter-spacing: 2px;
             padding: 18px 50px; border-radius: 50px;
             background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            /* 基礎陰影 */
             box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2); 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* 這裡只負責縮放與位移的彈性動畫 */
+            transition: transform 0.5s var(--bounce-curve);
+            z-index: 1; /* 建立層級，讓光暈在背後 */
+        }
+        /* 創造專屬的光暈層 */
+        .contact-btn::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border-radius: 50px;
+            z-index: -1;
+            filter: blur(20px); /* 光暈模糊度 */
+            opacity: 0; /* 預設完全透明不發光 */
+            /* 重點：讓透明度變化極度緩慢順暢 */
+            transition: opacity 0.8s ease-in-out;
         }
         .contact-btn:hover {
-            transform: scale(1.05) translateY(-2px);
-            box-shadow: 0 15px 40px rgba(168, 85, 247, 0.5);
+            transform: scale(1.05) translateY(-3px);
+        }
+        /* 滑鼠懸停時慢慢亮起 */
+        .contact-btn:hover::before {
+            opacity: 0.85; 
         }
         .contact-btn:active {
             transform: scale(0.95);
-            box-shadow: 0 5px 20px rgba(168, 85, 247, 0.3);
         }
 
         .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; width: 100%; }
@@ -221,22 +242,21 @@
         .info-item {
             background: rgba(255,255,255,0.04); padding: 18px; border-radius: 18px;
             min-height: 85px; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;
-            transition: all 0.3s ease;
+            transition: all 0.5s var(--smooth-curve);
             border: 1px solid rgba(255, 255, 255, 0.0);
         }
         .info-item:hover {
-            background: rgba(255,255,255,0.08); transform: translateY(-3px);
-            border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.08); transform: translateY(-4px);
+            border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 12px 24px rgba(0,0,0,0.3);
         }
 
         section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 80px 20px; box-sizing: border-box; }
         
-        /* --- 進場動畫：徹底解決 iOS Safari 殘影與黑塊問題 --- */
+        /* --- 進場動畫：頂級平滑化 --- */
         .reveal-element { 
             opacity: 0; 
-            /* 使用 3D 加速 translate3d 來解決 iOS Safari 渲染黑塊 bug */
-            transform: translate3d(0, 30px, 0); 
-            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translate3d(0, 40px, 0); 
+            transition: opacity 0.9s var(--smooth-curve), transform 0.9s var(--smooth-curve);
             will-change: opacity, transform; 
         }
         .reveal-element.reveal { 
@@ -247,17 +267,10 @@
         .delay-2 { transition-delay: 0.2s; }
 
         .section-title { font-size: clamp(40px, 8vw, 80px); font-weight: 900; text-transform: uppercase; margin-bottom: 40px; letter-spacing: -2px; }
-        
-        /* --- 區塊小標題 --- */
-        .section-subtitle {
-            font-size: 16px; color: #a855f7; font-weight: 700;
-            letter-spacing: 3px; text-transform: uppercase;
-            margin-top: -20px; margin-bottom: 30px;
-        }
-
+        .section-subtitle { font-size: 16px; color: #a855f7; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-top: -20px; margin-bottom: 30px; }
         .home-subtitle { font-size: clamp(14px, 4vw, 20px); font-weight: 600; color: rgba(255, 255, 255, 0.7); letter-spacing: 3px; margin-bottom: 48px; }
 
-        .profile-img { width: 160px; height: 160px; border-radius: 50%; background: linear-gradient(45deg, #6366f1, #a855f7); padding: 3px; flex-shrink: 0; transition: transform 0.5s ease; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3); }
+        .profile-img { width: 160px; height: 160px; border-radius: 50%; background: linear-gradient(45deg, #6366f1, #a855f7); padding: 3px; flex-shrink: 0; transition: transform 0.8s var(--smooth-curve); box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3); }
         .about-card:hover .profile-img { transform: scale(1.05) rotate(5deg); }
         .profile-img .inner { width: 100%; height: 100%; border-radius: 50%; background: #111; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .profile-img img { width: 100%; height: 100%; object-fit: cover; }
@@ -270,39 +283,39 @@
             font-size: 15px; color: rgba(255, 255, 255, 0.8);
             line-height: 1.8; margin-bottom: 32px; padding: 16px 20px;
             background: rgba(255, 255, 255, 0.02); border-radius: 12px;
-            border-left: 4px solid #a855f7; text-align: justify; transition: 0.3s ease;
+            border-left: 4px solid #a855f7; text-align: justify; transition: 0.5s var(--smooth-curve);
         }
-        .intro-text:hover { background: rgba(255, 255, 255, 0.05); }
-        @media (max-width: 768px) { .intro-text { text-align: left; padding: 16px; font-size: 14.5px; } }
+        .intro-text:hover { background: rgba(255, 255, 255, 0.06); transform: translateX(5px); }
+        @media (max-width: 768px) { .intro-text { text-align: left; padding: 16px; font-size: 14.5px; } .intro-text:hover { transform: none; } }
 
         .info-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
         .info-value { font-size: 14px; color: rgba(255,255,255,0.9); font-weight: 500; line-height: 1.4; }
         
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: 0.4s ease; padding: 24px; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: 0.5s var(--smooth-curve); padding: 24px; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { 
             background: #151515; border: 1px solid rgba(255,255,255,0.1); border-radius: 32px; 
             padding: 40px 24px; width: 100%; max-width: 380px; box-sizing: border-box; text-align: center;
-            max-height: 85vh; overflow-y: auto; transform: translateY(30px) scale(0.95); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 85vh; overflow-y: auto; transform: translateY(40px) scale(0.95); transition: 0.6s var(--smooth-curve);
         }
         .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
         .modal-content::-webkit-scrollbar { width: 6px; }
         .modal-content::-webkit-scrollbar-track { background: transparent; }
         .modal-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
-        .social-link { display: block; width: 100%; padding: 16px; margin-bottom: 12px; background: rgba(255,255,255,0.05); border-radius: 18px; color: #fff; text-decoration: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-sizing: border-box; font-weight: 500; border: 1px solid rgba(255, 255, 255, 0.0); }
+        .social-link { display: block; width: 100%; padding: 16px; margin-bottom: 12px; background: rgba(255,255,255,0.05); border-radius: 18px; color: #fff; text-decoration: none; transition: all 0.4s var(--smooth-curve); box-sizing: border-box; font-weight: 500; border: 1px solid rgba(255, 255, 255, 0.0); }
         .social-link:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px) scale(1.02); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         .social-link:active { transform: scale(0.98); }
         
-        .back-to-top { position: fixed; bottom: 30px; right: 24px; width: 48px; height: 48px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 998; opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(10px); }
+        .back-to-top { position: fixed; bottom: 30px; right: 24px; width: 48px; height: 48px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 998; opacity: 0; visibility: hidden; transition: all 0.5s var(--smooth-curve); backdrop-filter: blur(10px); }
         .back-to-top.show { opacity: 1; visibility: visible; }
         .back-to-top:hover { background: rgba(255,255,255,0.25); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         .back-to-top:active { transform: translateY(0) scale(0.9); }
-        .back-to-top::after { content: ''; width: 10px; height: 10px; border-left: 2px solid #fff; border-top: 2px solid #fff; transform: rotate(45deg); margin-top: 5px; transition: 0.3s; }
-        .back-to-top:hover::after { margin-top: 0px; }
+        .back-to-top::after { content: ''; width: 10px; height: 10px; border-left: 2px solid #fff; border-top: 2px solid #fff; transform: rotate(45deg); margin-top: 5px; transition: 0.4s var(--smooth-curve); }
+        .back-to-top:hover::after { margin-top: -2px; }
         
         /* --- 側邊選單與懸停動畫 --- */
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(30px); z-index: 1000; display: flex; flex-direction: column; padding-top: 100px; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto;}
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(30px); z-index: 1000; display: flex; flex-direction: column; padding-top: 100px; transition: 0.6s var(--smooth-curve); overflow-y: auto;}
         .sidebar.active { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 999; opacity: 0; pointer-events: none; transition: 0.5s; backdrop-filter: blur(3px); }
         .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
@@ -310,14 +323,14 @@
         .nav-link { 
             color: rgba(255, 255, 255, 0.5); text-decoration: none; font-size: 15px; 
             font-weight: 500; letter-spacing: 2px; padding: 18px 40px; 
-            transition: 0.3s cubic-bezier(0.2, 0, 0, 1); position: relative; display: block;
+            transition: 0.4s var(--smooth-curve); position: relative; display: block;
         }
         .nav-link:hover { 
             color: #ffffff; padding-left: 55px; background: linear-gradient(90deg, rgba(168, 85, 247, 0.15) 0%, transparent 100%); 
         }
         .nav-link::before {
             content: ''; position: absolute; left: 30px; top: 50%; width: 0; height: 2px;
-            background: #a855f7; transition: 0.3s ease; transform: translateY(-50%); box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+            background: #a855f7; transition: 0.4s var(--smooth-curve); transform: translateY(-50%); box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
         }
         .nav-link:hover::before { width: 15px; }
 
