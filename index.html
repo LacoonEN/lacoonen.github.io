@@ -115,31 +115,82 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        /* 移除虛線與底色，保持乾淨的圖片外框 */
+        /* 徹底移除虛線框與底色，讓外框緊貼圖片 */
         .fursona-img-placeholder {
             width: 100%;
-            aspect-ratio: 3 / 2;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 14px;
             overflow: hidden;
             position: relative;
-            transition: 0.4s ease;
+            background: transparent !important;
+            border: none !important;
         }
-        .fursona-img-placeholder img { width: 100%; height: 100%; object-fit: contain; border-radius: 14px; transition: transform 0.6s ease; }
-        .fursona-card:hover .fursona-img-placeholder img { transform: scale(1.05); }
+        .fursona-img-placeholder img { 
+            width: 100%; 
+            height: auto; 
+            display: block; 
+            border-radius: 14px; 
+            transition: transform 0.6s ease; 
+        }
+        .fursona-card:hover .fursona-img-placeholder img { transform: scale(1.03); }
         
         .fursona-info h3 { margin: 0 0 12px 0; color: #fff; font-size: 26px; font-weight: 800; }
         .fursona-meta { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
         .fursona-meta-tag { background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); padding: 6px 14px; border-radius: 10px; font-size: 13px; color: #e9d5ff; font-weight: 500; transition: 0.3s ease; }
         .fursona-meta-tag:hover { background: rgba(168, 85, 247, 0.3); transform: translateY(-2px); }
-        
-        /* 超連結樣式優化 */
         .fursona-meta-tag a { color: inherit; text-decoration: underline; text-underline-offset: 3px; transition: 0.3s; }
         .fursona-meta-tag a:hover { color: #ffffff; text-decoration-color: #ffffff; }
-
         .fursona-story { color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.8; border-left: 3px solid #6366f1; padding-left: 16px; margin-top: 8px; text-align: justify; }
+
+        /* --- 活動場次橫向輪播 --- */
+        .events-carousel {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 20px;
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+        }
+        .events-carousel::-webkit-scrollbar { display: none; } /* Chrome, Safari */
+        
+        .event-card {
+            flex: 0 0 85%; /* 讓下一張卡片露出一點點，提示可滑動 */
+            max-width: 380px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+            overflow: hidden;
+            scroll-snap-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.0);
+            display: flex;
+            flex-direction: column;
+        }
+        .event-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        @media (min-width: 768px) {
+            /* 在大螢幕上並排顯示 */
+            .event-card { flex: 0 0 calc(50% - 10px); scroll-snap-align: start; }
+        }
+        
+        .event-img { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; }
+        .event-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+        .event-card:hover .event-img img { transform: scale(1.05); }
+        
+        .event-info { padding: 24px; text-align: left; }
+        .event-title { margin: 0 0 6px 0; font-size: 22px; font-weight: 800; color: #fff; }
+        .event-date { font-size: 14px; color: #a855f7; font-weight: 600; letter-spacing: 1px; margin-bottom: 20px; }
+        .event-link {
+            display: inline-block; padding: 10px 24px;
+            background: rgba(168, 85, 247, 0.15); color: #e9d5ff; text-decoration: none;
+            border-radius: 12px; font-size: 13px; font-weight: 600;
+            transition: 0.3s; border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        .event-link:hover { background: rgba(168, 85, 247, 0.3); color: #fff; transform: translateY(-2px); }
 
         /* --- 與我聯繫按鈕發光 --- */
         .contact-btn {
@@ -168,10 +219,8 @@
             border: 1px solid rgba(255, 255, 255, 0.0);
         }
         .info-item:hover {
-            background: rgba(255,255,255,0.08);
-            transform: translateY(-3px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.08); transform: translateY(-3px);
+            border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
         section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 80px 20px; box-sizing: border-box; }
@@ -190,15 +239,9 @@
         }
         .delay-1 { transition-delay: 0.1s; }
         .delay-2 { transition-delay: 0.2s; }
-        .delay-3 { transition-delay: 0.3s; }
 
         .section-title { font-size: clamp(40px, 8vw, 80px); font-weight: 900; text-transform: uppercase; margin-bottom: 40px; letter-spacing: -2px; }
-        
-        .home-subtitle {
-            font-size: clamp(14px, 4vw, 20px); font-weight: 600; 
-            color: rgba(255, 255, 255, 0.7); letter-spacing: 3px; 
-            margin-bottom: 48px;
-        }
+        .home-subtitle { font-size: clamp(14px, 4vw, 20px); font-weight: 600; color: rgba(255, 255, 255, 0.7); letter-spacing: 3px; margin-bottom: 48px; }
 
         .profile-img { width: 160px; height: 160px; border-radius: 50%; background: linear-gradient(45deg, #6366f1, #a855f7); padding: 3px; flex-shrink: 0; transition: transform 0.5s ease; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3); }
         .about-card:hover .profile-img { transform: scale(1.05) rotate(5deg); }
@@ -213,13 +256,10 @@
             font-size: 15px; color: rgba(255, 255, 255, 0.8);
             line-height: 1.8; margin-bottom: 32px; padding: 16px 20px;
             background: rgba(255, 255, 255, 0.02); border-radius: 12px;
-            border-left: 4px solid #a855f7; text-align: justify;
-            transition: 0.3s ease;
+            border-left: 4px solid #a855f7; text-align: justify; transition: 0.3s ease;
         }
         .intro-text:hover { background: rgba(255, 255, 255, 0.05); }
-        @media (max-width: 768px) {
-            .intro-text { text-align: left; padding: 16px; font-size: 14.5px; }
-        }
+        @media (max-width: 768px) { .intro-text { text-align: left; padding: 16px; font-size: 14.5px; } }
 
         .info-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
         .info-value { font-size: 14px; color: rgba(255,255,255,0.9); font-weight: 500; line-height: 1.4; }
@@ -263,8 +303,7 @@
         }
         .nav-link::before {
             content: ''; position: absolute; left: 30px; top: 50%; width: 0; height: 2px;
-            background: #a855f7; transition: 0.3s ease; transform: translateY(-50%);
-            box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+            background: #a855f7; transition: 0.3s ease; transform: translateY(-50%); box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
         }
         .nav-link:hover::before { width: 15px; }
 
@@ -391,7 +430,31 @@
 
     <section id="events">
         <h2 class="section-title reveal-element" id="titleEvents">EVENTS</h2>
-        <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
+        <div class="content-area reveal-element delay-1" style="background: transparent; padding: 0;">
+            <div class="events-carousel">
+                <div class="event-card">
+                    <div class="event-img">
+                        <img src="Event_UTFG_20260627.jpeg" alt="UTFG">
+                    </div>
+                    <div class="event-info">
+                        <h3 class="event-title">UTFG</h3>
+                        <div class="event-date">2026 / 06 / 27</div>
+                        <a href="https://www.utfg.tw" target="_blank" class="event-link">Event Website</a>
+                    </div>
+                </div>
+                
+                <div class="event-card">
+                    <div class="event-img">
+                        <img src="Event_INFURNITY_20261030.jpeg" alt="INFURNITY">
+                    </div>
+                    <div class="event-info">
+                        <h3 class="event-title">INFURNITY</h3>
+                        <div class="event-date">2026 / 10 / 30</div>
+                        <a href="https://www.infurnity.com" target="_blank" class="event-link">Event Website</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section id="album">
@@ -460,7 +523,6 @@
                 if (entry.isIntersecting) {
                     entry.target.classList.add('reveal'); 
                 } else {
-                    // 離開畫面時移除 class，這樣再次滑入就會重新播放動畫
                     entry.target.classList.remove('reveal');
                 }
             }); 
@@ -493,7 +555,8 @@
                 fName3: "幻幻 HuanHuan", 
                 fDes3: '設定設計：<a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">冷軌</a>', 
                 fMak3: '毛裝工作室：<a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">漁屋</a>', 
-                fStory3: "是隻閃電蜜蜂小龍。"
+                fStory3: "是隻閃電蜜蜂小龍。",
+                eventWeb: "活動官網"
             },
             EN: { 
                 label: "EN", 
@@ -515,7 +578,8 @@
                 fName3: "HuanHuan", 
                 fDes3: 'Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a>', 
                 fMak3: 'Fursuit Maker: <a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">Yuwu Fursuit</a>', 
-                fStory3: "A lightning bee dragon."
+                fStory3: "A lightning bee dragon.",
+                eventWeb: "Event Website"
             }
         };
 
@@ -525,7 +589,7 @@
             
             document.getElementById('langContainer').classList.remove('active');
             
-            const contentElements = document.querySelectorAll('.section-title, .home-subtitle, .intro-text, .info-name, .info-tagline, .info-label, .info-value, .fursona-info h3, .fursona-meta-tag, .fursona-story, .m-text, .contact-btn');
+            const contentElements = document.querySelectorAll('.section-title, .home-subtitle, .intro-text, .info-name, .info-tagline, .info-label, .info-value, .fursona-info h3, .fursona-meta-tag, .fursona-story, .m-text, .contact-btn, .event-link');
             
             contentElements.forEach(el => el.style.opacity = '0');
             
@@ -561,6 +625,7 @@
 
                 document.getElementById('ctaBtn').innerText = t.cta; document.getElementById('modalTitle').innerText = t.modal;
                 document.querySelectorAll('.m-text').forEach(el => el.innerText = t.maintenance);
+                document.querySelectorAll('.event-link').forEach(el => el.innerText = t.eventWeb);
                 
                 contentElements.forEach(el => el.style.opacity = '1');
             }, 300);
