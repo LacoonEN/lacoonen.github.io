@@ -122,7 +122,6 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        /* 圖片佔位符優化 */
         .fursona-img-placeholder {
             width: 100%;
             border-radius: 14px;
@@ -130,6 +129,8 @@
             position: relative;
             background: transparent !important;
             border: none !important;
+            /* 修復 iOS 圓角失效問題 */
+            transform: translateZ(0);
         }
         .fursona-img-placeholder img { 
             width: 100%; 
@@ -155,10 +156,12 @@
             gap: 20px;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
-            padding-bottom: 20px;
+            /* 加入 padding-top 避免 hover 上浮時被容器邊界切掉 */
+            padding: 15px 5px 25px 5px; 
             width: 100%;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
+            box-sizing: border-box;
         }
         .events-carousel::-webkit-scrollbar { display: none; }
         
@@ -173,10 +176,12 @@
             border: 1px solid rgba(255, 255, 255, 0.0);
             display: flex;
             flex-direction: column;
+            /* 修復 iOS 圓角失效問題 */
+            transform: translateZ(0); 
         }
         .event-card:hover {
             background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-6px);
+            transform: translateY(-8px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
@@ -186,7 +191,7 @@
             .event-card { flex: 0 0 calc(50% - 10px); scroll-snap-align: start; }
         }
         
-        .event-img { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; }
+        .event-img { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; transform: translateZ(0); }
         .event-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s var(--smooth-curve); }
         .event-card:hover .event-img img { transform: scale(1.05); }
         
@@ -203,33 +208,28 @@
 
         /* --- 與我聯繫按鈕：呼吸漸進光暈優化 --- */
         .contact-btn {
-            position: relative; /* 確保偽元素定位正常 */
+            position: relative; 
             appearance: none; border: none; cursor: pointer; color: #ffffff;
             font-size: 14px; font-weight: 700; letter-spacing: 2px;
             padding: 18px 50px; border-radius: 50px;
             background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            /* 基礎陰影 */
             box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2); 
-            /* 這裡只負責縮放與位移的彈性動畫 */
             transition: transform 0.5s var(--bounce-curve);
-            z-index: 1; /* 建立層級，讓光暈在背後 */
+            z-index: 1; 
         }
-        /* 創造專屬的光暈層 */
         .contact-btn::before {
             content: '';
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
             border-radius: 50px;
             z-index: -1;
-            filter: blur(20px); /* 光暈模糊度 */
-            opacity: 0; /* 預設完全透明不發光 */
-            /* 重點：讓透明度變化極度緩慢順暢 */
+            filter: blur(20px); 
+            opacity: 0; 
             transition: opacity 0.8s ease-in-out;
         }
         .contact-btn:hover {
             transform: scale(1.05) translateY(-3px);
         }
-        /* 滑鼠懸停時慢慢亮起 */
         .contact-btn:hover::before {
             opacity: 0.85; 
         }
@@ -584,7 +584,7 @@
                 fDes3: '設定設計：<a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">冷軌</a>', 
                 fMak3: '毛裝工作室：<a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">漁屋</a>', 
                 fStory3: "是隻閃電蜜蜂小龍。",
-                eventsSub: "即將前往的獸展",
+                eventsSub: "即將前往",
                 eventWeb: "活動官網"
             },
             EN: { 
