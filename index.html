@@ -155,6 +155,12 @@
         }
         .carousel-container::-webkit-scrollbar { display: none; }
         
+        /* 【關鍵修復】：當輪播裡只有「一張」卡片時，自動在手機版置中 */
+        .carousel-container > .card-base:only-child {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .card-base {
             flex: 0 0 85%; max-width: 380px; background: rgba(255, 255, 255, 0.04);
             border-radius: 20px; overflow: hidden; scroll-snap-align: center;
@@ -558,7 +564,6 @@
                 document.getElementById('modalProductTitle').innerText = t.pTitle1;
                 document.getElementById('modalProductDesc').innerHTML = t.pDesc1;
                 document.getElementById('modalProductBtn').innerText = t.buyBtn;
-                /* 已更新為新的商品連結 */
                 document.getElementById('modalProductBtn').href = 'https://myship.7-11.com.tw/general/detail/GM2603065181808';
             }
             openModal('productModal');
