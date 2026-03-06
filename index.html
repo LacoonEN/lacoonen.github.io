@@ -7,13 +7,13 @@
 
     <meta property="og:type" content="website">
     <meta property="og:title" content="LacoonEN | Portfolio">
-    <meta property="og:description" content="伊恩浣熊 X 沃爾夫 X 幻幻 | 個人作品集與最新活動紀錄">
+    <meta property="og:description" content="伊恩浣熊 X 沃爾夫 X 幻幻 | 官方網站">
     <meta property="og:url" content="https://lacoonen.github.io/">
     <meta property="og:image" content="https://lacoonen.github.io/og-image.jpeg">
     
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="LacoonEN | Portfolio">
-    <meta name="twitter:description" content="伊恩浣熊 X 沃爾夫 X 幻幻 | 個人作品集與最新活動紀錄">
+    <meta name="twitter:description" content="伊恩浣熊 X 沃爾夫 X 幻幻 | 官方網站">
     <meta name="twitter:image" content="https://lacoonen.github.io/og-image.jpeg">
 
     <style>
@@ -113,18 +113,19 @@
         }
         @media (max-width: 768px) { .content-area { width: calc(100% - 20px); padding: 40px 16px;} }
 
-        /* --- 獸設定卡片樣式 --- */
+        /* --- 獸設定卡片樣式 (滿版圖片優化) --- */
         .fursona-card {
             background: rgba(255, 255, 255, 0.04);
             border-radius: 24px;
-            padding: 30px;
+            /* 移除原本的 padding，讓圖片可以貼齊邊緣 */
+            padding: 0; 
             margin-bottom: 30px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
             text-align: left;
             transition: all 0.6s var(--smooth-curve);
             border: 1px solid rgba(255, 255, 255, 0.0);
+            overflow: hidden; /* 確保內部圖片完美貼合圓角 */
         }
         .fursona-card:last-child { margin-bottom: 0; }
         .fursona-card:hover { 
@@ -136,20 +137,25 @@
         
         .fursona-img-placeholder {
             width: 100%;
-            border-radius: 14px;
-            overflow: hidden;
             position: relative;
             background: transparent !important;
             border: none !important;
-            /* Apple 專用遮罩修復：解決 iOS Safari 圓角破圖與圖片黑屏 bug */
-            -webkit-mask-image: -webkit-radial-gradient(white, black);
+            /* 滿版圖片不需要自己設圓角，由父層的 overflow:hidden 控制 */
         }
         .fursona-img-placeholder img { 
             width: 100%; height: auto; display: block; 
-            border-radius: 14px; transition: transform 0.8s var(--smooth-curve); 
+            object-fit: cover; /* 確保無縫填滿 */
+            transition: transform 0.8s var(--smooth-curve); 
         }
         .fursona-card:hover .fursona-img-placeholder img { transform: scale(1.04); }
         
+        /* 替文字區塊加回 padding */
+        .fursona-info {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
         .fursona-info h3 { margin: 0 0 12px 0; color: #fff; font-size: 26px; font-weight: 800; }
         .fursona-meta { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
         .fursona-meta-tag { background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); padding: 6px 14px; border-radius: 10px; font-size: 13px; color: #e9d5ff; font-weight: 500; transition: 0.4s var(--smooth-curve); }
@@ -161,7 +167,9 @@
         /* --- 輪播共用設定 (Events & Shop) --- */
         .carousel-container {
             display: flex; gap: 20px; overflow-x: auto;
-            scroll-snap-type: x mandatory; padding: 15px 5px 25px 5px; 
+            scroll-snap-type: x mandatory; 
+            /* 加大上下 padding，確保卡片上浮與陰影絕對不會被切掉 */
+            padding: 35px 10px 45px 10px; 
             width: 100%; -webkit-overflow-scrolling: touch; scrollbar-width: none; box-sizing: border-box;
         }
         .carousel-container::-webkit-scrollbar { display: none; }
@@ -181,8 +189,8 @@
             -webkit-mask-image: -webkit-radial-gradient(white, black);
         }
         .card-base:hover {
-            background: rgba(255, 255, 255, 0.08); transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.08); transform: translateY(-10px);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.06);
         }
         @media (min-width: 768px) {
             .carousel-container { justify-content: center; }
@@ -203,7 +211,7 @@
         .card-info { padding: 24px; text-align: left; }
         .card-title { margin: 0; font-size: 20px; font-weight: 800; color: #fff; line-height: 1.4; }
         .card-date { font-size: 14px; color: #a855f7; font-weight: 600; letter-spacing: 1px; margin-bottom: 20px; margin-top: 6px; }
-        .card-tag { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 500; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .card-tag { display: inline-block; font-size: 12px; background: rgba(168, 85, 247, 0.2); padding: 4px 10px; border-radius: 8px; color: #e9d5ff; font-weight: 600; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
 
         .event-link {
             display: inline-block; padding: 10px 24px;
@@ -359,7 +367,7 @@
     <div class="back-to-top" id="backToTop" onclick="scrollToTop()"></div>
 
     <section id="home">
-        <h1 class="section-title reveal-element" style="font-size: clamp(50px, 12vw, 120px); line-height: 1; margin-bottom: 24px;">HI, I'M<br>LacoonEN</h1>
+        <h1 class="section-title reveal-element" style="font-size: clamp(50px, 12vw, 120px); line-height: 1.15; margin-bottom: 24px; padding-bottom: 10px;">HI, I'M<br>LacoonEN</h1>
         <div class="home-subtitle reveal-element delay-1" id="homeSubtitle">LacoonEN X Wolf X HuanHuan</div>
         <button class="contact-btn reveal-element delay-2" id="ctaBtn" onclick="openModal('socialModal')">CONTACT ME</button>
     </section>
