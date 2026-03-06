@@ -129,6 +129,7 @@
             position: relative;
             background: transparent !important;
             border: none !important;
+            /* 修復 iOS 圓角失效問題 */
             transform: translateZ(0);
         }
         .fursona-img-placeholder img { 
@@ -557,7 +558,8 @@
                 document.getElementById('modalProductTitle').innerText = t.pTitle1;
                 document.getElementById('modalProductDesc').innerHTML = t.pDesc1;
                 document.getElementById('modalProductBtn').innerText = t.buyBtn;
-                document.getElementById('modalProductBtn').href = 'https://myship.7-11.com.tw/general/detail/GM2603065181808/2603061065307906';
+                /* 已更新為新的商品連結 */
+                document.getElementById('modalProductBtn').href = 'https://myship.7-11.com.tw/general/detail/GM2603065181808';
             }
             openModal('productModal');
         }
