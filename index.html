@@ -129,15 +129,11 @@
             position: relative;
             background: transparent !important;
             border: none !important;
-            /* 修復 iOS 圓角失效問題 */
             transform: translateZ(0);
         }
         .fursona-img-placeholder img { 
-            width: 100%; 
-            height: auto; 
-            display: block; 
-            border-radius: 14px; 
-            transition: transform 0.8s var(--smooth-curve); 
+            width: 100%; height: auto; display: block; 
+            border-radius: 14px; transition: transform 0.8s var(--smooth-curve); 
             will-change: transform;
         }
         .fursona-card:hover .fursona-img-placeholder img { transform: scale(1.04); }
@@ -150,54 +146,45 @@
         .fursona-meta-tag a:hover { color: #ffffff; text-decoration-color: #ffffff; }
         .fursona-story { color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.8; border-left: 3px solid #6366f1; padding-left: 16px; margin-top: 8px; text-align: justify; }
 
-        /* --- 活動場次橫向輪播 --- */
-        .events-carousel {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            /* 加入 padding-top 避免 hover 上浮時被容器邊界切掉 */
-            padding: 15px 5px 25px 5px; 
-            width: 100%;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            box-sizing: border-box;
+        /* --- 輪播共用設定 (Events & Shop) --- */
+        .carousel-container {
+            display: flex; gap: 20px; overflow-x: auto;
+            scroll-snap-type: x mandatory; padding: 15px 5px 25px 5px; 
+            width: 100%; -webkit-overflow-scrolling: touch; scrollbar-width: none; box-sizing: border-box;
         }
-        .events-carousel::-webkit-scrollbar { display: none; }
+        .carousel-container::-webkit-scrollbar { display: none; }
         
-        .event-card {
-            flex: 0 0 85%;
-            max-width: 380px;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 20px;
-            overflow: hidden;
-            scroll-snap-align: center;
-            transition: all 0.6s var(--smooth-curve);
-            border: 1px solid rgba(255, 255, 255, 0.0);
-            display: flex;
-            flex-direction: column;
-            /* 修復 iOS 圓角失效問題 */
-            transform: translateZ(0); 
+        .card-base {
+            flex: 0 0 85%; max-width: 380px; background: rgba(255, 255, 255, 0.04);
+            border-radius: 20px; overflow: hidden; scroll-snap-align: center;
+            transition: all 0.6s var(--smooth-curve); border: 1px solid rgba(255, 255, 255, 0.0);
+            display: flex; flex-direction: column; transform: translateZ(0); 
         }
-        .event-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+        .card-base:hover {
+            background: rgba(255, 255, 255, 0.08); transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.06);
         }
-        
         @media (min-width: 768px) {
-            .events-carousel { justify-content: center; }
-            .event-card { flex: 0 0 calc(50% - 10px); scroll-snap-align: start; }
+            .carousel-container { justify-content: center; }
+            .card-base { flex: 0 0 calc(50% - 10px); scroll-snap-align: start; }
         }
-        
+
+        /* Events 專用 16:9 */
         .event-img { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; transform: translateZ(0); }
         .event-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s var(--smooth-curve); }
-        .event-card:hover .event-img img { transform: scale(1.05); }
+        .card-base:hover .event-img img { transform: scale(1.05); }
+
+        /* Shop 專用 1:1 */
+        .shop-card { cursor: pointer; }
+        .shop-img { width: 100%; aspect-ratio: 1 / 1; overflow: hidden; transform: translateZ(0); background: #111; }
+        .shop-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s var(--smooth-curve); }
+        .card-base:hover .shop-img img { transform: scale(1.05); }
         
-        .event-info { padding: 24px; text-align: left; }
-        .event-title { margin: 0 0 6px 0; font-size: 22px; font-weight: 800; color: #fff; }
-        .event-date { font-size: 14px; color: #a855f7; font-weight: 600; letter-spacing: 1px; margin-bottom: 20px; }
+        .card-info { padding: 24px; text-align: left; }
+        .card-title { margin: 0 0 6px 0; font-size: 22px; font-weight: 800; color: #fff; line-height: 1.3; }
+        .card-date { font-size: 14px; color: #a855f7; font-weight: 600; letter-spacing: 1px; margin-bottom: 20px; }
+        .card-tag { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 500; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+
         .event-link {
             display: inline-block; padding: 10px 24px;
             background: rgba(168, 85, 247, 0.15); color: #e9d5ff; text-decoration: none;
@@ -206,7 +193,7 @@
         }
         .event-link:hover { background: rgba(168, 85, 247, 0.3); color: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2); }
 
-        /* --- 與我聯繫按鈕：呼吸漸進光暈優化 --- */
+        /* --- 與我聯繫 & 購買按鈕：呼吸漸進光暈優化 --- */
         .contact-btn {
             position: relative; 
             appearance: none; border: none; cursor: pointer; color: #ffffff;
@@ -216,34 +203,24 @@
             box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2); 
             transition: transform 0.5s var(--bounce-curve);
             z-index: 1; 
+            text-align: center;
         }
         .contact-btn::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            border-radius: 50px;
-            z-index: -1;
-            filter: blur(20px); 
-            opacity: 0; 
-            transition: opacity 0.8s ease-in-out;
+            border-radius: 50px; z-index: -1; filter: blur(20px); 
+            opacity: 0; transition: opacity 0.8s ease-in-out;
         }
-        .contact-btn:hover {
-            transform: scale(1.05) translateY(-3px);
-        }
-        .contact-btn:hover::before {
-            opacity: 0.85; 
-        }
-        .contact-btn:active {
-            transform: scale(0.95);
-        }
+        .contact-btn:hover { transform: scale(1.05) translateY(-3px); }
+        .contact-btn:hover::before { opacity: 0.85; }
+        .contact-btn:active { transform: scale(0.95); }
 
         .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; width: 100%; }
         @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
         .info-item {
             background: rgba(255,255,255,0.04); padding: 18px; border-radius: 18px;
             min-height: 85px; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;
-            transition: all 0.5s var(--smooth-curve);
-            border: 1px solid rgba(255, 255, 255, 0.0);
+            transition: all 0.5s var(--smooth-curve); border: 1px solid rgba(255, 255, 255, 0.0);
         }
         .info-item:hover {
             background: rgba(255,255,255,0.08); transform: translateY(-4px);
@@ -254,15 +231,11 @@
         
         /* --- 進場動畫：頂級平滑化 --- */
         .reveal-element { 
-            opacity: 0; 
-            transform: translate3d(0, 40px, 0); 
+            opacity: 0; transform: translate3d(0, 40px, 0); 
             transition: opacity 0.9s var(--smooth-curve), transform 0.9s var(--smooth-curve);
             will-change: opacity, transform; 
         }
-        .reveal-element.reveal { 
-            opacity: 1; 
-            transform: translate3d(0, 0, 0); 
-        }
+        .reveal-element.reveal { opacity: 1; transform: translate3d(0, 0, 0); }
         .delay-1 { transition-delay: 0.1s; }
         .delay-2 { transition-delay: 0.2s; }
 
@@ -280,10 +253,8 @@
         .info-tagline { color: #a855f7; font-weight: 600; letter-spacing: 2px; margin-bottom: 24px; font-size: 14px; }
         
         .intro-text {
-            font-size: 15px; color: rgba(255, 255, 255, 0.8);
-            line-height: 1.8; margin-bottom: 32px; padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.02); border-radius: 12px;
-            border-left: 4px solid #a855f7; text-align: justify; transition: 0.5s var(--smooth-curve);
+            font-size: 15px; color: rgba(255, 255, 255, 0.8); line-height: 1.8; margin-bottom: 32px; padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.02); border-radius: 12px; border-left: 4px solid #a855f7; text-align: justify; transition: 0.5s var(--smooth-curve);
         }
         .intro-text:hover { background: rgba(255, 255, 255, 0.06); transform: translateX(5px); }
         @media (max-width: 768px) { .intro-text { text-align: left; padding: 16px; font-size: 14.5px; } .intro-text:hover { transform: none; } }
@@ -291,6 +262,7 @@
         .info-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
         .info-value { font-size: 14px; color: rgba(255,255,255,0.9); font-weight: 500; line-height: 1.4; }
         
+        /* Modal 共用樣式 */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: 0.5s var(--smooth-curve); padding: 24px; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { 
@@ -306,6 +278,10 @@
         .social-link { display: block; width: 100%; padding: 16px; margin-bottom: 12px; background: rgba(255,255,255,0.05); border-radius: 18px; color: #fff; text-decoration: none; transition: all 0.4s var(--smooth-curve); box-sizing: border-box; font-weight: 500; border: 1px solid rgba(255, 255, 255, 0.0); }
         .social-link:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px) scale(1.02); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         .social-link:active { transform: scale(0.98); }
+
+        /* 商品詳細 Modal 專用 */
+        .product-modal-img { width: 100%; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: cover; aspect-ratio: 1/1; }
+        .product-desc { text-align: left; font-size: 14.5px; color: rgba(255,255,255,0.8); line-height: 1.8; margin-bottom: 30px; padding: 16px; background: rgba(255,255,255,0.03); border-radius: 16px; }
         
         .back-to-top { position: fixed; bottom: 30px; right: 24px; width: 48px; height: 48px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 998; opacity: 0; visibility: hidden; transition: all 0.5s var(--smooth-curve); backdrop-filter: blur(10px); }
         .back-to-top.show { opacity: 1; visibility: visible; }
@@ -367,7 +343,7 @@
     <section id="home">
         <h1 class="section-title reveal-element" style="font-size: clamp(50px, 12vw, 120px); line-height: 1; margin-bottom: 24px;">HI, I'M<br>LacoonEN</h1>
         <div class="home-subtitle reveal-element delay-1" id="homeSubtitle">LacoonEN X Wolf X HuanHuan</div>
-        <button class="contact-btn reveal-element delay-2" id="ctaBtn" onclick="openModal()">CONTACT ME</button>
+        <button class="contact-btn reveal-element delay-2" id="ctaBtn" onclick="openModal('socialModal')">CONTACT ME</button>
     </section>
 
     <section id="about">
@@ -459,25 +435,25 @@
         <h2 class="section-title reveal-element" id="titleEvents">EVENTS</h2>
         <div class="section-subtitle reveal-element delay-1" id="eventsSubtitle">NEXT STOPS</div>
         <div class="content-area reveal-element delay-2" style="background: transparent; padding: 0;">
-            <div class="events-carousel">
-                <div class="event-card">
+            <div class="carousel-container">
+                <div class="card-base event-card">
                     <div class="event-img">
                         <img src="Event_UTFG_20260627.jpeg" alt="UTFG">
                     </div>
-                    <div class="event-info">
-                        <h3 class="event-title">UTFG</h3>
-                        <div class="event-date">2026 / 06 / 27</div>
+                    <div class="card-info">
+                        <h3 class="card-title">UTFG</h3>
+                        <div class="card-date">2026 / 06 / 27</div>
                         <a href="https://www.utfg.tw" target="_blank" class="event-link">Event Website</a>
                     </div>
                 </div>
                 
-                <div class="event-card">
+                <div class="card-base event-card">
                     <div class="event-img">
                         <img src="Event_INFURNITY_20261030.jpeg" alt="INFURNITY">
                     </div>
-                    <div class="event-info">
-                        <h3 class="event-title">INFURNITY</h3>
-                        <div class="event-date">2026 / 10 / 30</div>
+                    <div class="card-info">
+                        <h3 class="card-title">INFURNITY</h3>
+                        <div class="card-date">2026 / 10 / 30</div>
                         <a href="https://www.infurnity.com" target="_blank" class="event-link">Event Website</a>
                     </div>
                 </div>
@@ -497,7 +473,19 @@
 
     <section id="shop">
         <h2 class="section-title reveal-element" id="titleShop">SHOP</h2>
-        <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
+        <div class="content-area reveal-element delay-1" style="background: transparent; padding: 0;">
+            <div class="carousel-container">
+                <div class="card-base shop-card" onclick="openProductModal('p1')">
+                    <div class="shop-img">
+                        <img src="Product_01.jpeg" alt="HuanHuan Patch">
+                    </div>
+                    <div class="card-info">
+                        <div class="card-tag" id="tagPreorder">Pre-order</div>
+                        <h3 class="card-title" id="pTitle1" style="font-size: 18px;">HuanHuan Embroidered Velcro Patch</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <footer>© 2026 LACOONEN PORTFOLIO | DESIGNED BY LACOONEN</footer>
@@ -512,13 +500,27 @@
                 <a href="https://xhslink.com/m/2QNs9Daahnb" class="social-link" target="_blank">小紅書 (Red)</a>
                 <a href="https://qm.qq.com/q/qZpAr0dOPC" class="social-link" target="_blank">QQ</a>
             </div>
-            <p onclick="closeModal()" style="margin-top:24px; font-size:12px; color:rgba(255,255,255,0.3); cursor:pointer; letter-spacing: 2px; transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">CLOSE</p>
+            <p onclick="closeModal('socialModal')" style="margin-top:24px; font-size:12px; color:rgba(255,255,255,0.3); cursor:pointer; letter-spacing: 2px; transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">CLOSE</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-content">
+            <img id="modalProductImg" class="product-modal-img" src="" alt="Product Image">
+            <h2 id="modalProductTitle" style="margin-top:0; margin-bottom:16px; font-size:20px; line-height: 1.4;"></h2>
+            <div id="modalProductDesc" class="product-desc"></div>
+            
+            <a href="#" target="_blank" id="modalProductBtn" class="contact-btn" style="display: block; width: 100%; box-sizing: border-box; text-decoration: none;">BUY NOW</a>
+            
+            <p onclick="closeModal('productModal')" style="margin-top:24px; font-size:12px; color:rgba(255,255,255,0.3); cursor:pointer; letter-spacing: 2px; transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">CLOSE</p>
         </div>
     </div>
 
     <script>
         window.onbeforeunload = function () { window.scrollTo(0, 0); };
         if (history.scrollRestoration) { history.scrollRestoration = 'manual'; }
+
+        let currentLangCode = 'EN';
 
         function toggleMenu() { 
             document.getElementById('langContainer').classList.remove('active');
@@ -539,10 +541,26 @@
 
         function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
         
-        const modal = document.getElementById('socialModal');
-        function openModal() { modal.classList.add('active'); }
-        function closeModal() { modal.classList.remove('active'); }
-        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        function openModal(modalId) { document.getElementById(modalId).classList.add('active'); }
+        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+        
+        // 點擊背景關閉所有 Modal
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+        });
+
+        /* 開啟商品 Modal 並動態載入資料 */
+        function openProductModal(prodId) {
+            const t = translations[currentLangCode];
+            if (prodId === 'p1') {
+                document.getElementById('modalProductImg').src = 'Product_01.jpeg';
+                document.getElementById('modalProductTitle').innerText = t.pTitle1;
+                document.getElementById('modalProductDesc').innerHTML = t.pDesc1;
+                document.getElementById('modalProductBtn').innerText = t.buyBtn;
+                document.getElementById('modalProductBtn').href = 'https://myship.7-11.com.tw/general/detail/GM2603065181808/2603061065307906';
+            }
+            openModal('productModal');
+        }
 
         /* 讓動畫每次進出畫面都觸發 */
         const observerOptions = { threshold: 0.1, rootMargin: "0px" };
@@ -585,7 +603,11 @@
                 fMak3: '毛裝工作室：<a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">漁屋</a>', 
                 fStory3: "是隻閃電蜜蜂小龍。",
                 eventsSub: "即將前往",
-                eventWeb: "活動官網"
+                eventWeb: "活動官網",
+                tagPreorder: "預購商品",
+                pTitle1: "幻幻HuanHuan刺繡魔鬼氈布貼（預購）",
+                pDesc1: "首批少量預購中<br>預計 3/14 出貨<br><br>幻幻HuanHuan刺繡魔鬼氈布貼（附毛面）<br>尺寸：高度 80mm x 寬度 70mm",
+                buyBtn: "立即購買"
             },
             EN: { 
                 label: "EN", 
@@ -609,17 +631,22 @@
                 fMak3: 'Fursuit Maker: <a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">Yuwu Fursuit</a>', 
                 fStory3: "A lightning bee dragon.",
                 eventsSub: "NEXT STOPS",
-                eventWeb: "Event Website"
+                eventWeb: "Event Website",
+                tagPreorder: "Pre-order",
+                pTitle1: "HuanHuan Embroidered Velcro Patch",
+                pDesc1: "First batch limited pre-order.<br>Estimated shipping: Mar 14.<br><br>HuanHuan Embroidered Velcro Patch (Loop side included).<br>Size: 80mm(H) x 70mm(W)",
+                buyBtn: "BUY NOW"
             }
         };
 
         function changeLang(event, langCode) {
             event.stopPropagation(); 
+            currentLangCode = langCode;
             const t = translations[langCode];
             
             document.getElementById('langContainer').classList.remove('active');
             
-            const contentElements = document.querySelectorAll('.section-title, .section-subtitle, .home-subtitle, .intro-text, .info-name, .info-tagline, .info-label, .info-value, .fursona-info h3, .fursona-meta-tag, .fursona-story, .m-text, .contact-btn, .event-link');
+            const contentElements = document.querySelectorAll('.section-title, .section-subtitle, .home-subtitle, .intro-text, .info-name, .info-tagline, .info-label, .info-value, .fursona-info h3, .fursona-meta-tag, .fursona-story, .m-text, .contact-btn, .event-link, .card-title, .card-tag, .product-desc');
             
             contentElements.forEach(el => el.style.opacity = '0');
             
@@ -657,6 +684,15 @@
                 document.getElementById('ctaBtn').innerText = t.cta; document.getElementById('modalTitle').innerText = t.modal;
                 document.querySelectorAll('.m-text').forEach(el => el.innerText = t.maintenance);
                 document.querySelectorAll('.event-link').forEach(el => el.innerText = t.eventWeb);
+                
+                // 更新 Shop 卡片
+                document.getElementById('pTitle1').innerText = t.pTitle1;
+                document.getElementById('tagPreorder').innerText = t.tagPreorder;
+
+                // 若 Modal 開啟中，同步更新 Modal 內容
+                document.getElementById('modalProductTitle').innerText = t.pTitle1;
+                document.getElementById('modalProductDesc').innerHTML = t.pDesc1;
+                document.getElementById('modalProductBtn').innerText = t.buyBtn;
                 
                 contentElements.forEach(el => el.style.opacity = '1');
             }, 300);
