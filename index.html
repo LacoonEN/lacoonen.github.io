@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LacoonEN | Portfolio</title>
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="LacoonEN | Portfolio">
+    <meta property="og:description" content="伊恩浣熊 X 沃爾夫 X 幻幻 | 個人作品集與最新活動紀錄">
+    <meta property="og:url" content="https://lacoonen.github.io/">
+    <meta property="og:image" content="https://lacoonen.github.io/og-image.jpeg">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LacoonEN | Portfolio">
+    <meta name="twitter:description" content="伊恩浣熊 X 沃爾夫 X 幻幻 | 個人作品集與最新活動紀錄">
+    <meta name="twitter:image" content="https://lacoonen.github.io/og-image.jpeg">
+
     <style>
         /* --- 全局與強迫症優化 --- */
         html { scroll-behavior: smooth; }
@@ -648,7 +660,6 @@
             
             document.getElementById('langContainer').classList.remove('active');
             
-            // 已將 .product-desc 從需變更透明度的元素清單中移除
             const contentElements = document.querySelectorAll('.section-title, .section-subtitle, .home-subtitle, .intro-text, .info-name, .info-tagline, .info-label, .info-value, .fursona-info h3, .fursona-meta-tag, .fursona-story, .m-text, .contact-btn, .event-link, .card-title, .card-tag');
             
             contentElements.forEach(el => el.style.opacity = '0');
