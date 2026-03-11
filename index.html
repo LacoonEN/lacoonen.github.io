@@ -17,7 +17,7 @@
     <meta name="twitter:image" content="https://lacoonen.github.io/og-image.jpeg">
 
     <style>
-        /* --- 全局與強迫症優化 --- */
+        /* --- 全局優化 --- */
         html { scroll-behavior: smooth; background-color: #000000; }
         body {
             background-color: transparent; 
@@ -46,25 +46,21 @@
             width: 100%; height: 100%; position: relative; 
         }
 
-        /* === 背景層樣式 === */
+        /* === 終極修復：背景邊緣不走光 === */
         .bg-layer {
             position: absolute; 
-            top: -150px; 
-            left: -50px; 
-            width: calc(100% + 100px); 
-            height: calc(100% + 300px); 
+            /* 將畫布四周向外延伸 100px，確保晃動時邊界永遠藏在螢幕外，絕對不會露出黑線 */
+            top: -100px; bottom: -100px; left: -100px; right: -100px;
             
             background-image: url('BG_01.png');
-            
-            /* === 修改：背景圖縮小一點點，從 cover 改為 95% === */
-            background-size: 95%; 
+            background-size: cover;
             background-repeat: no-repeat;
             
-            /* 精準定位 */
-            background-position: calc(50% + 100px) 100px; 
+            /* 水平向右偏移100px，垂直設為 50% 確保圖片填滿沒有縫隙 */
+            background-position: calc(50% + 100px) 50%; 
             
-            /* 極致深邃亮度 */
-            filter: brightness(0.25) saturate(1.2); 
+            /* === 依照要求改成 50% 亮度 === */
+            filter: brightness(0.5) saturate(1.2); 
             
             /* 純粹的上下晃動動畫 */
             animation: floatVertical 20s ease-in-out infinite, bgFlicker 10s infinite;
@@ -77,10 +73,10 @@
             mix-blend-mode: plus-lighter; 
         }
 
-        /* 背景專屬動畫 */
+        /* 背景專屬動畫：改為 50px 完美幅度 */
         @keyframes floatVertical {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(80px); } 
+            50% { transform: translateY(50px); } 
             100% { transform: translateY(0px); }
         }
         @keyframes glowPulse {
@@ -142,7 +138,7 @@
         .lang-option { padding: 14px 20px; font-size: 13px; color: rgba(255,255,255,0.6); cursor: pointer; transition: 0.3s ease; }
         .lang-option:hover { background: rgba(255,255,255,0.1); color: #fff; padding-left: 24px; }
 
-        /* === 毛玻璃卡片樣式 === */
+        /* === 完美毛玻璃樣式重現 === */
         
         .about-card {
             width: 100%; max-width: 900px;
@@ -264,7 +260,6 @@
 
         section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 80px 20px; box-sizing: border-box; }
         
-        /* --- 進場動畫 --- */
         .reveal-element { 
             opacity: 0; transform: translateY(40px); 
             transition: opacity 0.9s var(--smooth-curve), transform 0.9s var(--smooth-curve);
