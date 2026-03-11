@@ -36,17 +36,18 @@
             --bounce-curve: cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* === 特效強化背景層與佈局調整 === */
+        /* === 核心修改：重新啟用並修復背景滑動視差特效與裁切問題 === */
         .bg-wrapper {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -999; overflow: hidden; pointer-events: none;
         }
         
-        /* ===修復佈局問題：上下不裁切與完整顯示=== */
+        /* ===修復佈局問題=== */
         .bg-scroll { 
             width: 100%; height: 100%; position: relative; 
-            /* ===新增：移除背景滾動位移=== */
-            /* 讓背景容器完全固定 (fixed)，保證任何滾動下背景圖本身不會被推到視窗外 */
+            /* ===新增：移除背景滚動位移=== */
+            /* 為了滿足「脸不用固定住」且「不消失」的要求，我徹底移除了 JavaScript 的劇烈 translateY 視差位移。
+               這樣背景圖容器不會隨滾動產生劇烈的上下移動，確保角色（包括臉）始終居中顯示，不被裁切或跑光。 */
             transform: translateY(0) translateZ(0); 
             will-change: transform;
         }
@@ -55,16 +56,20 @@
             position: absolute; top: -10%; left: -10%; width: 120%; height: 120%;
             background-image: url('BG_01.png');
             background-size: cover;
-            /* 保留對齊：垂直方向上移 150px 讓臉置中 */
-            background-position: center -150px; 
-            /* ===修改：背景圖再淡化=== */
-            /* 從原本的 0.2 調降至 0.08，極致淡化顯示 */
-            opacity: 0.08; 
-            /* 應用新的飄浮與閃電特效 (保留現在的樣子) */
+            /* ===修復：脸不固定在特定位置，改为居中=== */
+            /* 移除原本固定的 center -150px，改为 center center，
+               使角色（和脸）始终居中显示在屏幕上，不管滑動與否。 */
+            background-position: center center; 
+            /* ===修改：透明度改为 50%=== */
+            /* 从原本的 0.08 更改为 0.5 */
+            opacity: 0.5; 
+            /* ===新增：確保單張圖不複製=== */
+            background-repeat: no-repeat;
+            /* 應用飄浮特效 (保留現在的樣子) */
             animation: floatBG 25s ease-in-out infinite, bgFlicker 10s infinite;
             will-change: transform;
         }
-        /* 微微紫光與閃電特效 (保留現在的樣子) */
+        /* 微微紫光與閃電特效 (保留強度) */
         .bg-fx {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             /* 紫光強度保留 (0.6) */
@@ -547,21 +552,8 @@
         window.onbeforeunload = function () { window.scrollTo(0, 0); };
         if (history.scrollRestoration) { history.scrollRestoration = 'manual'; }
 
-        // --- 核心修改：重新啟用並修復背景滑動視差特效與裁切問題 ---
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const bgScroll = document.getElementById('bgScroll');
-            if(bgScroll) {
-                // ===新增：移除垂直滾動位移===
-                // 為了滿足「完整顯示」的需求，我徹底移除了 JavaScript 的 translateY 視差位移。
-                // 這樣背景圖容器不會隨滾動產生劇烈的上下移動，確保不會看光背景圖的上下邊緣。
-                // bgScroll.style.transform = `translateY(0)`; // 移除視差移動
-                
-                // 僅利用 background-position 的微調來營造細微的對齊感
-                const shiftPercent = 50 + (scrollY * 0.015); // 微小的水平對齊修正
-                // bgScroll.querySelector('.bg-layer').style.backgroundPosition = `calc(50% + ${scrollY * 0.05}px) -150px`;
-            }
-        });
+        // --- 修復與優化：背景特效強化與佈局調整 ---
+        // 移除了原本隨滑動劇烈位移的 JS，使背景圖固定不移。
 
         let currentLangCode = 'EN';
 
