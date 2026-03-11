@@ -17,7 +17,7 @@
     <meta name="twitter:image" content="https://lacoonen.github.io/og-image.jpeg">
 
     <style>
-        /* --- 全局與強迫症優化 --- */
+        /* --- 全局優化 --- */
         html { scroll-behavior: smooth; background-color: #000000; }
         body {
             background-color: transparent; 
@@ -30,7 +30,6 @@
             transition: opacity 0.4s ease;
         }
 
-        /* --- 頂級平滑曲線變數 --- */
         :root {
             --smooth-curve: cubic-bezier(0.25, 1, 0.5, 1);
             --bounce-curve: cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -55,40 +54,60 @@
             background-repeat: no-repeat;
             background-position: calc(50% + 100px) -50px; 
             
-            /* 亮度微調至 0.35，確保下方有內容可以被玻璃模糊 */
-            filter: brightness(0.35) saturate(1.2); 
+            filter: brightness(0.25) saturate(1.2); 
             opacity: 1; 
             
-            animation: floatVertical 20s ease-in-out infinite, bgFlicker 10s infinite;
+            /* === 修改：移除 floatVertical，只保留閃爍特效 === */
+            animation: bgFlicker 10s infinite;
             will-change: transform;
         }
 
         .bg-fx {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 40%, rgba(168, 85, 247, 0.4), transparent 60%); 
+            background: radial-gradient(circle at 50% 40%, rgba(168, 85, 247, 0.6), transparent 60%); 
             animation: glowPulse 5s alternate infinite, sparkFlicker 8s infinite;
-            mix-blend-mode: screen; 
+            mix-blend-mode: screens;
+            mix-blend-mode: plus-lighter; 
         }
 
-        @keyframes floatVertical {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(60px); } 
-            100% { transform: translateY(0px); }
-        }
         @keyframes glowPulse {
-            0% { opacity: 0.6; }
-            100% { opacity: 1; } 
+            0% { opacity: 0.7; }
+            100% { opacity: 1; transform: scale(1.05); }
         }
         @keyframes bgFlicker {
             0%, 96%, 98%, 100% { opacity: 1; }
-            97%, 99% { opacity: 0.2; } 
+            97%, 99% { opacity: 0.1; } 
         }
         @keyframes sparkFlicker {
             0%, 96%, 98%, 100% { opacity: 1; }
-            97%, 99% { opacity: 0.2; } 
+            97%, 99% { opacity: 0.3; } 
         }
 
-        /* --- 固定選單按鈕 --- */
+        /* === 修改：新增晃動效果的樣式與動畫 === */
+        @keyframes shakeContent {
+            0% { transform: translateX(0); }
+            10% { transform: translateX(-5px); }
+            20% { transform: translateX(5px); }
+            30% { transform: translateX(-5px); }
+            40% { transform: translateX(5px); }
+            50% { transform: translateX(-5px); }
+            60% { transform: translateX(5px); }
+            70% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+            90% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* === 新增：應用晃動特效於主內容容器 === */
+        main.shake-container {
+            /* === 修改：只讓這個容器及其內容晃動 === */
+            transform: translateX(0);
+            will-change: transform;
+            /* 應用緩慢持續的晃動效果 */
+            animation: shakeContent 2s ease-in-out infinite;
+        }
+
+        /* --- 固定選單按鈕 (靜止，不晃動) --- */
         .menu-btn {
             position: fixed; 
             top: max(24px, env(safe-area-inset-top)); 
@@ -97,32 +116,36 @@
             cursor: pointer; display: flex; flex-direction: column; 
             justify-content: center; align-items: center; gap: 6px;
             width: 48px; height: 48px;
-            background: rgba(255, 255, 255, 0.08); /* 增強玻璃底色 */
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 12px; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             transition: all 0.5s var(--smooth-curve);
             outline: none; user-select: none; -webkit-user-select: none;
-            border: 1px solid rgba(255, 255, 255, 0.1); /* 玻璃邊緣反光 */
+            border: 1px solid rgba(255, 255, 255, 0.0);
+            /* 固定位置 */
+            -webkit-transform: none; transform: none; 
         }
-        .menu-btn:hover { background: rgba(255, 255, 255, 0.15); transform: scale(1.05); }
+        .menu-btn:hover { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1); transform: scale(1.05); }
         .menu-btn:active { transform: scale(0.95); }
         .menu-btn div { width: 22px; height: 2px; background-color: #ffffff; transition: 0.4s var(--smooth-curve); border-radius: 2px; pointer-events: none; }
         .menu-btn.active div:nth-child(1) { transform: translateY(8px) rotate(45deg); }
         .menu-btn.active div:nth-child(2) { opacity: 0; transform: scaleX(0); }
         .menu-btn.active div:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-        /* --- 固定語言選單 --- */
+        /* --- 固定語言選單 (靜止，不晃動) --- */
         .lang-container { 
             position: fixed; 
             top: max(24px, env(safe-area-inset-top)); 
             right: max(24px, env(safe-area-inset-right)); 
             z-index: 9999; user-select: none; 
+            /* 固定位置 */
+            -webkit-transform: none; transform: none; 
         }
         .lang-selected {
-            background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.0);
             color: #fff; padding: 10px 20px; border-radius: 12px; cursor: pointer;
             backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); transition: all 0.4s var(--smooth-curve); font-size: 13px; font-weight: 600;
         }
-        .lang-selected:hover { background: rgba(255, 255, 255, 0.15); transform: translateY(-2px); }
+        .lang-selected:hover { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
         .lang-dropdown {
             position: absolute; top: 56px; right: 0;
             background: rgba(20, 20, 20, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); 
@@ -134,52 +157,42 @@
         .lang-option { padding: 14px 20px; font-size: 13px; color: rgba(255,255,255,0.6); cursor: pointer; transition: 0.3s ease; }
         .lang-option:hover { background: rgba(255,255,255,0.1); color: #fff; padding-left: 24px; }
 
-        /* === 修復 Safari 霧面失效：拔除所有衝突的 transform === */
-
         /* --- 關於我卡片 --- */
         .about-card {
             width: 100%; max-width: 900px;
-            background: rgba(255, 255, 255, 0.08); /* 提升白度讓玻璃感浮現 */
-            border-radius: 40px; padding: 50px;
+            background: rgba(255, 255, 255, 0.03); border-radius: 40px; padding: 50px;
             display: flex; gap: 50px; align-items: flex-start; text-align: left;
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            box-sizing: border-box; margin: 0 auto; 
-            border: 1px solid rgba(255, 255, 255, 0.1); /* 玻璃邊緣反光 */
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            box-sizing: border-box; margin: 0 auto; border: 1px solid rgba(255, 255, 255, 0.02);
             transition: all 0.6s var(--smooth-curve);
         }
         .about-card:hover {
             transform: translateY(-6px);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(168, 85, 247, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
         @media (max-width: 768px) { .about-card { flex-direction: column; align-items: center; text-align: center; padding: 40px 24px; width: calc(100% - 20px); } }
 
         /* --- 內容外框樣式 --- */
         .content-area {
             width: 100%; max-width: 900px; border-radius: 32px;
-            padding: 60px 24px; 
-            background: rgba(255, 255, 255, 0.05); /* 輕微玻璃背景 */
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 60px 24px; background: rgba(255, 255, 255, 0.02);
             box-sizing: border-box; margin-top: 20px;
         }
         @media (max-width: 768px) { .content-area { width: calc(100% - 20px); padding: 40px 16px;} }
 
-        /* --- 獸設定卡片樣式 --- */
+        /* --- 獸設定卡片樣式 (滿版圖片優化) --- */
         .fursona-card {
-            background: rgba(255, 255, 255, 0.08); 
-            border-radius: 24px; padding: 0; margin-bottom: 30px;
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.04); border-radius: 24px; padding: 0; margin-bottom: 30px;
             display: flex; flex-direction: column; text-align: left;
-            transition: all 0.6s var(--smooth-curve); 
-            border: 1px solid rgba(255, 255, 255, 0.1); /* 玻璃邊緣 */
-            overflow: hidden; 
+            transition: all 0.6s var(--smooth-curve); border: 1px solid rgba(255, 255, 255, 0.0);
+            overflow: hidden; transform: translateZ(0); 
         }
         .fursona-card:last-child { margin-bottom: 0; }
         .fursona-card:hover { 
-            background: rgba(255, 255, 255, 0.12); transform: translateY(-8px) scale(1.01);
+            background: rgba(255, 255, 255, 0.08); transform: translateY(-8px) scale(1.01);
             box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(168, 85, 247, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .fursona-img-placeholder { width: 100%; position: relative; background: transparent !important; border: none !important; }
         .fursona-img-placeholder img { width: 100%; height: auto; display: block; object-fit: cover; transition: transform 0.8s var(--smooth-curve); }
@@ -202,19 +215,15 @@
         .carousel-container::-webkit-scrollbar { display: none; }
         .carousel-container > .card-base:only-child { margin-left: auto; margin-right: auto; }
 
-        /* --- 事件/商品小卡 --- */
         .card-base {
-            flex: 0 0 85%; max-width: 380px; 
-            background: rgba(255, 255, 255, 0.08); /* 增強白度 */
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            flex: 0 0 85%; max-width: 380px; background: rgba(255, 255, 255, 0.04);
             border-radius: 20px; overflow: hidden; scroll-snap-align: center;
-            transition: all 0.6s var(--smooth-curve); 
-            border: 1px solid rgba(255, 255, 255, 0.1); /* 玻璃邊緣 */
-            display: flex; flex-direction: column; 
+            transition: all 0.6s var(--smooth-curve); border: 1px solid rgba(255, 255, 255, 0.0);
+            display: flex; flex-direction: column; transform: translateZ(0);
         }
         .card-base:hover {
-            background: rgba(255, 255, 255, 0.12); transform: translateY(-10px);
-            box-shadow: 0 25px 45px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08); transform: translateY(-10px);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.06);
         }
         @media (min-width: 768px) { .carousel-container { justify-content: center; } .card-base { flex: 0 0 calc(50% - 10px); scroll-snap-align: start; } }
 
@@ -240,7 +249,7 @@
         }
         .event-link:hover { background: rgba(168, 85, 247, 0.3); color: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2); }
 
-        /* --- 與我聯繫 & 購買按鈕 --- */
+        /* --- 與我聯繫 --- */
         .contact-btn {
             position: relative; appearance: none; border: none; cursor: pointer; color: #ffffff;
             font-size: 14px; font-weight: 700; letter-spacing: 2px; padding: 18px 50px; border-radius: 50px;
@@ -256,33 +265,26 @@
         .contact-btn:hover::before { opacity: 0.85; }
         .contact-btn:active { transform: scale(0.95); }
 
-        /* --- 個人資訊網格 --- */
         .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; width: 100%; }
         @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
         .info-item {
-            background: rgba(255,255,255,0.08); padding: 18px; border-radius: 18px;
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            background: rgba(255,255,255,0.04); padding: 18px; border-radius: 18px;
             min-height: 85px; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;
-            transition: all 0.5s var(--smooth-curve); border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.5s var(--smooth-curve); border: 1px solid rgba(255, 255, 255, 0.0);
         }
         .info-item:hover {
-            background: rgba(255,255,255,0.12); transform: translateY(-4px);
-            border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.08); transform: translateY(-4px);
+            border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 12px 24px rgba(0,0,0,0.3);
         }
 
         section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 80px 20px; box-sizing: border-box; }
         
-        /* --- 進場動畫：解決衝突 --- */
+        /* --- 進場動畫 --- */
         .reveal-element { 
-            opacity: 0; 
-            /* 放棄使用 translate3d，改用標準 translateY 避免吃掉玻璃特效 */
-            transform: translateY(40px); 
+            opacity: 0; transform: translate3d(0, 40px, 0); 
             transition: opacity 0.9s var(--smooth-curve), transform 0.9s var(--smooth-curve);
         }
-        .reveal-element.reveal { 
-            opacity: 1; 
-            transform: translateY(0); 
-        }
+        .reveal-element.reveal { opacity: 1; transform: translate3d(0, 0, 0); }
         .delay-1 { transition-delay: 0.1s; }
         .delay-2 { transition-delay: 0.2s; }
 
@@ -313,8 +315,7 @@
         .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: 0.5s var(--smooth-curve); padding: 24px; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { 
-            background: rgba(20, 20, 20, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 32px; 
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: #151515; border: 1px solid rgba(255,255,255,0.1); border-radius: 32px; 
             padding: 40px 24px; width: 100%; max-width: 380px; box-sizing: border-box; text-align: center;
             max-height: 85vh; overflow-y: auto; transform: translateY(40px) scale(0.95); transition: 0.6s var(--smooth-curve);
         }
@@ -342,8 +343,8 @@
         .back-to-top::after { content: ''; width: 10px; height: 10px; border-left: 2px solid #fff; border-top: 2px solid #fff; transform: rotate(45deg); margin-top: 5px; transition: 0.4s var(--smooth-curve); }
         .back-to-top:hover::after { margin-top: -2px; }
         
-        /* --- 側邊選單與懸停動畫 --- */
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); z-index: 1000; display: flex; flex-direction: column; padding-top: 100px; transition: 0.6s var(--smooth-curve); overflow-y: auto;}
+        /* --- 側邊選單 --- */
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); z-index: 1000; display: flex; flex-direction: column; padding-top: 100px; transition: 0.6s var(--smooth-curve); overflow-y: auto;}
         .sidebar.active { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 999; opacity: 0; pointer-events: none; transition: 0.5s; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
         .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
@@ -360,7 +361,6 @@
         }
         .nav-link:hover::before { width: 15px; }
 
-        /* 確保 footer 也不會被底部的 Home Bar 擋住 */
         footer { padding: 60px 20px calc(60px + env(safe-area-inset-bottom)); text-align: center; color: rgba(255,255,255,0.2); font-size: 11px; letter-spacing: 2px; }
     </style>
 </head>
@@ -398,153 +398,155 @@
 
     <div class="back-to-top" id="backToTop" onclick="scrollToTop()"></div>
 
-    <section id="home">
-        <h1 class="section-title reveal-element" style="font-size: clamp(50px, 12vw, 120px); line-height: 1.15; margin-bottom: 24px; padding-bottom: 10px;">HI, I'M<br>LacoonEN</h1>
-        <div class="home-subtitle reveal-element delay-1" id="homeSubtitle">LacoonEN X Wolf X HuanHuan</div>
-        <button class="contact-btn reveal-element delay-2" id="ctaBtn" onclick="openModal('socialModal')">CONTACT ME</button>
-    </section>
+    <main class="shake-container">
+        <section id="home">
+            <h1 class="section-title reveal-element" style="font-size: clamp(50px, 12vw, 120px); line-height: 1.15; margin-bottom: 24px; padding-bottom: 10px;">HI, I'M<br>LacoonEN</h1>
+            <div class="home-subtitle reveal-element delay-1" id="homeSubtitle">LacoonEN X Wolf X HuanHuan</div>
+            <button class="contact-btn reveal-element delay-2" id="ctaBtn" onclick="openModal('socialModal')">CONTACT ME</button>
+        </section>
 
-    <section id="about">
-        <h2 class="section-title reveal-element" id="titleAbout">ABOUT ME</h2>
-        <div class="about-card reveal-element delay-1">
-            <div class="profile-zone">
-                <div class="profile-img">
-                    <div class="inner"><img src="profile.JPG" alt="Profile"></div>
+        <section id="about">
+            <h2 class="section-title reveal-element" id="titleAbout">ABOUT ME</h2>
+            <div class="about-card reveal-element delay-1">
+                <div class="profile-zone">
+                    <div class="profile-img">
+                        <div class="inner"><img src="profile.JPG" alt="Profile"></div>
+                    </div>
+                </div>
+                <div class="info-content">
+                    <div class="info-name" id="infoName">LacoonEN</div>
+                    <div class="info-tagline" id="infoTagline">BIM Engineer</div>
+                    
+                    <div class="intro-text" id="infoIntro">
+                        Hi, I'm LacoonEN!<br>
+                        I'm a BIM Engineer currently based in Kaohsiung, Taiwan.<br>
+                        In my free time, I love photography and diving, enjoying capturing beautiful moments and exploring the underwater world.<br>
+                        My current fursonas are LacoonEN, Wolf, and HuanHuan.<br>
+                        It's great to meet you all! I look forward to seeing you at future events. Feel free to come say hi, take photos, and give me a hug!
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item"><div class="info-label" id="labelLocation">Location</div><div class="info-value" id="valLocation">Kaohsiung, Taiwan</div></div>
+                        <div class="info-item"><div class="info-label" id="labelEdu">Education</div><div class="info-value" id="valEdu">NKUST (Studying)</div></div>
+                        <div class="info-item"><div class="info-label" id="labelBirthday">Birthday</div><div class="info-value" id="valBirthday">18th November</div></div>
+                        <div class="info-item"><div class="info-label" id="labelHobby">Hobbies</div><div class="info-value" id="valHobby">Photo, Cycling, Freediving, Skiing</div></div>
+                    </div>
                 </div>
             </div>
-            <div class="info-content">
-                <div class="info-name" id="infoName">LacoonEN</div>
-                <div class="info-tagline" id="infoTagline">BIM Engineer</div>
+        </section>
+
+        <section id="fursona">
+            <h2 class="section-title reveal-element" id="titleFursona">FURSONA</h2>
+            <div class="content-area reveal-element delay-1" style="background: transparent; padding: 0; box-shadow: none; border: none; backdrop-filter: none; -webkit-backdrop-filter: none;">
                 
-                <div class="intro-text" id="infoIntro">
-                    Hi, I'm LacoonEN!<br>
-                    I'm a BIM Engineer currently based in Kaohsiung, Taiwan.<br>
-                    In my free time, I love photography and diving, enjoying capturing beautiful moments and exploring the underwater world.<br>
-                    My current fursonas are LacoonEN, Wolf, and HuanHuan.<br>
-                    It's great to meet you all! I look forward to seeing you at future events. Feel free to come say hi, take photos, and give me a hug!
+                <div class="fursona-card">
+                    <div class="fursona-img-placeholder">
+                        <img src="lacoon.jpeg" alt="LacoonEN">
+                    </div>
+                    <div class="fursona-info">
+                        <h3 id="fName1">LacoonEN</h3>
+                        <div class="fursona-meta">
+                            <span class="fursona-meta-tag" id="fDes1">Design: <a href="https://www.facebook.com/share/1DL3Mr7PSA/?mibextid=wwXIfr" target="_blank">DormirMao</a></span>
+                            <span class="fursona-meta-tag" id="fMak1">Fursuit Maker: None</span>
+                        </div>
+                        <div class="fursona-story" id="fStory1">
+                            A raccoon who doesn't sleep at night.
+                        </div>
+                    </div>
                 </div>
 
-                <div class="info-grid">
-                    <div class="info-item"><div class="info-label" id="labelLocation">Location</div><div class="info-value" id="valLocation">Kaohsiung, Taiwan</div></div>
-                    <div class="info-item"><div class="info-label" id="labelEdu">Education</div><div class="info-value" id="valEdu">NKUST (Studying)</div></div>
-                    <div class="info-item"><div class="info-label" id="labelBirthday">Birthday</div><div class="info-value" id="valBirthday">18th November</div></div>
-                    <div class="info-item"><div class="info-label" id="labelHobby">Hobbies</div><div class="info-value" id="valHobby">Photo, Cycling, Freediving, Skiing</div></div>
+                <div class="fursona-card">
+                    <div class="fursona-img-placeholder">
+                        <img src="wolf.jpeg" alt="Wolf">
+                    </div>
+                    <div class="fursona-info">
+                        <h3 id="fName2">Wolf</h3>
+                        <div class="fursona-meta">
+                            <span class="fursona-meta-tag" id="fDes2">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
+                            <span class="fursona-meta-tag" id="fMak2">Fursuit Maker: <a href="https://www.furmony.com" target="_blank">Furmony Studio</a></span>
+                        </div>
+                        <div class="fursona-story" id="fStory2">
+                            A Shiba Inu gunslinger passionate about firearms.<br>He co-owns a tavern with his younger brother Wally and is also a bartender himself.<br>Calm and usually reticent, he is steady and very reliable; his brother, on the other hand, is more passionate, open, and sociable.<br>On the surface, they run a tavern to gather intelligence, while secretly taking on assassination missions.
+                        </div>
+                    </div>
                 </div>
+
+                <div class="fursona-card">
+                    <div class="fursona-img-placeholder">
+                        <img src="HuanHuan.jpeg" alt="HuanHuan">
+                    </div>
+                    <div class="fursona-info">
+                        <h3 id="fName3">HuanHuan</h3>
+                        <div class="fursona-meta">
+                            <span class="fursona-meta-tag" id="fDes3">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
+                            <span class="fursona-meta-tag" id="fMak3">Fursuit Maker: <a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">Yuwu Fursuit</a></span>
+                        </div>
+                        <div class="fursona-story" id="fStory3">
+                            A lightning bee dragon.
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="fursona">
-        <h2 class="section-title reveal-element" id="titleFursona">FURSONA</h2>
-        <div class="content-area reveal-element delay-1" style="background: transparent; padding: 0; box-shadow: none; border: none; backdrop-filter: none; -webkit-backdrop-filter: none;">
-            
-            <div class="fursona-card">
-                <div class="fursona-img-placeholder">
-                    <img src="lacoon.jpeg" alt="LacoonEN">
-                </div>
-                <div class="fursona-info">
-                    <h3 id="fName1">LacoonEN</h3>
-                    <div class="fursona-meta">
-                        <span class="fursona-meta-tag" id="fDes1">Design: <a href="https://www.facebook.com/share/1DL3Mr7PSA/?mibextid=wwXIfr" target="_blank">DormirMao</a></span>
-                        <span class="fursona-meta-tag" id="fMak1">Fursuit Maker: None</span>
+        <section id="events">
+            <h2 class="section-title reveal-element" id="titleEvents">EVENTS</h2>
+            <div class="section-subtitle reveal-element delay-1" id="eventsSubtitle">NEXT STOPS</div>
+            <div class="content-area reveal-element delay-2" style="background: transparent; padding: 0; box-shadow: none; border: none; backdrop-filter: none; -webkit-backdrop-filter: none;">
+                <div class="carousel-container">
+                    <div class="card-base event-card">
+                        <div class="event-img">
+                            <img src="Event_UTFG_20260627.jpeg" alt="UTFG">
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-title">UTFG</h3>
+                            <div class="card-date">2026 / 06 / 27</div>
+                            <a href="https://www.utfg.tw" target="_blank" class="event-link">Event Website</a>
+                        </div>
                     </div>
-                    <div class="fursona-story" id="fStory1">
-                        A raccoon who doesn't sleep at night.
-                    </div>
-                </div>
-            </div>
-
-            <div class="fursona-card">
-                <div class="fursona-img-placeholder">
-                    <img src="wolf.jpeg" alt="Wolf">
-                </div>
-                <div class="fursona-info">
-                    <h3 id="fName2">Wolf</h3>
-                    <div class="fursona-meta">
-                        <span class="fursona-meta-tag" id="fDes2">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
-                        <span class="fursona-meta-tag" id="fMak2">Fursuit Maker: <a href="https://www.furmony.com" target="_blank">Furmony Studio</a></span>
-                    </div>
-                    <div class="fursona-story" id="fStory2">
-                        A Shiba Inu gunslinger passionate about firearms.<br>He co-owns a tavern with his younger brother Wally and is also a bartender himself.<br>Calm and usually reticent, he is steady and very reliable; his brother, on the other hand, is more passionate, open, and sociable.<br>On the surface, they run a tavern to gather intelligence, while secretly taking on assassination missions.
-                    </div>
-                </div>
-            </div>
-
-            <div class="fursona-card">
-                <div class="fursona-img-placeholder">
-                    <img src="HuanHuan.jpeg" alt="HuanHuan">
-                </div>
-                <div class="fursona-info">
-                    <h3 id="fName3">HuanHuan</h3>
-                    <div class="fursona-meta">
-                        <span class="fursona-meta-tag" id="fDes3">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
-                        <span class="fursona-meta-tag" id="fMak3">Fursuit Maker: <a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">Yuwu Fursuit</a></span>
-                    </div>
-                    <div class="fursona-story" id="fStory3">
-                        A lightning bee dragon.
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <section id="events">
-        <h2 class="section-title reveal-element" id="titleEvents">EVENTS</h2>
-        <div class="section-subtitle reveal-element delay-1" id="eventsSubtitle">NEXT STOPS</div>
-        <div class="content-area reveal-element delay-2" style="background: transparent; padding: 0; box-shadow: none; border: none; backdrop-filter: none; -webkit-backdrop-filter: none;">
-            <div class="carousel-container">
-                <div class="card-base event-card">
-                    <div class="event-img">
-                        <img src="Event_UTFG_20260627.jpeg" alt="UTFG">
-                    </div>
-                    <div class="card-info">
-                        <h3 class="card-title">UTFG</h3>
-                        <div class="card-date">2026 / 06 / 27</div>
-                        <a href="https://www.utfg.tw" target="_blank" class="event-link">Event Website</a>
-                    </div>
-                </div>
-                
-                <div class="card-base event-card">
-                    <div class="event-img">
-                        <img src="Event_INFURNITY_20261030.jpeg" alt="INFURNITY">
-                    </div>
-                    <div class="card-info">
-                        <h3 class="card-title">INFURNITY</h3>
-                        <div class="card-date">2026 / 10 / 30</div>
-                        <a href="https://www.infurnity.com" target="_blank" class="event-link">Event Website</a>
+                    
+                    <div class="card-base event-card">
+                        <div class="event-img">
+                            <img src="Event_INFURNITY_20261030.jpeg" alt="INFURNITY">
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-title">INFURNITY</h3>
+                            <div class="card-date">2026 / 10 / 30</div>
+                            <a href="https://www.infurnity.com" target="_blank" class="event-link">Event Website</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="album">
-        <h2 class="section-title reveal-element" id="titleAlbum">ALBUM</h2>
-        <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
-    </section>
+        <section id="album">
+            <h2 class="section-title reveal-element" id="titleAlbum">ALBUM</h2>
+            <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
+        </section>
 
-    <section id="commissions">
-        <h2 class="section-title reveal-element" id="titleCommissions">COMMISSIONS</h2>
-        <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
-    </section>
+        <section id="commissions">
+            <h2 class="section-title reveal-element" id="titleCommissions">COMMISSIONS</h2>
+            <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
+        </section>
 
-    <section id="shop">
-        <h2 class="section-title reveal-element" id="titleShop">SHOP</h2>
-        <div class="content-area reveal-element delay-1" style="background: transparent; padding: 0; box-shadow: none; border: none; backdrop-filter: none; -webkit-backdrop-filter: none;">
-            <div class="carousel-container">
-                <div class="card-base shop-card" onclick="openProductModal('p1')">
-                    <div class="shop-img">
-                        <img src="Product_01.jpeg" alt="HuanHuan Patch">
-                    </div>
-                    <div class="card-info">
-                        <div class="card-tag" id="tagPreorder">Pre-order</div>
-                        <h3 class="card-title" id="pTitle1" style="font-size: 18px; margin: 0;">HuanHuan Embroidered Velcro Patch</h3>
+        <section id="shop">
+            <h2 class="section-title reveal-element" id="titleShop">SHOP</h2>
+            <div class="content-area reveal-element delay-1" style="background: transparent; padding: 0; box-shadow: none; border: none; backdrop-filter: none; -webkit-backdrop-filter: none;">
+                <div class="carousel-container">
+                    <div class="card-base shop-card" onclick="openProductModal('p1')">
+                        <div class="shop-img">
+                            <img src="Product_01.jpeg" alt="HuanHuan Patch">
+                        </div>
+                        <div class="card-info">
+                            <div class="card-tag" id="tagPreorder">Pre-order</div>
+                            <h3 class="card-title" id="pTitle1" style="font-size: 18px; margin: 0;">HuanHuan Embroidered Velcro Patch</h3>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     <footer>© 2026 LACOONEN PORTFOLIO | DESIGNED BY LACOONEN</footer>
 
@@ -601,12 +603,10 @@
         function openModal(modalId) { document.getElementById(modalId).classList.add('active'); }
         function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
         
-        // 點擊背景關閉所有 Modal
         document.querySelectorAll('.modal-overlay').forEach(modal => {
             modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
         });
 
-        /* 開啟商品 Modal 並動態載入資料 */
         function openProductModal(prodId) {
             const t = translations[currentLangCode];
             if (prodId === 'p1') {
@@ -618,7 +618,6 @@
             openModal('productModal');
         }
 
-        /* 讓動畫每次進出畫面都觸發 */
         const observerOptions = { threshold: 0.1, rootMargin: "0px" };
         const observer = new IntersectionObserver((entries) => { 
             entries.forEach(entry => { 
@@ -739,11 +738,9 @@
                 document.querySelectorAll('.m-text').forEach(el => el.innerText = t.maintenance);
                 document.querySelectorAll('.event-link').forEach(el => el.innerText = t.eventWeb);
                 
-                // 更新 Shop 卡片
                 document.getElementById('pTitle1').innerText = t.pTitle1;
                 document.getElementById('tagPreorder').innerText = t.tagPreorder;
 
-                // 若 Modal 開啟中，同步更新 Modal 內容
                 document.getElementById('modalProductTitle').innerText = t.pTitle1;
                 document.getElementById('modalProductBtn').innerText = t.buyBtn;
                 
