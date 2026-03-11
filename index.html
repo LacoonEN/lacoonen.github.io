@@ -20,7 +20,7 @@
         /* --- 全局與強迫症優化 --- */
         html { scroll-behavior: smooth; background-color: #000000; }
         body {
-            background-color: transparent; /* 讓 body 透明，才看得到背景 */
+            background-color: transparent; 
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
             margin: 0; padding: 0;
@@ -36,68 +36,67 @@
             --bounce-curve: cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* === 特效強化背景層與佈局調整 === */
+        /* === 終極背景層修復 === */
         .bg-wrapper {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -999; overflow: hidden; pointer-events: none;
+            background-color: #000000; /* 確保底色是純黑 */
         }
         
-        /* ===修復佈局問題：上下不裁切與完整顯示=== */
         .bg-scroll { 
             width: 100%; height: 100%; position: relative; 
-            /* ===新增：移除背景滾動位移=== */
-            /* 移除原本隨滾動產生的 translateY 視差位移。
-               讓背景容器完全固定 (fixed)，保證任何滾動下背景圖本身不會被推到視窗外 */
             transform: translateY(0) translateZ(0); 
             will-change: transform;
         }
 
         .bg-layer {
-            position: absolute; top: -10%; left: -10%; width: 120%; height: 120%;
+            /* 故意把圖層拉大到 130%，這樣怎麼晃動都不會漏出邊緣 (不裁切) */
+            position: absolute; top: -15%; left: -15%; width: 130%; height: 130%;
             background-image: url('BG_01.png');
-            /* ===修改：背景不要裁切，請滿版=== */
-            /* 從原本的 contain 更改為 cover，填滿整個屏幕 */
             background-size: cover;
-            /* ===修改：脸置中且向右挪動 100px=== */
-            /* 移除原本的 center -150px，
-               改为水平定位：calc(50% + 100px)，即居中后再往右偏移 100px。
-               垂直偏移保留 -150px，確保脸部不 disparition。 */
-            background-position: calc(50% + 100px) -150px; 
-            /* ===修改：背景圖再淡化=== */
-            /* 從原本的 0.5 調降至 0.15，讓背景變得隱約低調 */
-            opacity: 0.15; 
-            /* 應用新的飄浮與閃電特效 (保留現在的樣子) */
-            animation: floatBG 25s ease-in-out infinite, bgFlicker 10s infinite;
+            
+            /* ===修復：只要一張，絕對不重複=== */
+            background-repeat: no-repeat;
+            
+            /* ===修改：向右偏移 100px=== */
+            background-position: calc(50% + 100px) center; 
+            
+            /* ===修改：用亮度調暗，取代透明度=== */
+            /* 這樣不會灰灰白白的，只會純粹變暗，讓內容當主角 */
+            filter: brightness(0.2) saturate(1.2); 
+            
+            /* 動畫加上去 */
+            animation: floatVertical 20s ease-in-out infinite, bgFlicker 10s infinite;
             will-change: transform;
         }
-        /* 微微紫光與閃電特效 (保留現在的樣子) */
+
+        /* 微微紫光與閃電特效 (保留強度) */
         .bg-fx {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            /* 紫光強度保留 (0.6) */
-            background: radial-gradient(circle at 50% 40%, rgba(168, 85, 247, 0.6), transparent 60%); 
+            background: radial-gradient(circle at 50% 40%, rgba(168, 85, 247, 0.4), transparent 60%); 
             animation: glowPulse 5s alternate infinite, sparkFlicker 8s infinite;
-            mix-blend-mode: screens;
-            mix-blend-mode: plus-lighter; /* 強化光感 */
+            mix-blend-mode: screen; 
         }
 
-        @keyframes floatBG {
-            0% { transform: translateY(0px) scale(1); }
-            50% { transform: translateY(60px) scale(1.02); } /* 晃動加大：從 30px 改為 60px */
-            100% { transform: translateY(0px) scale(1); }
+        /* ===修改：晃動效果加大=== */
+        @keyframes floatVertical {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(80px); } /* 增加到 80px 的劇烈上下浮動 */
+            100% { transform: translateY(0px); }
         }
         @keyframes glowPulse {
-            0% { opacity: 0.7; }
+            0% { opacity: 0.6; }
             100% { opacity: 1; transform: scale(1.05); }
         }
         /* 閃電特效保留 */
         @keyframes bgFlicker {
             0%, 96%, 98%, 100% { opacity: 1; }
-            97%, 99% { opacity: 0.1; } /* 閃爍模擬雷電衝擊 */
+            97%, 99% { opacity: 0.1; } 
         }
         /* 電力閃爍保留 */
         @keyframes sparkFlicker {
             0%, 96%, 98%, 100% { opacity: 1; }
-            97%, 99% { opacity: 0.3; } 
+            97%, 99% { opacity: 0.2; } 
         }
 
         /* --- 固定選單按鈕 --- */
@@ -553,21 +552,6 @@
         window.onbeforeunload = function () { window.scrollTo(0, 0); };
         if (history.scrollRestoration) { history.scrollRestoration = 'manual'; }
 
-        // --- 核心修改：重新啟用並修復背景滑動視差特效與裁切問題 ---
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const bgScroll = document.getElementById('bgScroll');
-            if(bgScroll) {
-                // ===修復圖片不見問題===
-                // 移除了原本隨滾動劇烈位移的 JS，使背景圖固定不移。
-                // bgScroll.style.transform = `translateY(0)`; // 移除視差移動
-                
-                // 僅利用 background-position 的微調來營造細微的對齊感
-                const shiftPercent = 50 + (scrollY * 0.015); // 微小的水平對齊修正
-                // bgScroll.querySelector('.bg-layer').style.backgroundPosition = `calc(50% + ${scrollY * 0.05}px) -150px`;
-            }
-        });
-
         let currentLangCode = 'EN';
 
         function toggleMenu() { 
@@ -642,7 +626,7 @@
                 fMak1: "毛裝工作室：無", 
                 fStory1: "是隻浣上不睡覺的浣熊。",
                 fName2: "沃爾夫 Wolf", 
-                fDes2: '設定設計：<a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">冷軌</a>', 
+                fDes2: '設定設計：<a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a>', 
                 fMak2: '毛裝工作室：<a href="https://www.furmony.com" target="_blank">鴻萌造物</a>', 
                 fStory2: "是隻柴柴槍手，熱衷於槍械。<br>有個弟弟叫沃利，共同經營了一間酒館本身也是調酒師。<br>性格沈穩，平時叫沈默寡言，做事穩重且十分可靠；弟弟則比較熱情開放，善於與人交際。<br>表面經營酒館藉此收集情報，暗地裡則會接下一些暗殺任務。",
                 fName3: "幻幻 HuanHuan", 
