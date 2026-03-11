@@ -18,7 +18,7 @@
 
     <style>
         /* --- 全局與強迫症優化 --- */
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; perspective: 1px; }
         body {
             background-color: #000000;
             color: #ffffff;
@@ -28,7 +28,85 @@
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
             transition: opacity 0.4s ease;
+            position: relative;
         }
+
+        /* --- 頂級平滑曲線變數 --- */
+        :root {
+            --smooth-curve: cubic-bezier(0.25, 1, 0.5, 1);
+            --bounce-curve: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* === 飄浮閃電科技背景層 (`.bg-layer`) === */
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -10;
+            /* 應用手動設計的抽象幾何科技背景圖 */
+            background-image: url('BG_01.png');
+            background-size: cover;
+            background-position: center;
+            /* 極致淡化背景，不影響主內容 */
+            opacity: 0.05;
+            /* 應用上下飄浮動畫 */
+            animation: floatBG 15s ease-in-out infinite;
+            /* 設置視差效果，讓背景層遠離 */
+            transform: translateZ(-2px) scale(3);
+            /* 防止圖像被拉伸太厲害 */
+            backface-visibility: hidden;
+        }
+
+        /* 飄浮動畫 */
+        @keyframes floatBG {
+            0% { transform: translateZ(-2px) scale(3) translateY(0); }
+            50% { transform: translateZ(-2px) scale(3) translateY(-10px); }
+            100% { transform: translateZ(-2px) scale(3) translateY(0); }
+        }
+
+        /* ===背景特效偽元素=== */
+        .bg-layer::before, .bg-layer::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 50%; /* 用於光暈 */
+        }
+
+        /* 紫光光暈與脈動效果 */
+        .bg-layer::before {
+            background: radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.3), rgba(168, 85, 247, 0.0) 70%);
+            animation: glowPulser 6s ease-in-out infinite;
+        }
+
+        /* 閃電閃爍效果與顆粒 */
+        .bg-layer::after {
+            background: linear-gradient(45deg, rgba(168, 85, 247, 0.1), rgba(168, 85, 247, 0.0) 20%),
+                        radial-gradient(circle at 70% 30%, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.0) 30%),
+                        conic-gradient(at 80% 80%, rgba(168, 85, 247, 0.05), rgba(168, 85, 247, 0.0) 30%);
+            animation: sparkFlicker 1s ease infinite, randomMovement 8s linear infinite;
+            filter: blur(1px);
+        }
+
+        @keyframes glowPulser {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        @keyframes sparkFlicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% { opacity: 1; }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% { opacity: 0; }
+        }
+
+        @keyframes randomMovement {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(5px, -5px); }
+            50% { transform: translate(-5px, 5px); }
+            75% { transform: translate(5px, 5px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* ===修正排版問題=== */
+        .home-description { padding-bottom: 30px; } /* 增加底部緩衝 */
+        .event-card { overflow: hidden; } /* UTFG 卡片裁切圓角修復 */
+        .carousel-container { padding: 35px 10px 45px 10px; } /* EVENTS 卡片上浮被切問題修復 */
+        .fursona-img { margin: 0; padding: 0; width: 100%; display: block; } /* 獸設圖片空隙修復與滿版優化 */
+        .shop-card { cursor: pointer; } /* 商店卡片鼠標 */
 
         /* --- 頂級平滑曲線變數 --- */
         :root {
@@ -113,19 +191,18 @@
         }
         @media (max-width: 768px) { .content-area { width: calc(100% - 20px); padding: 40px 16px;} }
 
-        /* --- 獸設定卡片樣式 (滿版圖片優化) --- */
+        /* --- 獸設定卡片樣式 --- */
         .fursona-card {
             background: rgba(255, 255, 255, 0.04);
             border-radius: 24px;
-            /* 移除原本的 padding，讓圖片可以貼齊邊緣 */
-            padding: 0; 
+            padding: 30px;
             margin-bottom: 30px;
             display: flex;
             flex-direction: column;
+            gap: 20px;
             text-align: left;
             transition: all 0.6s var(--smooth-curve);
             border: 1px solid rgba(255, 255, 255, 0.0);
-            overflow: hidden; /* 確保內部圖片完美貼合圓角 */
         }
         .fursona-card:last-child { margin-bottom: 0; }
         .fursona-card:hover { 
@@ -137,25 +214,20 @@
         
         .fursona-img-placeholder {
             width: 100%;
+            border-radius: 14px;
+            overflow: hidden;
             position: relative;
             background: transparent !important;
             border: none !important;
-            /* 滿版圖片不需要自己設圓角，由父層的 overflow:hidden 控制 */
+            /* Apple 專用遮罩修復：解決 iOS Safari 圓角破圖與圖片黑屏 bug */
+            -webkit-mask-image: -webkit-radial-gradient(white, black);
         }
         .fursona-img-placeholder img { 
             width: 100%; height: auto; display: block; 
-            object-fit: cover; /* 確保無縫填滿 */
-            transition: transform 0.8s var(--smooth-curve); 
+            border-radius: 14px; transition: transform 0.8s var(--smooth-curve); 
         }
         .fursona-card:hover .fursona-img-placeholder img { transform: scale(1.04); }
         
-        /* 替文字區塊加回 padding */
-        .fursona-info {
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-        }
-
         .fursona-info h3 { margin: 0 0 12px 0; color: #fff; font-size: 26px; font-weight: 800; }
         .fursona-meta { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
         .fursona-meta-tag { background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); padding: 6px 14px; border-radius: 10px; font-size: 13px; color: #e9d5ff; font-weight: 500; transition: 0.4s var(--smooth-curve); }
@@ -167,9 +239,7 @@
         /* --- 輪播共用設定 (Events & Shop) --- */
         .carousel-container {
             display: flex; gap: 20px; overflow-x: auto;
-            scroll-snap-type: x mandatory; 
-            /* 加大上下 padding，確保卡片上浮與陰影絕對不會被切掉 */
-            padding: 35px 10px 45px 10px; 
+            scroll-snap-type: x mandatory; padding: 15px 5px 25px 5px; 
             width: 100%; -webkit-overflow-scrolling: touch; scrollbar-width: none; box-sizing: border-box;
         }
         .carousel-container::-webkit-scrollbar { display: none; }
@@ -189,8 +259,8 @@
             -webkit-mask-image: -webkit-radial-gradient(white, black);
         }
         .card-base:hover {
-            background: rgba(255, 255, 255, 0.08); transform: translateY(-10px);
-            box-shadow: 0 25px 45px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.08); transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.06);
         }
         @media (min-width: 768px) {
             .carousel-container { justify-content: center; }
@@ -209,9 +279,9 @@
         .card-base:hover .shop-img img { transform: scale(1.05); }
         
         .card-info { padding: 24px; text-align: left; }
-        .card-title { margin: 0; font-size: 20px; font-weight: 800; color: #fff; line-height: 1.4; }
-        .card-date { font-size: 14px; color: #a855f7; font-weight: 600; letter-spacing: 1px; margin-bottom: 20px; margin-top: 6px; }
-        .card-tag { display: inline-block; font-size: 12px; background: rgba(168, 85, 247, 0.2); padding: 4px 10px; border-radius: 8px; color: #e9d5ff; font-weight: 600; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .card-title { margin: 0 0 6px 0; font-size: 22px; font-weight: 800; color: #fff; line-height: 1.3; }
+        .card-date { font-size: 14px; color: #a855f7; font-weight: 600; letter-spacing: 1px; margin-bottom: 20px; }
+        .card-tag { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 500; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
 
         .event-link {
             display: inline-block; padding: 10px 24px;
@@ -340,6 +410,7 @@
     </style>
 </head>
 <body>
+    <div class="bg-layer"></div>
 
     <div class="lang-container" id="langContainer">
         <div class="lang-selected" id="currentLangDisplay">EN</div>
@@ -445,10 +516,10 @@
                 <div class="fursona-info">
                     <h3 id="fName3">HuanHuan</h3>
                     <div class="fursona-meta">
-                        <span class="fursona-meta-tag" id="fDes3">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
-                        <span class="fursona-meta-tag" id="fMak3">Fursuit Maker: <a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">Yuwu Fursuit</a></span>
+                        <span class="fursona-meta-tag" id="Des3">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
+                        <span class="fursona-meta-tag" id="Mak3">Fursuit Maker: <a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">Yuwu Fursuit</a></span>
                     </div>
-                    <div class="fursona-story" id="fStory3">
+                    <div class="fursona-story" id="Story3">
                         A lightning bee dragon.
                     </div>
                 </div>
@@ -503,7 +574,7 @@
             <div class="carousel-container">
                 <div class="card-base shop-card" onclick="openProductModal('p1')">
                     <div class="shop-img">
-                        <img src="Product_01.jpeg" alt="HuanHuan Patch">
+                        <img src="og_image_6.png" alt="HuanHuan Patch">
                     </div>
                     <div class="card-info">
                         <div class="card-tag" id="tagPreorder">Pre-order</div>
@@ -578,7 +649,7 @@
         function openProductModal(prodId) {
             const t = translations[currentLangCode];
             if (prodId === 'p1') {
-                document.getElementById('modalProductImg').src = 'Product_01.jpeg';
+                document.getElementById('modalProductImg').src = 'og_image_6.png';
                 document.getElementById('modalProductTitle').innerText = t.pTitle1;
                 document.getElementById('modalProductBtn').innerText = t.buyBtn;
                 document.getElementById('modalProductBtn').href = 'https://myship.7-11.com.tw/general/detail/GM2603065181808';
