@@ -46,7 +46,7 @@
             width: 100%; height: 100%; position: relative; 
         }
 
-        /* === 終極修復：背景邊緣不走光 === */
+        /* === 終極修復：背景邊緣不走光，靜止穩定 === */
         .bg-layer {
             position: absolute; 
             /* 將畫布四周向外延伸 100px，確保晃動時邊界永遠藏在螢幕外，絕對不會露出黑線 */
@@ -56,13 +56,13 @@
             background-size: cover;
             background-repeat: no-repeat;
             
-            /* 水平向右偏移100px，垂直設為 50% 確保圖片填滿沒有縫隙 */
+            /* 精準定位：向右挪動100px，垂直設為 50% 確保圖片填滿沒有縫隙 */
             background-position: calc(50% + 100px) 50%; 
             
             /* === 依照要求改成 0.2 亮度 (極致深邃) === */
             filter: brightness(0.2) saturate(1.2); 
             
-            /* === 修改：保留 floatVertical 動畫，移除 scale 縮放效果 === */
+            /* === 修改：保留 floatVertical (上下晃動動畫)，拿掉縮放 (Scale) 效果 === */
             animation: floatVertical 20s ease-in-out infinite, bgFlicker 10s infinite;
         }
 
@@ -73,11 +73,10 @@
             mix-blend-mode: plus-lighter; 
         }
 
-        /* === 終極微調：背景飄浮動畫 (拿掉 scale) === */
+        /* 背景專屬動畫：保留緩慢上下飄浮 (拿掉 Scale) */
         @keyframes floatVertical {
-            /* === 拿掉原本的 scale(...) 效果，只保留 translateY 飄浮感 === */
             0% { transform: translateY(0px); }
-            50% { transform: translateY(50px); } /* 緩慢向下飄移 50px，邊界有緩衝絕對安全 */
+            50% { transform: translateY(50px); } 
             100% { transform: translateY(0px); }
         }
         @keyframes glowPulse {
@@ -93,7 +92,7 @@
             97%, 99% { opacity: 0.3; } 
         }
 
-        /* --- 固定選單按鈕 (拿掉霧面，改成深色背景) --- */
+        /* --- 固定選單按鈕 (保留毛玻璃，修改透明度為 0.3) --- */
         .menu-btn {
             position: fixed; 
             top: max(24px, env(safe-area-inset-top)); 
@@ -102,23 +101,23 @@
             cursor: pointer; display: flex; flex-direction: column; 
             justify-content: center; align-items: center; gap: 6px;
             width: 48px; height: 48px;
-            /* === 修改：更換為極致深邃的半透明深色背景 === */
-            background: rgba(15, 15, 15, 0.95);
+            /* === 修改：更換為高透明度的半透明深色背景 === */
+            background: rgba(15, 15, 15, 0.3);
             border-radius: 12px; 
-            /* === 移除霧面玻璃效果 === */
-            /* backdrop-filter REMOVED */
+            /* === 保留高品質毛玻璃效果 === */
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             transition: all 0.5s var(--smooth-curve);
             outline: none; user-select: none; -webkit-user-select: none;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .menu-btn:hover { background: rgba(15, 15, 15, 0.99); border: 1px solid rgba(255, 255, 255, 0.1); transform: scale(1.05); }
+        .menu-btn:hover { background: rgba(15, 15, 15, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); transform: scale(1.05); }
         .menu-btn:active { transform: scale(0.95); }
         .menu-btn div { width: 22px; height: 2px; background-color: #ffffff; transition: 0.4s var(--smooth-curve); border-radius: 2px; pointer-events: none; }
         .menu-btn.active div:nth-child(1) { transform: translateY(8px) rotate(45deg); }
         .menu-btn.active div:nth-child(2) { opacity: 0; transform: scaleX(0); }
         .menu-btn.active div:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-        /* --- 固定語言選單 (拿掉霧面，改成深色背景) --- */
+        /* --- 固定語言選單 (保留毛玻璃，修改透明度為 0.3) --- */
         .lang-container { 
             position: fixed; 
             top: max(24px, env(safe-area-inset-top)); 
@@ -126,15 +125,15 @@
             z-index: 9999; user-select: none; 
         }
         .lang-selected {
-            /* === 修改：更換為極致深邃的半透明深色背景 === */
-            background: rgba(15, 15, 15, 0.95); 
+            /* === 修改：更換為高透明度的半透明深色背景 === */
+            background: rgba(15, 15, 15, 0.3); 
             border: 1px solid rgba(255, 255, 255, 0.05);
             color: #fff; padding: 10px 20px; border-radius: 12px; cursor: pointer;
-            /* === 移除霧面玻璃效果 === */
-            /* backdrop-filter REMOVED */
+            /* === 保留高品質毛玻璃效果 === */
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); 
             transition: all 0.4s var(--smooth-curve); font-size: 13px; font-weight: 600;
         }
-        .lang-selected:hover { background: rgba(15, 15, 15, 0.99); border: 1px solid rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
+        .lang-selected:hover { background: rgba(15, 15, 15, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
         .lang-dropdown {
             position: absolute; top: 56px; right: 0;
             background: rgba(20, 20, 20, 0.98); border: 1px solid rgba(255, 255, 255, 0.1); 
@@ -146,10 +145,10 @@
         .lang-option { padding: 14px 20px; font-size: 13px; color: rgba(255,255,255,0.6); cursor: pointer; transition: 0.3s ease; }
         .lang-option:hover { background: rgba(255,255,255,0.1); color: #fff; padding-left: 24px; }
 
-        /* === 關於我卡片：獨留獨享高品質霧面玻璃效果 === */
+        /* === 關於我卡片：獨留獨享高品質霧面玻璃效果 (保留) === */
         .about-card {
             width: 100%; max-width: 900px;
-            /* 輕微玻璃背景，維持質感 */
+            /* 輕微白色玻璃背景，維持質感，這不是您圈出的灰色區塊，保留不變 */
             background: rgba(255, 255, 255, 0.05); border-radius: 40px; padding: 50px;
             display: flex; gap: 50px; align-items: flex-start; text-align: left;
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -163,48 +162,48 @@
         }
         @media (max-width: 768px) { .about-card { flex-direction: column; align-items: center; text-align: center; padding: 40px 24px; width: calc(100% - 20px); } }
 
-        /* 關於我內部的資訊網格：加上深色背景以清晰在霧面背景上 */
+        /* 關於我內部的資訊網格：修改透明度為 0.3 --- */
         .info-item {
-            background: rgba(15, 15, 15, 0.9); /* 更換為深色背景，使其清晰在霧面卡片上 */
+            /* === 修改：更換為高透明度的半透明深色背景，並拿掉霧面 === */
+            background: rgba(15, 15, 15, 0.3); 
             padding: 18px; border-radius: 18px;
             min-height: 85px; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;
             transition: all 0.5s var(--smooth-curve); border: 1px solid rgba(255, 255, 255, 0.05);
-            /* === 拿掉內部網格的霧面玻璃效果 (About Me 內部也簡化) === */
             /* backdrop-filter REMOVED */
         }
         .info-item:hover {
-            background: rgba(15, 15, 15, 0.95); transform: translateY(-4px);
+            background: rgba(15, 15, 15, 0.5); transform: translateY(-4px);
             border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 12px 24px rgba(0,0,0,0.3);
         }
         @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
 
-        /* === 除了「關於我」以外的所有內容區塊 (拿掉霧面，改成深色背景) === */
+        /* === 除了「關於我」以外的所有內容區塊 (拿掉霧面，改成深色背景，修改透明度為 0.3) === */
         .content-area {
             width: 100%; max-width: 900px; border-radius: 32px;
             padding: 60px 24px; 
-            /* === 修改：更換為極致深邃的半透明深色背景 === */
-            background: rgba(15, 15, 15, 0.9); 
+            /* === 修改：更換為高透明度的半透明深色背景 === */
+            background: rgba(15, 15, 15, 0.3); 
             box-sizing: border-box; margin-top: 20px;
-            /* === 移除霧面玻璃效果 === */
+            /* 移除霧面玻璃效果 */
             /* backdrop-filter REMOVED */
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         @media (max-width: 768px) { .content-area { width: calc(100% - 20px); padding: 40px 16px;} }
 
-        /* 獸設定卡片 (拿掉霧面，改成深色背景) */
+        /* 獸設定卡片 (拿掉霧面，改成深色背景，修改透明度為 0.3) */
         .fursona-card {
-            /* === 修改：更換為極致深邃的半透明深色背景 === */
-            background: rgba(15, 15, 15, 0.9); 
+            /* === 修改：更換為高透明度的半透明深色背景 === */
+            background: rgba(15, 15, 15, 0.3); 
             border-radius: 24px; padding: 0; margin-bottom: 30px;
             display: flex; flex-direction: column; text-align: left;
             transition: all 0.6s var(--smooth-curve); border: 1px solid rgba(255, 255, 255, 0.08);
             overflow: hidden; 
-            /* === 移除霧面玻璃效果 === */
+            /* 移除霧面玻璃效果 */
             /* backdrop-filter REMOVED */
         }
         .fursona-card:last-child { margin-bottom: 0; }
         .fursona-card:hover { 
-            background: rgba(15, 15, 15, 0.95); transform: translateY(-8px);
+            background: rgba(15, 15, 15, 0.5); transform: translateY(-8px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(168, 85, 247, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
@@ -221,19 +220,19 @@
         .fursona-meta-tag a:hover { color: #ffffff; text-decoration-color: #ffffff; }
         .fursona-story { color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.8; border-left: 3px solid #6366f1; padding-left: 16px; margin-top: 8px; text-align: justify; }
 
-        /* 活動與商城卡片 (拿掉霧面，改成深色背景) */
+        /* 活動與商城卡片 (拿掉霧面，改成深色背景，修改透明度為 0.3) */
         .card-base {
             flex: 0 0 85%; max-width: 380px; 
-            /* === 修改：更換為極致深邃的半透明深色背景 === */
-            background: rgba(15, 15, 15, 0.9); 
+            /* === 修改：更換為高透明度的半透明深色背景 === */
+            background: rgba(15, 15, 15, 0.3); 
             border-radius: 20px; overflow: hidden; scroll-snap-align: center;
             transition: all 0.6s var(--smooth-curve); border: 1px solid rgba(255, 255, 255, 0.08);
             display: flex; flex-direction: column; 
-            /* === 移除霧面玻璃效果 === */
+            /* 移除霧面玻璃效果 */
             /* backdrop-filter REMOVED */
         }
         .card-base:hover {
-            background: rgba(15, 15, 15, 0.95); transform: translateY(-10px);
+            background: rgba(15, 15, 15, 0.5); transform: translateY(-10px);
             box-shadow: 0 25px 45px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.15);
         }
         @media (min-width: 768px) { .carousel-container { justify-content: center; } .card-base { flex: 0 0 calc(50% - 10px); scroll-snap-align: start; } }
@@ -406,153 +405,155 @@
 
     <div class="back-to-top" id="backToTop" onclick="scrollToTop()"></div>
 
-    <section id="home">
-        <h1 class="section-title reveal-element" style="font-size: clamp(50px, 12vw, 120px); line-height: 1.15; margin-bottom: 24px; padding-bottom: 10px;">HI, I'M<br>LacoonEN</h1>
-        <div class="home-subtitle reveal-element delay-1" id="homeSubtitle">LacoonEN X Wolf X HuanHuan</div>
-        <button class="contact-btn reveal-element delay-2" id="ctaBtn" onclick="openModal('socialModal')">CONTACT ME</button>
-    </section>
+    <main>
+        <section id="home">
+            <h1 class="section-title reveal-element" style="font-size: clamp(50px, 12vw, 120px); line-height: 1.15; margin-bottom: 24px; padding-bottom: 10px;">HI, I'M<br>LacoonEN</h1>
+            <div class="home-subtitle reveal-element delay-1" id="homeSubtitle">LacoonEN X Wolf X HuanHuan</div>
+            <button class="contact-btn reveal-element delay-2" id="ctaBtn" onclick="openModal('socialModal')">CONTACT ME</button>
+        </section>
 
-    <section id="about">
-        <h2 class="section-title reveal-element" id="titleAbout">ABOUT ME</h2>
-        <div class="about-card reveal-element delay-1">
-            <div class="profile-zone">
-                <div class="profile-img">
-                    <div class="inner"><img src="profile.JPG" alt="Profile"></div>
+        <section id="about">
+            <h2 class="section-title reveal-element" id="titleAbout">ABOUT ME</h2>
+            <div class="about-card reveal-element delay-1">
+                <div class="profile-zone">
+                    <div class="profile-img">
+                        <div class="inner"><img src="profile.JPG" alt="Profile"></div>
+                    </div>
+                </div>
+                <div class="info-content">
+                    <div class="info-name" id="infoName">LacoonEN</div>
+                    <div class="info-tagline" id="infoTagline">BIM Engineer</div>
+                    
+                    <div class="intro-text" id="infoIntro">
+                        Hi, I'm LacoonEN!<br>
+                        I'm a BIM Engineer currently based in Kaohsiung, Taiwan.<br>
+                        In my free time, I love photography and diving, enjoying capturing beautiful moments and exploring the underwater world.<br>
+                        My current fursonas are LacoonEN, Wolf, and HuanHuan.<br>
+                        It's great to meet you all! I look forward to seeing you at future events. Feel free to come say hi, take photos, and give me a hug!
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item"><div class="info-label" id="labelLocation">Location</div><div class="info-value" id="valLocation">Kaohsiung, Taiwan</div></div>
+                        <div class="info-item"><div class="info-label" id="labelEdu">Education</div><div class="info-value" id="valEdu">NKUST (Studying)</div></div>
+                        <div class="info-item"><div class="info-label" id="labelBirthday">Birthday</div><div class="info-value" id="valBirthday">18th November</div></div>
+                        <div class="info-item"><div class="info-label" id="labelHobby">Hobbies</div><div class="info-value" id="valHobby">Photo, Cycling, Freediving, Skiing</div></div>
+                    </div>
                 </div>
             </div>
-            <div class="info-content">
-                <div class="info-name" id="infoName">LacoonEN</div>
-                <div class="info-tagline" id="infoTagline">BIM Engineer</div>
+        </section>
+
+        <section id="fursona">
+            <h2 class="section-title reveal-element" id="titleFursona">FURSONA</h2>
+            <div class="content-area reveal-element delay-1" style="background: transparent; padding: 0; box-shadow: none; border: none;">
                 
-                <div class="intro-text" id="infoIntro">
-                    Hi, I'm LacoonEN!<br>
-                    I'm a BIM Engineer currently based in Kaohsiung, Taiwan.<br>
-                    In my free time, I love photography and diving, enjoying capturing beautiful moments and exploring the underwater world.<br>
-                    My current fursonas are LacoonEN, Wolf, and HuanHuan.<br>
-                    It's great to meet you all! I look forward to seeing you at future events. Feel free to come say hi, take photos, and give me a hug!
+                <div class="fursona-card">
+                    <div class="fursona-img-placeholder">
+                        <img src="lacoon.jpeg" alt="LacoonEN">
+                    </div>
+                    <div class="fursona-info">
+                        <h3 id="fName1">LacoonEN</h3>
+                        <div class="fursona-meta">
+                            <span class="fursona-meta-tag" id="fDes1">Design: <a href="https://www.facebook.com/share/1DL3Mr7PSA/?mibextid=wwXIfr" target="_blank">DormirMao</a></span>
+                            <span class="fursona-meta-tag" id="fMak1">Fursuit Maker: None</span>
+                        </div>
+                        <div class="fursona-story" id="fStory1">
+                            A raccoon who doesn't sleep at night.
+                        </div>
+                    </div>
                 </div>
 
-                <div class="info-grid">
-                    <div class="info-item"><div class="info-label" id="labelLocation">Location</div><div class="info-value" id="valLocation">Kaohsiung, Taiwan</div></div>
-                    <div class="info-item"><div class="info-label" id="labelEdu">Education</div><div class="info-value" id="valEdu">NKUST (Studying)</div></div>
-                    <div class="info-item"><div class="info-label" id="labelBirthday">Birthday</div><div class="info-value" id="valBirthday">18th November</div></div>
-                    <div class="info-item"><div class="info-label" id="labelHobby">Hobbies</div><div class="info-value" id="valHobby">Photo, Cycling, Freediving, Skiing</div></div>
+                <div class="fursona-card">
+                    <div class="fursona-img-placeholder">
+                        <img src="wolf.jpeg" alt="Wolf">
+                    </div>
+                    <div class="fursona-info">
+                        <h3 id="fName2">Wolf</h3>
+                        <div class="fursona-meta">
+                            <span class="fursona-meta-tag" id="fDes2">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
+                            <span class="fursona-meta-tag" id="fMak2">Fursuit Maker: <a href="https://www.furmony.com" target="_blank">Furmony Studio</a></span>
+                        </div>
+                        <div class="fursona-story" id="fStory2">
+                            A Shiba Inu gunslinger passionate about firearms.<br>He co-owns a tavern with his younger brother Wally and is also a bartender himself.<br>Calm and usually reticent, he is steady and very reliable; his brother, on the other hand, is more passionate, open, and sociable.<br>On the surface, they run a tavern to gather intelligence, while secretly taking on assassination missions.
+                        </div>
+                    </div>
                 </div>
+
+                <div class="fursona-card">
+                    <div class="fursona-img-placeholder">
+                        <img src="HuanHuan.jpeg" alt="HuanHuan">
+                    </div>
+                    <div class="fursona-info">
+                        <h3 id="fName3">HuanHuan</h3>
+                        <div class="fursona-meta">
+                            <span class="fursona-meta-tag" id="fDes3">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
+                            <span class="fursona-meta-tag" id="fMak3">Fursuit Maker: <a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">Yuwu Fursuit</a></span>
+                    </div>
+                        <div class="fursona-story" id="fStory3">
+                            A lightning bee dragon.
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="fursona">
-        <h2 class="section-title reveal-element" id="titleFursona">FURSONA</h2>
-        <div class="content-area reveal-element delay-1" style="background: transparent; padding: 0; box-shadow: none; border: none;">
-            
-            <div class="fursona-card">
-                <div class="fursona-img-placeholder">
-                    <img src="lacoon.jpeg" alt="LacoonEN">
-                </div>
-                <div class="fursona-info">
-                    <h3 id="fName1">LacoonEN</h3>
-                    <div class="fursona-meta">
-                        <span class="fursona-meta-tag" id="fDes1">Design: <a href="https://www.facebook.com/share/1DL3Mr7PSA/?mibextid=wwXIfr" target="_blank">DormirMao</a></span>
-                        <span class="fursona-meta-tag" id="fMak1">Fursuit Maker: None</span>
+        <section id="events">
+            <h2 class="section-title reveal-element" id="titleEvents">EVENTS</h2>
+            <div class="section-subtitle reveal-element delay-1" id="eventsSubtitle">NEXT STOPS</div>
+            <div class="content-area reveal-element delay-2" style="background: transparent; padding: 0; box-shadow: none; border: none;">
+                <div class="carousel-container">
+                    <div class="card-base event-card">
+                        <div class="event-img">
+                            <img src="Event_UTFG_20260627.jpeg" alt="UTFG">
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-title">UTFG</h3>
+                            <div class="card-date">2026 / 06 / 27</div>
+                            <a href="https://www.utfg.tw" target="_blank" class="event-link">Event Website</a>
+                        </div>
                     </div>
-                    <div class="fursona-story" id="fStory1">
-                        A raccoon who doesn't sleep at night.
-                    </div>
-                </div>
-            </div>
-
-            <div class="fursona-card">
-                <div class="fursona-img-placeholder">
-                    <img src="wolf.jpeg" alt="Wolf">
-                </div>
-                <div class="fursona-info">
-                    <h3 id="fName2">Wolf</h3>
-                    <div class="fursona-meta">
-                        <span class="fursona-meta-tag" id="fDes2">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
-                        <span class="fursona-meta-tag" id="fMak2">Fursuit Maker: <a href="https://www.furmony.com" target="_blank">Furmony Studio</a></span>
-                    </div>
-                    <div class="fursona-story" id="fStory2">
-                        A Shiba Inu gunslinger passionate about firearms.<br>He co-owns a tavern with his younger brother Wally and is also a bartender himself.<br>Calm and usually reticent, he is steady and very reliable; his brother, on the other hand, is more passionate, open, and sociable.<br>On the surface, they run a tavern to gather intelligence, while secretly taking on assassination missions.
-                    </div>
-                </div>
-            </div>
-
-            <div class="fursona-card">
-                <div class="fursona-img-placeholder">
-                    <img src="HuanHuan.jpeg" alt="HuanHuan">
-                </div>
-                <div class="fursona-info">
-                    <h3 id="fName3">HuanHuan</h3>
-                    <div class="fursona-meta">
-                        <span class="fursona-meta-tag" id="fDes3">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
-                        <span class="fursona-meta-tag" id="fMak3">Fursuit Maker: <a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">Yuwu Fursuit</a></span>
-                    </div>
-                    <div class="fursona-story" id="fStory3">
-                        A lightning bee dragon.
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <section id="events">
-        <h2 class="section-title reveal-element" id="titleEvents">EVENTS</h2>
-        <div class="section-subtitle reveal-element delay-1" id="eventsSubtitle">NEXT STOPS</div>
-        <div class="content-area reveal-element delay-2" style="background: transparent; padding: 0; box-shadow: none; border: none;">
-            <div class="carousel-container">
-                <div class="card-base event-card">
-                    <div class="event-img">
-                        <img src="Event_UTFG_20260627.jpeg" alt="UTFG">
-                    </div>
-                    <div class="card-info">
-                        <h3 class="card-title">UTFG</h3>
-                        <div class="card-date">2026 / 06 / 27</div>
-                        <a href="https://www.utfg.tw" target="_blank" class="event-link">Event Website</a>
-                    </div>
-                </div>
-                
-                <div class="card-base event-card">
-                    <div class="event-img">
-                        <img src="Event_INFURNITY_20261030.jpeg" alt="INFURNITY">
-                    </div>
-                    <div class="card-info">
-                        <h3 class="card-title">INFURNITY</h3>
-                        <div class="card-date">2026 / 10 / 30</div>
-                        <a href="https://www.infurnity.com" target="_blank" class="event-link">Event Website</a>
+                    
+                    <div class="card-base event-card">
+                        <div class="event-img">
+                            <img src="Event_INFURNITY_20261030.jpeg" alt="INFURNITY">
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-title">INFURNITY</h3>
+                            <div class="card-date">2026 / 10 / 30</div>
+                            <a href="https://www.infurnity.com" target="_blank" class="event-link">Event Website</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="album">
-        <h2 class="section-title reveal-element" id="titleAlbum">ALBUM</h2>
-        <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
-    </section>
+        <section id="album">
+            <h2 class="section-title reveal-element" id="titleAlbum">ALBUM</h2>
+            <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
+        </section>
 
-    <section id="commissions">
-        <h2 class="section-title reveal-element" id="titleCommissions">COMMISSIONS</h2>
-        <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
-    </section>
+        <section id="commissions">
+            <h2 class="section-title reveal-element" id="titleCommissions">COMMISSIONS</h2>
+            <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
+        </section>
 
-    <section id="shop">
-        <h2 class="section-title reveal-element" id="titleShop">SHOP</h2>
-        <div class="content-area reveal-element delay-1" style="background: transparent; padding: 0; box-shadow: none; border: none;">
-            <div class="carousel-container">
-                <div class="card-base shop-card" onclick="openProductModal('p1')">
-                    <div class="shop-img">
-                        <img src="Product_01.jpeg" alt="HuanHuan Patch">
-                    </div>
-                    <div class="card-info">
-                        <div class="card-tag" id="tagPreorder">Pre-order</div>
-                        <h3 class="card-title" id="pTitle1" style="font-size: 18px; margin: 0;">HuanHuan Embroidered Velcro Patch</h3>
+        <section id="shop">
+            <h2 class="section-title reveal-element" id="titleShop">SHOP</h2>
+            <div class="content-area reveal-element delay-1" style="background: transparent; padding: 0; box-shadow: none; border: none;">
+                <div class="carousel-container">
+                    <div class="card-base shop-card" onclick="openProductModal('p1')">
+                        <div class="shop-img">
+                            <img src="Product_01.jpeg" alt="HuanHuan Patch">
+                        </div>
+                        <div class="card-info">
+                            <div class="card-tag" id="tagPreorder">Pre-order</div>
+                            <h3 class="card-title" id="pTitle1" style="font-size: 18px; margin: 0;">HuanHuan Embroidered Velcro Patch</h3>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     <footer>© 2026 LACOONEN PORTFOLIO | DESIGNED BY LACOONEN</footer>
 
