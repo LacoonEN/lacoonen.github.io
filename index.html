@@ -46,25 +46,24 @@
             width: 100%; height: 100%; position: relative; 
         }
 
-        /* === 終極修復：保證不露黑線，視覺略微縮小 === */
+        /* === 終極修復：背景邊緣不走光，靜止穩定 === */
         .bg-layer {
             position: absolute; 
-            /* 緩衝區設為 -80px，剛好足夠容納 50px 的飄浮，並且不會過度放大圖片 */
-            top: -80px; bottom: -80px; left: -80px; right: -80px;
+            /* 將畫布四周向外延伸 100px，確保晃動時邊界永遠藏在螢幕外，絕對不會露出黑線 */
+            top: -100px; bottom: -100px; left: -100px; right: -100px;
             
             background-image: url('BG_01.png');
-            background-size: cover; /* 必須用 cover 才能確保邊緣沒有 95% 造成的透明黑線 */
+            background-size: cover;
             background-repeat: no-repeat;
             
-            /* 精準定位：向右挪動100px，垂直設為 50% 置中 */
+            /* 精準定位：向右挪動100px，垂直設為 50% 確保圖片填滿沒有縫隙 */
             background-position: calc(50% + 100px) 50%; 
             
-            /* 0.2 亮度 (極致深邃) */
+            /* === 依照要求改成 0.2 亮度 (極致深邃) === */
             filter: brightness(0.2) saturate(1.2); 
             
-            /* 保留 floatVertical (上下晃動動畫)，拿掉縮放 (Scale) 效果 */
+            /* === 修改：保留 floatVertical (上下晃動動畫)，拿掉縮放 (Scale) 效果 === */
             animation: floatVertical 20s ease-in-out infinite, bgFlicker 10s infinite;
-            will-change: transform;
         }
 
         .bg-fx {
@@ -74,7 +73,7 @@
             mix-blend-mode: plus-lighter; 
         }
 
-        /* 背景專屬動畫：純上下飄浮 50px */
+        /* 背景專屬動畫：保留緩慢上下飄浮 (拿掉 Scale) */
         @keyframes floatVertical {
             0% { transform: translateY(0px); }
             50% { transform: translateY(50px); } 
@@ -93,7 +92,7 @@
             97%, 99% { opacity: 0.3; } 
         }
 
-        /* --- 固定選單按鈕 (高透灰 0.3) --- */
+        /* --- 固定選單按鈕 (拿掉霧面邊框，保留高透灰) --- */
         .menu-btn {
             position: fixed; 
             top: max(24px, env(safe-area-inset-top)); 
@@ -102,9 +101,11 @@
             cursor: pointer; display: flex; flex-direction: column; 
             justify-content: center; align-items: center; gap: 6px;
             width: 48px; height: 48px;
+            /* === 修改：保留高透明度的半透明深色背景 === */
             background: rgba(15, 15, 15, 0.3);
             border-radius: 12px; 
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            /* === 修改：拿掉毛玻璃效果，讓按鈕下方背景清晰銳利 === */
+            /* backdrop-filter REMOVED */
             transition: all 0.5s var(--smooth-curve);
             outline: none; user-select: none; -webkit-user-select: none;
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -116,7 +117,7 @@
         .menu-btn.active div:nth-child(2) { opacity: 0; transform: scaleX(0); }
         .menu-btn.active div:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-        /* --- 固定語言選單 (高透灰 0.3) --- */
+        /* --- 固定語言選單 (拿掉霧面邊框，保留高透灰) --- */
         .lang-container { 
             position: fixed; 
             top: max(24px, env(safe-area-inset-top)); 
@@ -124,10 +125,12 @@
             z-index: 9999; user-select: none; 
         }
         .lang-selected {
+            /* === 修改：保留高透明度的半透明深色背景 === */
             background: rgba(15, 15, 15, 0.3); 
             border: 1px solid rgba(255, 255, 255, 0.05);
             color: #fff; padding: 10px 20px; border-radius: 12px; cursor: pointer;
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); 
+            /* === 修改：拿掉毛玻璃效果，讓選單下方背景清晰銳利 === */
+            /* backdrop-filter REMOVED */
             transition: all 0.4s var(--smooth-curve); font-size: 13px; font-weight: 600;
         }
         .lang-selected:hover { background: rgba(15, 15, 15, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
@@ -142,9 +145,10 @@
         .lang-option { padding: 14px 20px; font-size: 13px; color: rgba(255,255,255,0.6); cursor: pointer; transition: 0.3s ease; }
         .lang-option:hover { background: rgba(255,255,255,0.1); color: #fff; padding-left: 24px; }
 
-        /* === 關於我卡片：獨享高品質白霧玻璃效果 === */
+        /* === 關於我卡片：獨留獨享高品質白霧玻璃效果 (保留) === */
         .about-card {
             width: 100%; max-width: 900px;
+            /* 輕微白色玻璃背景，維持質感，這不是您圈出的灰色區塊，保留不變 */
             background: rgba(255, 255, 255, 0.05); border-radius: 40px; padding: 50px;
             display: flex; gap: 50px; align-items: flex-start; text-align: left;
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -158,24 +162,11 @@
         }
         @media (max-width: 768px) { .about-card { flex-direction: column; align-items: center; text-align: center; padding: 40px 24px; width: calc(100% - 20px); } }
 
-        /* === 修復：關於我內部的資訊網格間距加大 === */
-        .info-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 28px; /* 從 16px 加大到 28px，增加透氣感 */
-            width: 100%; 
-        }
-        @media (max-width: 600px) { 
-            .info-grid { 
-                grid-template-columns: 1fr; 
-                gap: 24px; /* 手機版間距也加大 */
-            } 
-        }
-        
+        /* 關於我內部的資訊網格：高透灰 0.3 --- */
         .info-item {
-            background: rgba(15, 15, 15, 0.3); /* 高透灰 */
-            padding: 20px 18px; /* 略微增加上下內邊距 */
-            border-radius: 18px;
+            /* === 修改：更換為高透明度的半透明深色背景，並拿掉霧面 === */
+            background: rgba(15, 15, 15, 0.3); 
+            padding: 18px; border-radius: 18px;
             min-height: 85px; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;
             transition: all 0.5s var(--smooth-curve); border: 1px solid rgba(255, 255, 255, 0.05);
         }
@@ -183,11 +174,13 @@
             background: rgba(15, 15, 15, 0.5); transform: translateY(-4px);
             border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 12px 24px rgba(0,0,0,0.3);
         }
+        @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
 
         /* === 內容外框樣式 (高透灰 0.3) === */
         .content-area {
             width: 100%; max-width: 900px; border-radius: 32px;
             padding: 60px 24px; 
+            /* === 修改：更換為高透明度的半透明深色背景 === */
             background: rgba(15, 15, 15, 0.3); 
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             box-sizing: border-box; margin-top: 20px;
@@ -197,6 +190,7 @@
 
         /* 獸設定卡片 (高透灰 0.3) */
         .fursona-card {
+            /* === 修改：更換為高透明度的半透明深色背景 === */
             background: rgba(15, 15, 15, 0.3); 
             border-radius: 24px; padding: 0; margin-bottom: 30px;
             backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
@@ -226,6 +220,7 @@
         /* 活動與商城卡片 (高透灰 0.3) */
         .card-base {
             flex: 0 0 85%; max-width: 380px; 
+            /* === 修改：更換為高透明度的半透明深色背景 === */
             background: rgba(15, 15, 15, 0.3); 
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border-radius: 20px; overflow: hidden; scroll-snap-align: center;
@@ -265,7 +260,6 @@
         }
         .event-link:hover { background: rgba(168, 85, 247, 0.3); color: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2); }
 
-        /* 與我聯繫按鈕 */
         .contact-btn {
             position: relative; appearance: none; border: none; cursor: pointer; color: #ffffff;
             font-size: 14px; font-weight: 700; letter-spacing: 2px; padding: 18px 50px; border-radius: 50px;
@@ -281,12 +275,17 @@
         .contact-btn:hover::before { opacity: 0.85; }
         .contact-btn:active { transform: scale(0.95); }
 
+        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; width: 100%; }
+        
+
         section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 80px 20px; box-sizing: border-box; }
         
+        /* 進場動畫 (只晃動內容) */
         .reveal-element { 
             opacity: 0; transform: translateY(40px); 
             transition: opacity 0.9s var(--smooth-curve), transform 0.9s var(--smooth-curve);
         }
+        /* Safati Bug 解法：動畫結束後將 transform 設為 none，避免吃掉玻璃特效 */
         .reveal-element.reveal { opacity: 1; transform: none; }
         .delay-1 { transition-delay: 0.1s; }
         .delay-2 { transition-delay: 0.2s; }
@@ -305,20 +304,22 @@
         .info-tagline { color: #a855f7; font-weight: 600; letter-spacing: 2px; margin-bottom: 24px; font-size: 14px; }
         
         .intro-text {
-            font-size: 15px; color: rgba(255, 255, 255, 0.8); line-height: 1.8; margin-bottom: 40px; padding: 16px 20px;
+            font-size: 15px; color: rgba(255, 255, 255, 0.8); line-height: 1.8; margin-bottom: 32px; padding: 16px 20px;
             background: rgba(255, 255, 255, 0.02); border-radius: 12px; border-left: 4px solid #a855f7; text-align: justify; transition: 0.5s var(--smooth-curve);
         }
         .intro-text:hover { background: rgba(255, 255, 255, 0.06); transform: translateX(5px); }
-        @media (max-width: 768px) { .intro-text { text-align: left; padding: 16px; font-size: 14.5px; margin-bottom: 32px; } .intro-text:hover { transform: none; } }
+        @media (max-width: 768px) { .intro-text { text-align: left; padding: 16px; font-size: 14.5px; } .intro-text:hover { transform: none; } }
 
         .info-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
         .info-value { font-size: 14px; color: rgba(255,255,255,0.9); font-weight: 500; line-height: 1.4; }
         
-        /* Modal 共用樣式 */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: 0.5s var(--smooth-curve); padding: 24px; }
+        /* Modal 共用樣式 (拿掉霧面，改成高透灰色) */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: 0.5s var(--smooth-curve); padding: 24px; /* 拿掉毛玻璃效果，讓按鈕下方背景清晰銳利 */ /* backdrop-filter REMOVED */ }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { 
-            background: rgba(20, 20, 20, 0.98); border: 1px solid rgba(255,255,255,0.1); border-radius: 32px; 
+            /* === 修改：保留高透明度的半透明深色背景 === */
+            background: rgba(20, 20, 20, 0.8); 
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 32px; 
             padding: 40px 24px; width: 100%; max-width: 380px; box-sizing: border-box; text-align: center;
             max-height: 85vh; overflow-y: auto; transform: translateY(40px) scale(0.95); transition: 0.6s var(--smooth-curve);
         }
@@ -333,11 +334,12 @@
 
         .product-modal-img { width: 100%; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: cover; aspect-ratio: 1/1; }
         
+        /* === 返回頂部按鈕 (拿掉霧面邊框，保留高透灰) === */
         .back-to-top { 
             position: fixed; 
             bottom: max(30px, env(safe-area-inset-bottom)); 
             right: max(24px, env(safe-area-inset-right)); 
-            width: 48px; height: 48px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 998; opacity: 0; visibility: hidden; transition: all 0.5s var(--smooth-curve); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); 
+            width: 48px; height: 48px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 998; opacity: 0; visibility: hidden; transition: all 0.5s var(--smooth-curve); /* === 修改：拿掉毛玻璃效果，讓按鈕下方背景清晰銳利 === */ /* backdrop-filter REMOVED */ 
         }
         .back-to-top.show { opacity: 1; visibility: visible; }
         .back-to-top:hover { background: rgba(255,255,255,0.25); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
@@ -346,7 +348,7 @@
         .back-to-top:hover::after { margin-top: -2px; }
         
         /* --- 側邊選單與懸停動畫 --- */
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); z-index: 1000; display: flex; flex-direction: column; padding-top: 100px; transition: 0.6s var(--smooth-curve); overflow-y: auto;}
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: rgba(10, 10, 10, 0.9); z-index: 1000; display: flex; flex-direction: column; padding-top: 100px; transition: 0.6s var(--smooth-curve); overflow-y: auto; /* 拿掉毛玻璃效果，讓按鈕下方背景清晰銳利 */ /* backdrop-filter REMOVED */ }
         .sidebar.active { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 999; opacity: 0; pointer-events: none; transition: 0.5s; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
         .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
@@ -481,7 +483,7 @@
                         <h3 id="fName3">HuanHuan</h3>
                         <div class="fursona-meta">
                             <span class="fursona-meta-tag" id="fDes3">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
-                            <span class="fursona-meta-tag" id="fMak3">Fursuit Maker: <a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">Yuwu Fursuit</a></span>
+                            <span class="fursona-meta-tag" id="fMak3">Fursuit Maker: <a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">漁屋</a></span>
                         </div>
                         <div class="fursona-story" id="fStory3">
                             A lightning bee dragon.
@@ -495,7 +497,7 @@
         <section id="events">
             <h2 class="section-title reveal-element" id="titleEvents">EVENTS</h2>
             <div class="section-subtitle reveal-element delay-1" id="eventsSubtitle">NEXT STOPS</div>
-            <div class="content-area reveal-element delay-2" style="background: transparent; padding: 0; box-shadow: none; border: none;">
+            <div class="content-area reveal-element delay-2" style="background: transparent; padding: 0; box-shadow: none; border: none; backdrop-filter: none; -webkit-backdrop-filter: none;">
                 <div class="carousel-container">
                     <div class="card-base event-card">
                         <div class="event-img">
@@ -534,7 +536,7 @@
 
         <section id="shop">
             <h2 class="section-title reveal-element" id="titleShop">SHOP</h2>
-            <div class="content-area reveal-element delay-1" style="background: transparent; padding: 0; box-shadow: none; border: none;">
+            <div class="content-area reveal-element delay-1" style="background: transparent; padding: 0; box-shadow: none; border: none; backdrop-filter: none; -webkit-backdrop-filter: none;">
                 <div class="carousel-container">
                     <div class="card-base shop-card" onclick="openProductModal('p1')">
                         <div class="shop-img">
@@ -657,7 +659,7 @@
                 fStory2: "是隻柴柴槍手，熱衷於槍械。<br>有個弟弟叫沃利，共同經營了一間酒館本身也是調酒師。<br>性格沈穩，平時叫沈默寡言，做事穩重且十分可靠；弟弟則比較熱情開放，善於與人交際。<br>表面經營酒館藉此收集情報，暗地裡則會接下一些暗殺任務。",
                 fName3: "幻幻 HuanHuan", 
                 fDes3: '設定設計：<a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">冷軌</a>', 
-                fMak3: '毛裝工作室：<a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">Yuwu Fursuit</a>', 
+                fMak3: '毛裝工作室：<a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">漁屋</a>', 
                 fStory3: "是隻閃電蜜蜂小龍。",
                 eventsSub: "即將前往",
                 eventWeb: "活動官網",
