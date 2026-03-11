@@ -18,9 +18,12 @@
 
     <style>
         /* --- 全局與強迫症優化 --- */
-        html { scroll-behavior: smooth; perspective: 1px; }
+        html { 
+            scroll-behavior: smooth; 
+            background-color: #000000; /* 黑底移到最底層 */
+        }
         body {
-            background-color: #000000;
+            background-color: transparent; /* 讓 body 透明，才看得到背景 */
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
             margin: 0; padding: 0;
@@ -28,7 +31,6 @@
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
             transition: opacity 0.4s ease;
-            position: relative;
         }
 
         /* --- 頂級平滑曲線變數 --- */
@@ -37,81 +39,45 @@
             --bounce-curve: cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* === 飄浮閃電科技背景層 (`.bg-layer`) === */
+        /* === 飄浮閃電視差背景層 === */
+        .bg-wrapper {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -999; overflow: hidden; pointer-events: none;
+        }
+        .bg-scroll {
+            width: 100%; height: 100%;
+            /* 負責接收 JS 的滑動視差數值 */
+            will-change: transform;
+        }
         .bg-layer {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -10;
-            /* 應用手動設計的抽象幾何科技背景圖 */
+            position: absolute; top: -10%; left: -10%; width: 120%; height: 120%;
             background-image: url('BG_01.png');
-            background-size: cover;
-            background-position: center;
-            /* 極致淡化背景，不影響主內容 */
-            opacity: 0.05;
-            /* 應用上下飄浮動畫 */
-            animation: floatBG 15s ease-in-out infinite;
-            /* 設置視差效果，讓背景層遠離 */
-            transform: translateZ(-2px) scale(3);
-            /* 防止圖像被拉伸太厲害 */
-            backface-visibility: hidden;
+            background-size: cover; background-position: center;
+            opacity: 0.15; /* 淡化顯示 */
+            /* 負責持續的 CSS 呼吸飄浮動畫 */
+            animation: floatBG 20s ease-in-out infinite;
+            will-change: transform;
+        }
+        /* 微微紫光與閃電特效 */
+        .bg-fx {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 40%, rgba(168, 85, 247, 0.15), transparent 60%);
+            animation: glowPulse 5s alternate infinite, sparkFlicker 8s infinite;
+            mix-blend-mode: screen;
         }
 
-        /* 飄浮動畫 */
         @keyframes floatBG {
-            0% { transform: translateZ(-2px) scale(3) translateY(0); }
-            50% { transform: translateZ(-2px) scale(3) translateY(-10px); }
-            100% { transform: translateZ(-2px) scale(3) translateY(0); }
+            0% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(20px) scale(1.02); }
+            100% { transform: translateY(0px) scale(1); }
         }
-
-        /* ===背景特效偽元素=== */
-        .bg-layer::before, .bg-layer::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            border-radius: 50%; /* 用於光暈 */
+        @keyframes glowPulse {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; transform: scale(1.05); }
         }
-
-        /* 紫光光暈與脈動效果 */
-        .bg-layer::before {
-            background: radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.3), rgba(168, 85, 247, 0.0) 70%);
-            animation: glowPulser 6s ease-in-out infinite;
-        }
-
-        /* 閃電閃爍效果與顆粒 */
-        .bg-layer::after {
-            background: linear-gradient(45deg, rgba(168, 85, 247, 0.1), rgba(168, 85, 247, 0.0) 20%),
-                        radial-gradient(circle at 70% 30%, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.0) 30%),
-                        conic-gradient(at 80% 80%, rgba(168, 85, 247, 0.05), rgba(168, 85, 247, 0.0) 30%);
-            animation: sparkFlicker 1s ease infinite, randomMovement 8s linear infinite;
-            filter: blur(1px);
-        }
-
-        @keyframes glowPulser {
-            0%, 100% { opacity: 0.8; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
-
         @keyframes sparkFlicker {
-            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% { opacity: 1; }
-            20%, 21.999%, 63%, 63.999%, 65%, 69.999% { opacity: 0; }
-        }
-
-        @keyframes randomMovement {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(5px, -5px); }
-            50% { transform: translate(-5px, 5px); }
-            75% { transform: translate(5px, 5px); }
-            100% { transform: translate(0, 0); }
-        }
-
-        /* ===修正排版問題=== */
-        .home-description { padding-bottom: 30px; } /* 增加底部緩衝 */
-        .event-card { overflow: hidden; } /* UTFG 卡片裁切圓角修復 */
-        .carousel-container { padding: 35px 10px 45px 10px; } /* EVENTS 卡片上浮被切問題修復 */
-        .fursona-img { margin: 0; padding: 0; width: 100%; display: block; } /* 獸設圖片空隙修復與滿版優化 */
-        .shop-card { cursor: pointer; } /* 商店卡片鼠標 */
-
-        /* --- 頂級平滑曲線變數 --- */
-        :root {
-            --smooth-curve: cubic-bezier(0.25, 1, 0.5, 1);
-            --bounce-curve: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            0%, 96%, 98%, 100% { opacity: 1; }
+            97%, 99% { opacity: 0.3; } /* 偶爾微微閃爍模擬電力 */
         }
 
         /* --- 固定選單按鈕 --- */
@@ -121,16 +87,12 @@
             justify-content: center; align-items: center; gap: 6px;
             width: 48px; height: 48px;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px; backdrop-filter: blur(15px);
+            border-radius: 12px; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             transition: all 0.5s var(--smooth-curve);
             outline: none; user-select: none; -webkit-user-select: none;
             border: 1px solid rgba(255, 255, 255, 0.0);
         }
-        .menu-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transform: scale(1.05);
-        }
+        .menu-btn:hover { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1); transform: scale(1.05); }
         .menu-btn:active { transform: scale(0.95); }
         .menu-btn div { width: 22px; height: 2px; background-color: #ffffff; transition: 0.4s var(--smooth-curve); border-radius: 2px; pointer-events: none; }
         .menu-btn.active div:nth-child(1) { transform: translateY(8px) rotate(45deg); }
@@ -142,22 +104,15 @@
         .lang-selected {
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.0);
             color: #fff; padding: 10px 20px; border-radius: 12px; cursor: pointer;
-            backdrop-filter: blur(15px); transition: all 0.4s var(--smooth-curve); font-size: 13px; font-weight: 600;
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); transition: all 0.4s var(--smooth-curve); font-size: 13px; font-weight: 600;
         }
-        .lang-selected:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
+        .lang-selected:hover { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
         .lang-dropdown {
             position: absolute; top: 56px; right: 0;
-            background: rgba(20, 20, 20, 0.95); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
+            background: rgba(20, 20, 20, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); 
             border-radius: 16px; width: 150px; opacity: 0; transform: translateY(-15px) scale(0.95); 
             pointer-events: none; transition: 0.5s var(--smooth-curve);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-            overflow: hidden; padding: 0; 
-            transform-origin: top right;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6); overflow: hidden; padding: 0; transform-origin: top right;
         }
         .lang-container.active .lang-dropdown { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
         .lang-option { padding: 14px 20px; font-size: 13px; color: rgba(255,255,255,0.6); cursor: pointer; transition: 0.3s ease; }
@@ -166,12 +121,10 @@
         /* --- 關於我卡片 --- */
         .about-card {
             width: 100%; max-width: 900px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 40px; padding: 50px;
+            background: rgba(255, 255, 255, 0.03); border-radius: 40px; padding: 50px;
             display: flex; gap: 50px; align-items: flex-start; text-align: left;
-            backdrop-filter: blur(10px);
-            box-sizing: border-box; margin: 0 auto;
-            border: 1px solid rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            box-sizing: border-box; margin: 0 auto; border: 1px solid rgba(255, 255, 255, 0.02);
             transition: all 0.6s var(--smooth-curve);
         }
         .about-card:hover {
@@ -179,9 +132,7 @@
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(168, 85, 247, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
-        @media (max-width: 768px) {
-            .about-card { flex-direction: column; align-items: center; text-align: center; padding: 40px 24px; width: calc(100% - 20px); }
-        }
+        @media (max-width: 768px) { .about-card { flex-direction: column; align-items: center; text-align: center; padding: 40px 24px; width: calc(100% - 20px); } }
 
         /* --- 內容外框樣式 --- */
         .content-area {
@@ -191,43 +142,24 @@
         }
         @media (max-width: 768px) { .content-area { width: calc(100% - 20px); padding: 40px 16px;} }
 
-        /* --- 獸設定卡片樣式 --- */
+        /* --- 獸設定卡片樣式 (滿版圖片優化) --- */
         .fursona-card {
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 24px;
-            padding: 30px;
-            margin-bottom: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            text-align: left;
-            transition: all 0.6s var(--smooth-curve);
-            border: 1px solid rgba(255, 255, 255, 0.0);
+            background: rgba(255, 255, 255, 0.04); border-radius: 24px; padding: 0; margin-bottom: 30px;
+            display: flex; flex-direction: column; text-align: left;
+            transition: all 0.6s var(--smooth-curve); border: 1px solid rgba(255, 255, 255, 0.0);
+            overflow: hidden; transform: translateZ(0); 
         }
         .fursona-card:last-child { margin-bottom: 0; }
         .fursona-card:hover { 
-            background: rgba(255, 255, 255, 0.08); 
-            transform: translateY(-8px) scale(1.01);
+            background: rgba(255, 255, 255, 0.08); transform: translateY(-8px) scale(1.01);
             box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(168, 85, 247, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        
-        .fursona-img-placeholder {
-            width: 100%;
-            border-radius: 14px;
-            overflow: hidden;
-            position: relative;
-            background: transparent !important;
-            border: none !important;
-            /* Apple 專用遮罩修復：解決 iOS Safari 圓角破圖與圖片黑屏 bug */
-            -webkit-mask-image: -webkit-radial-gradient(white, black);
-        }
-        .fursona-img-placeholder img { 
-            width: 100%; height: auto; display: block; 
-            border-radius: 14px; transition: transform 0.8s var(--smooth-curve); 
-        }
+        .fursona-img-placeholder { width: 100%; position: relative; background: transparent !important; border: none !important; }
+        .fursona-img-placeholder img { width: 100%; height: auto; display: block; object-fit: cover; transition: transform 0.8s var(--smooth-curve); }
         .fursona-card:hover .fursona-img-placeholder img { transform: scale(1.04); }
         
+        .fursona-info { padding: 30px; display: flex; flex-direction: column; }
         .fursona-info h3 { margin: 0 0 12px 0; color: #fff; font-size: 26px; font-weight: 800; }
         .fursona-meta { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
         .fursona-meta-tag { background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); padding: 6px 14px; border-radius: 10px; font-size: 13px; color: #e9d5ff; font-weight: 500; transition: 0.4s var(--smooth-curve); }
@@ -238,34 +170,23 @@
 
         /* --- 輪播共用設定 (Events & Shop) --- */
         .carousel-container {
-            display: flex; gap: 20px; overflow-x: auto;
-            scroll-snap-type: x mandatory; padding: 15px 5px 25px 5px; 
-            width: 100%; -webkit-overflow-scrolling: touch; scrollbar-width: none; box-sizing: border-box;
+            display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; 
+            padding: 35px 10px 45px 10px; width: 100%; -webkit-overflow-scrolling: touch; scrollbar-width: none; box-sizing: border-box;
         }
         .carousel-container::-webkit-scrollbar { display: none; }
-        
-        /* 當輪播裡只有「一張」卡片時，自動在手機版置中 */
-        .carousel-container > .card-base:only-child {
-            margin-left: auto;
-            margin-right: auto;
-        }
+        .carousel-container > .card-base:only-child { margin-left: auto; margin-right: auto; }
 
         .card-base {
             flex: 0 0 85%; max-width: 380px; background: rgba(255, 255, 255, 0.04);
             border-radius: 20px; overflow: hidden; scroll-snap-align: center;
             transition: all 0.6s var(--smooth-curve); border: 1px solid rgba(255, 255, 255, 0.0);
-            display: flex; flex-direction: column;
-            /* Apple 專用遮罩修復：解決 iOS Safari 圓角破圖與圖片黑屏 bug */
-            -webkit-mask-image: -webkit-radial-gradient(white, black);
+            display: flex; flex-direction: column; transform: translateZ(0);
         }
         .card-base:hover {
-            background: rgba(255, 255, 255, 0.08); transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.08); transform: translateY(-10px);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.06);
         }
-        @media (min-width: 768px) {
-            .carousel-container { justify-content: center; }
-            .card-base { flex: 0 0 calc(50% - 10px); scroll-snap-align: start; }
-        }
+        @media (min-width: 768px) { .carousel-container { justify-content: center; } .card-base { flex: 0 0 calc(50% - 10px); scroll-snap-align: start; } }
 
         /* Events 專用 16:9 */
         .event-img { width: 100%; aspect-ratio: 16 / 9; }
@@ -279,34 +200,26 @@
         .card-base:hover .shop-img img { transform: scale(1.05); }
         
         .card-info { padding: 24px; text-align: left; }
-        .card-title { margin: 0 0 6px 0; font-size: 22px; font-weight: 800; color: #fff; line-height: 1.3; }
-        .card-date { font-size: 14px; color: #a855f7; font-weight: 600; letter-spacing: 1px; margin-bottom: 20px; }
-        .card-tag { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 500; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .card-title { margin: 0; font-size: 20px; font-weight: 800; color: #fff; line-height: 1.4; }
+        .card-date { font-size: 14px; color: #a855f7; font-weight: 600; letter-spacing: 1px; margin-bottom: 20px; margin-top: 6px; }
+        .card-tag { display: inline-block; font-size: 12px; background: rgba(168, 85, 247, 0.2); padding: 4px 10px; border-radius: 8px; color: #e9d5ff; font-weight: 600; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
 
         .event-link {
-            display: inline-block; padding: 10px 24px;
-            background: rgba(168, 85, 247, 0.15); color: #e9d5ff; text-decoration: none;
-            border-radius: 12px; font-size: 13px; font-weight: 600;
-            transition: all 0.4s var(--smooth-curve); border: 1px solid rgba(168, 85, 247, 0.3);
+            display: inline-block; padding: 10px 24px; background: rgba(168, 85, 247, 0.15); color: #e9d5ff; text-decoration: none;
+            border-radius: 12px; font-size: 13px; font-weight: 600; transition: all 0.4s var(--smooth-curve); border: 1px solid rgba(168, 85, 247, 0.3);
         }
         .event-link:hover { background: rgba(168, 85, 247, 0.3); color: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2); }
 
         /* --- 與我聯繫 & 購買按鈕：呼吸漸進光暈優化 --- */
         .contact-btn {
-            position: relative; 
-            appearance: none; border: none; cursor: pointer; color: #ffffff;
-            font-size: 14px; font-weight: 700; letter-spacing: 2px;
-            padding: 18px 50px; border-radius: 50px;
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2); 
-            transition: transform 0.5s var(--bounce-curve);
-            z-index: 1; 
-            text-align: center;
+            position: relative; appearance: none; border: none; cursor: pointer; color: #ffffff;
+            font-size: 14px; font-weight: 700; letter-spacing: 2px; padding: 18px 50px; border-radius: 50px;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2); 
+            transition: transform 0.5s var(--bounce-curve); z-index: 1; text-align: center;
         }
         .contact-btn::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            border-radius: 50px; z-index: -1; filter: blur(20px); 
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); border-radius: 50px; z-index: -1; filter: blur(20px); 
             opacity: 0; transition: opacity 0.8s ease-in-out;
         }
         .contact-btn:hover { transform: scale(1.05) translateY(-3px); }
@@ -360,7 +273,7 @@
         .info-value { font-size: 14px; color: rgba(255,255,255,0.9); font-weight: 500; line-height: 1.4; }
         
         /* Modal 共用樣式 */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: 0.5s var(--smooth-curve); padding: 24px; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: 0.5s var(--smooth-curve); padding: 24px; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { 
             background: #151515; border: 1px solid rgba(255,255,255,0.1); border-radius: 32px; 
@@ -379,7 +292,7 @@
         /* 商品詳細 Modal 專用 */
         .product-modal-img { width: 100%; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: cover; aspect-ratio: 1/1; }
         
-        .back-to-top { position: fixed; bottom: 30px; right: 24px; width: 48px; height: 48px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 998; opacity: 0; visibility: hidden; transition: all 0.5s var(--smooth-curve); backdrop-filter: blur(10px); }
+        .back-to-top { position: fixed; bottom: 30px; right: 24px; width: 48px; height: 48px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 998; opacity: 0; visibility: hidden; transition: all 0.5s var(--smooth-curve); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
         .back-to-top.show { opacity: 1; visibility: visible; }
         .back-to-top:hover { background: rgba(255,255,255,0.25); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         .back-to-top:active { transform: translateY(0) scale(0.9); }
@@ -387,9 +300,9 @@
         .back-to-top:hover::after { margin-top: -2px; }
         
         /* --- 側邊選單與懸停動畫 --- */
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(30px); z-index: 1000; display: flex; flex-direction: column; padding-top: 100px; transition: 0.6s var(--smooth-curve); overflow-y: auto;}
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); z-index: 1000; display: flex; flex-direction: column; padding-top: 100px; transition: 0.6s var(--smooth-curve); overflow-y: auto;}
         .sidebar.active { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
-        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 999; opacity: 0; pointer-events: none; transition: 0.5s; backdrop-filter: blur(3px); }
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 999; opacity: 0; pointer-events: none; transition: 0.5s; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
         .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
         
         .nav-link { 
@@ -397,9 +310,7 @@
             font-weight: 500; letter-spacing: 2px; padding: 18px 40px; 
             transition: 0.4s var(--smooth-curve); position: relative; display: block;
         }
-        .nav-link:hover { 
-            color: #ffffff; padding-left: 55px; background: linear-gradient(90deg, rgba(168, 85, 247, 0.15) 0%, transparent 100%); 
-        }
+        .nav-link:hover { color: #ffffff; padding-left: 55px; background: linear-gradient(90deg, rgba(168, 85, 247, 0.15) 0%, transparent 100%); }
         .nav-link::before {
             content: ''; position: absolute; left: 30px; top: 50%; width: 0; height: 2px;
             background: #a855f7; transition: 0.4s var(--smooth-curve); transform: translateY(-50%); box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
@@ -410,7 +321,13 @@
     </style>
 </head>
 <body>
-    <div class="bg-layer"></div>
+
+    <div class="bg-wrapper">
+        <div class="bg-scroll" id="bgScroll">
+            <div class="bg-layer"></div>
+        </div>
+        <div class="bg-fx"></div>
+    </div>
 
     <div class="lang-container" id="langContainer">
         <div class="lang-selected" id="currentLangDisplay">EN</div>
@@ -516,10 +433,10 @@
                 <div class="fursona-info">
                     <h3 id="fName3">HuanHuan</h3>
                     <div class="fursona-meta">
-                        <span class="fursona-meta-tag" id="Des3">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
-                        <span class="fursona-meta-tag" id="Mak3">Fursuit Maker: <a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">Yuwu Fursuit</a></span>
+                        <span class="fursona-meta-tag" id="fDes3">Design: <a href="https://www.patreon.com/cw/KSP200439?fbclid=IwVERDUAQSluJleHRuA2FlbQIxMABzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeVkfwhivvVspie5vrhJG5uXC9pRl4Bbd02d1YTZcvoSpz_NKEKpxVBZQbCtE_aem_uoN2ooZ8ih3M5xjzEtOoEA" target="_blank">Kaltespur</a></span>
+                        <span class="fursona-meta-tag" id="fMak3">Fursuit Maker: <a href="https://x.com/yuwu8nanyu?s=21&t=yjv-k6ZFiuu-52P0Vjic5A" target="_blank">Yuwu Fursuit</a></span>
                     </div>
-                    <div class="fursona-story" id="Story3">
+                    <div class="fursona-story" id="fStory3">
                         A lightning bee dragon.
                     </div>
                 </div>
@@ -574,7 +491,7 @@
             <div class="carousel-container">
                 <div class="card-base shop-card" onclick="openProductModal('p1')">
                     <div class="shop-img">
-                        <img src="og_image_6.png" alt="HuanHuan Patch">
+                        <img src="Product_01.jpeg" alt="HuanHuan Patch">
                     </div>
                     <div class="card-info">
                         <div class="card-tag" id="tagPreorder">Pre-order</div>
@@ -616,6 +533,15 @@
         window.onbeforeunload = function () { window.scrollTo(0, 0); };
         if (history.scrollRestoration) { history.scrollRestoration = 'manual'; }
 
+        // --- 新增：背景滑動視差特效 ---
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const bgScroll = document.getElementById('bgScroll');
+            if(bgScroll) {
+                bgScroll.style.transform = `translateY(${scrollY * 0.25}px)`;
+            }
+        });
+
         let currentLangCode = 'EN';
 
         function toggleMenu() { 
@@ -649,7 +575,8 @@
         function openProductModal(prodId) {
             const t = translations[currentLangCode];
             if (prodId === 'p1') {
-                document.getElementById('modalProductImg').src = 'og_image_6.png';
+                // 修正了圖片檔名
+                document.getElementById('modalProductImg').src = 'Product_01.jpeg';
                 document.getElementById('modalProductTitle').innerText = t.pTitle1;
                 document.getElementById('modalProductBtn').innerText = t.buyBtn;
                 document.getElementById('modalProductBtn').href = 'https://myship.7-11.com.tw/general/detail/GM2603065181808';
