@@ -515,7 +515,31 @@
 
         <section id="album">
             <h2 class="section-title reveal-element" id="titleAlbum">ALBUM</h2>
-            <div class="content-area reveal-element delay-1"><p class="m-text">Under Maintenance...</p></div>
+            <div class="content-area reveal-element delay-1">async function loadAlbum() {
+    const albumContainer = document.querySelector('#album .content-area');
+    try {
+        // 讀取剛剛 Python 腳本生成的 json 檔案
+        const response = await fetch('photos.json');
+        const photos = await response.json();
+        
+        albumContainer.innerHTML = '<div class="info-grid"></div>'; // 借用你寫好的 grid 樣式
+        const grid = albumContainer.querySelector('.info-grid');
+
+        photos.forEach(photo => {
+            const imgHTML = `
+                <div class="info-item" style="padding: 0; overflow: hidden; aspect-ratio: 1/1;">
+                    <img src="${photo.src}" alt="${photo.alt}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+                </div>
+            `;
+            grid.insertAdjacentHTML('beforeend', imgHTML);
+        });
+    } catch (error) {
+        console.error("相簿載入失敗", error);
+    }
+}
+
+// 確保網頁載入後執行
+document.addEventListener('DOMContentLoaded', loadAlbum);</div>
         </section>
 
         <section id="commissions">
